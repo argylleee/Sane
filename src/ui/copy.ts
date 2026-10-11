@@ -151,7 +151,8 @@ export const COPY: Record<Lang, Copy> = {
     themeLight: 'Light',
     themeDark: 'Dark',
     welcomeTitle: 'May duda? I-check muna.',
-    welcomeDescription: 'Sane spots scam signs in suspicious messages, right in your browser.',
+    welcomeDescription:
+      'Check suspicious messages privately, right on your device. No internet needed.',
     languageLabel: 'Language',
     manualLabel: 'Manual',
     manualTitle: 'Paste to scan',
