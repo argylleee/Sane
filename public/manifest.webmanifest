@@ -4,8 +4,8 @@
   "description": "Check a suspicious message privately. Everything runs on your device.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0f766e",
+  "background_color": "#dce9e0",
+  "theme_color": "#dce9e0",
   "id": "./",
   "scope": "./",
   "icons": [

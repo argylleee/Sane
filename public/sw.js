@@ -6,6 +6,17 @@ const MAX_SHARED_IMAGE_BYTES = 8 * 1024 * 1024;
 
 let pendingShare = null;
 
+// A response that followed a redirect cannot be served for a page load (browsers, iOS especially,
+// reject it), so keep an equivalent copy without the redirect flag.
+async function withoutRedirect(response) {
+  if (!response.redirected) return response;
+  return new Response(await response.blob(), {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}
+
 // Downloads the new version's page and the scripts and styles it names, so "Update now" switches
 // instantly and the updated app still opens offline. A failed download never blocks the install.
 async function precacheShell() {
@@ -15,7 +26,7 @@ async function precacheShell() {
     const response = await fetch(scope, { cache: 'no-cache' });
     if (!response.ok) return;
     const html = await response.clone().text();
-    await cache.put(scope, response);
+    await cache.put(scope, await withoutRedirect(response));
     const assets = [...html.matchAll(/(?:src|href)="([^"]+\.(?:m?js|css|webmanifest|png|svg))"/g)]
       .map(([, path]) => new URL(path, scope))
       .filter((url) => url.origin === self.location.origin);
@@ -74,7 +85,10 @@ self.addEventListener('message', (event) => {
           [...new Set(resources)].map(async (resource) => {
             try {
               const url = new URL(resource, scopeUrl);
-              if (url.origin === scopeUrl.origin) await cache.add(url.href);
+              if (url.origin === scopeUrl.origin) {
+                const response = await fetch(url.href);
+                if (response.ok) await cache.put(url.href, await withoutRedirect(response));
+              }
             } catch {
               // A single optional resource must not prevent the app shell from caching.
             }
@@ -148,17 +162,7 @@ self.addEventListener('fetch', (event) => {
     );
   // The embedding model on huggingface.co is deliberately not handled here: transformers.js keeps
   // its own cache, and a second 118 MB copy can exceed the phone's storage quota and fail the download.
-  const isModelAsset =
-    (requestUrl.hostname === 'tessdata.projectnaptha.com' &&
-      /\.traineddata(?:\.gz)?$/i.test(requestUrl.pathname)) ||
-    (requestUrl.hostname === 'cdn.jsdelivr.net' &&
-      (/\/npm\/(?:onnxruntime-web|tesseract\.js-core|tesseract\.js)@[^/]+\/.*\.(?:js|mjs|wasm)$/i.test(
-        requestUrl.pathname,
-      ) ||
-        /\/npm\/@tesseract\.js-data\/[a-z_]+\/[^/]+\/[a-z_]+\.traineddata(?:\.gz)?$/i.test(
-          requestUrl.pathname,
-        )));
-  if (!isNavigation && !isStaticAsset && !isModelAsset) return;
+  if (!isNavigation && !isStaticAsset) return;
 
   event.respondWith(
     (async () => {
@@ -168,7 +172,7 @@ self.addEventListener('fetch', (event) => {
 
       try {
         const response = await fetch(event.request);
-        if (response.ok && (isNavigation || isStaticAsset || isModelAsset)) {
+        if (response.ok && (isNavigation || isStaticAsset)) {
           // A failed cache write (storage quota, low-end phone) must never fail or delay the
           // request itself: store a copy in the background and ignore any error.
           const copy = response.clone();

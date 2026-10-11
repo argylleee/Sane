@@ -75,11 +75,11 @@ Every layer can fail without blocking a verdict:
 
 ### Where models come from
 
-| Component   | Model / library                                         | Size (first visit) | Loaded from                                                         |
-| ----------- | ------------------------------------------------------- | ------------------ | ------------------------------------------------------------------- |
-| Embeddings  | `Xenova/multilingual-e5-small` int8 via Transformers.js | about 120 MB       | Same origin (`public/models/`), Hugging Face as fallback            |
-| OCR         | Tesseract.js with `eng` + `fil` language data           | under 20 MB        | Worker and WASM from same origin; language data cached on first use |
-| Explanation | `Qwen2.5-0.5B-Instruct` q4f16 or q4f32 via WebLLM       | about 276 MB       | Hugging Face (MLC builds), on request only                          |
+| Component   | Model / library                                         | Size (first visit) | Loaded from                                                              |
+| ----------- | ------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------ |
+| Embeddings  | `Xenova/multilingual-e5-small` int8 via Transformers.js | about 120 MB       | Same origin (`public/models/`), Hugging Face as fallback                 |
+| OCR         | Tesseract.js with `eng` + `fil` language data           | under 20 MB        | Worker, WASM and language data all from same origin; cached on first use |
+| Explanation | `Qwen2.5-0.5B-Instruct` q4f16 or q4f32 via WebLLM       | about 276 MB       | Hugging Face (MLC builds), on request only                               |
 
 All of it is cached by the browser, so later checks make no network requests.
 

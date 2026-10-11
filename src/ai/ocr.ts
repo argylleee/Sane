@@ -18,11 +18,13 @@ function getWorker(): Promise<TesseractWorker> {
   workerPromise ??= import('tesseract.js')
     .then(async ({ createWorker }) => {
       // Worker and WASM core come from our own origin (see vite.config.ts), so OCR keeps working
-      // offline. Language data is downloaded once and cached by Tesseract and the service worker.
+      // offline. The English and Filipino language data are ours too (see vite.config.ts), so reading
+      // a screenshot never contacts a public CDN. Tesseract and the service worker cache them.
       const base = new URL('tesseract/', document.baseURI).href;
       const worker = (await createWorker(['eng', 'fil'], 1, {
         workerPath: `${base}worker.min.js`,
         corePath: base,
+        langPath: `${base}lang`,
         workerBlobURL: false,
       })) as TesseractWorker;
       // PSM 4: a single column of text with lines of different sizes, which suits chat bubbles.
