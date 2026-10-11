@@ -326,13 +326,13 @@ export function App() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const [isOnline, setIsOnline] = useState(() => navigator.onLine);
-  const [isInstalled, setIsInstalled] = useState(
+  // True only when Sane is open as the installed app (no browser bar).
+  const [isInstalled] = useState(
     () =>
       window.matchMedia('(display-mode: standalone)').matches ||
       (navigator as Navigator & { standalone?: boolean }).standalone === true,
   );
   const [showInstallHelp, setShowInstallHelp] = useState(false);
-  const [showInstallPending, setShowInstallPending] = useState(false);
   const installPrompt = useRef<InstallPromptEvent | null>(null);
   const ocrRequestId = useRef(0);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -443,9 +443,10 @@ export function App() {
       installPrompt.current = event as InstallPromptEvent;
       setShowInstallHelp(false);
     };
+    // Android can report "installed" while the Play Store still holds the install, so the button and
+    // its hint stay in the browser; only the installed app itself hides them.
     const onInstalled = () => {
       installPrompt.current = null;
-      setIsInstalled(true);
     };
     const onConnectionChange = () => setIsOnline(navigator.onLine);
     window.addEventListener('beforeinstallprompt', onInstallPrompt);
@@ -642,10 +643,6 @@ export function App() {
     await prompt.prompt();
     const { outcome } = await prompt.userChoice;
     if (outcome !== 'accepted') setShowInstallHelp(true);
-    // Android finishes the install through the Play Store, which can hold it silently in its queue,
-    // so keep the button and a hint until Chrome's "appinstalled" event confirms it really finished.
-    else if (/Android/i.test(navigator.userAgent)) setShowInstallPending(true);
-    else setIsInstalled(true);
   }
 
   function startAnotherCheck() {
@@ -1338,8 +1335,8 @@ export function App() {
                         : copy.installManual}
                   </p>
                 )}
-                {showInstallPending && !showInstallHelp && !isInstalled && (
-                  <p className="text-xs text-secondary text-center max-w-[45ch]" role="status">
+                {!isInstalled && (
+                  <p className="text-xs text-secondary text-center max-w-[45ch]">
                     {copy.installPending}
                   </p>
                 )}
