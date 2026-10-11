@@ -42,6 +42,7 @@
 
   /* Semantic colors adapted to blend with the Sage & Cream palette */
   --color-high: #9a3939;
+  --color-on-high: #ffffff;
   --color-high-surface: rgba(154, 57, 57, 0.12);
   --color-caution: #775400;
   --color-caution-surface: rgba(119, 84, 0, 0.12);
@@ -69,6 +70,7 @@
   --color-border: rgba(247, 245, 238, 0.1);
 
   --color-high: #da8484;
+  --color-on-high: #281313;
   --color-high-surface: rgba(204, 84, 84, 0.15);
   --color-caution: #d4a01c;
   --color-caution-surface: rgba(212, 160, 28, 0.15);
@@ -327,10 +329,22 @@ button,
 }
 
 button.bg-primary,
-.bg-primary[role='button'] {
+.bg-primary[role='button'],
+button[aria-current='page'],
+button[aria-pressed='true'] {
   --clay-face: var(--color-primary);
   --clay-glint: rgba(255, 255, 255, 0.3);
   color: var(--color-on-primary);
+}
+
+button.action-destructive {
+  border: 1px solid var(--color-high);
+  color: var(--color-high);
+}
+button.action-destructive.is-confirming {
+  --clay-face: var(--color-high);
+  --clay-glint: transparent;
+  color: var(--color-on-high);
 }
 
 button.rounded-full {
@@ -342,6 +356,35 @@ button:focus-visible,
 summary:focus-visible {
   outline: 3px solid var(--color-text);
   outline-offset: 4px;
+}
+
+a:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--color-text);
+  outline-offset: 4px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 1rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-weight: 700;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: none;
+}
+/* Page focus announces the destination without adding a second tab stop. */
+h1[tabindex='-1']:focus,
+#page-title:focus,
+#main-content:focus {
+  outline: none;
 }
 
 button[aria-current='page'] {
@@ -408,7 +451,7 @@ input.clay-switch:focus-visible {
   transition: box-shadow 220ms ease;
 }
 
-nav[aria-label='Main navigation'] {
+nav.clay-navigation {
   border: 0;
   background: var(--color-surface);
   gap: 0.375rem;
@@ -461,6 +504,10 @@ button[aria-disabled='true'],
 }
 
 /* Brand links retain the logo silhouette rather than enclosing it in a tile. */
+[data-theme='dark'] .brand-action img {
+  filter: brightness(1.8);
+}
+
 button.brand-action {
   background: transparent;
   box-shadow: none !important;
@@ -880,6 +927,9 @@ button.model-toast-close {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   .mascot-idle,
   .mascot-lid::before,
   .mascot-lid::after,
@@ -933,11 +983,17 @@ html[data-contrast='high'][data-theme='light'] {
   --color-secondary: #1f1f1f;
   --color-border: rgba(0, 0, 0, 0.6);
   --color-high: #8a0000;
+  --color-on-high: #ffffff;
   --color-high-surface: #ffe3e3;
   --color-caution: #5c3d00;
   --color-caution-surface: #fff1c2;
   --color-good: #004d2b;
   --color-good-surface: #d8f5e5;
+  --shadow-clay-light: rgba(255, 255, 255, 0.8);
+  --shadow-clay-dark: rgba(0, 0, 0, 0.16);
+  --shadow-clay-inset-light: rgba(255, 255, 255, 0.1);
+  --shadow-clay-hover-light: rgba(255, 255, 255, 0.9);
+  --shadow-clay-hover-dark: rgba(0, 0, 0, 0.23);
 }
 
 html[data-contrast='high'][data-theme='dark'] {
@@ -952,20 +1008,60 @@ html[data-contrast='high'][data-theme='dark'] {
   --color-secondary: #e6e6e6;
   --color-border: rgba(255, 255, 255, 0.7);
   --color-high: #ff8a8a;
+  --color-on-high: #281313;
   --color-high-surface: #3d0000;
   --color-caution: #ffd45c;
   --color-caution-surface: #3d2c00;
   --color-good: #7ee2b0;
   --color-good-surface: #00331c;
+  --shadow-clay-light: rgba(255, 255, 255, 0.1);
+  --shadow-clay-dark: rgba(0, 0, 0, 0.8);
+  --shadow-clay-inset-light: rgba(255, 255, 255, 0.04);
+  --shadow-clay-hover-light: rgba(255, 255, 255, 0.16);
+  --shadow-clay-hover-dark: rgba(0, 0, 0, 0.9);
 }
 
-html[data-contrast='high'] .clay-panel {
-  border-color: var(--color-border);
-  border-width: 2px;
-  box-shadow: none;
+html[data-contrast='high'] .clay-panel,
+html[data-contrast='high'] .clay-inset,
+html[data-contrast='high'] button:not(.brand-action, .accordion-trigger),
+html[data-contrast='high'] nav {
+  border: 2px solid var(--color-border);
+}
+html[data-contrast='high'] button {
+  --clay-glint: transparent;
+}
+html[data-contrast='high'] button[aria-current='page'],
+html[data-contrast='high'] button[aria-pressed='true'] {
+  border-color: var(--color-text);
+}
+html[data-contrast='high'] button:disabled,
+html[data-contrast='high'] button[aria-disabled='true'] {
+  opacity: 1;
+  border-style: dashed;
 }
 
 html[data-contrast='high'] input.clay-switch:not(:focus-visible) {
   outline: 2px solid var(--color-border);
   outline-offset: 0;
+}
+
+/* System high contrast keeps native control visibility. */
+@media (forced-colors: active) {
+  button,
+  .clay-panel,
+  .clay-inset,
+  input.clay-switch {
+    border: 2px solid ButtonText;
+    background-image: none;
+  }
+  button[aria-current='page'],
+  button[aria-pressed='true'] {
+    border-color: Highlight;
+  }
+  input.clay-switch {
+    appearance: auto;
+  }
+  input.clay-switch::before {
+    display: none;
+  }
 }
