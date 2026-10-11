@@ -28,9 +28,7 @@ export function WhyCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
       <p className="text-sm text-secondary leading-relaxed">{text.whyIntro}</p>
 
       <div className="space-y-2">
-        <h4 className="text-xs font-bold uppercase tracking-widest text-secondary">
-          {text.whyCode}
-        </h4>
+        <h4 className="text-sm text-secondary">{text.whyCode}</h4>
         {why.flags.length === 0 ? (
           <p className="text-sm text-text/80">{text.whyNoFlags}</p>
         ) : (
@@ -54,9 +52,7 @@ export function WhyCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
       </div>
 
       <div className="space-y-2">
-        <h4 className="text-xs font-bold uppercase tracking-widest text-secondary">
-          {text.whyMeaning}
-        </h4>
+        <h4 className="text-sm text-secondary">{text.whyMeaning}</h4>
         {why.meaning.length > 0 ? (
           <ul className="space-y-2">
             {why.meaning.map(({ archetypeId, percent }) => (
@@ -79,7 +75,9 @@ export function WhyCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
         )}
       </div>
 
-      <p className="text-xs text-secondary">{why.usedWriter ? text.whyWriter : text.whyNoWriter}</p>
+      <p className="text-xs italic text-secondary">
+        {why.usedWriter ? text.whyWriter : text.whyNoWriter}
+      </p>
     </section>
   );
 }
@@ -124,7 +122,7 @@ export function DetailsCard({ verdict, lang }: { verdict: Verdict; lang: Lang })
           </li>
         ))}
       </ul>
-      <p className="text-xs text-secondary">{text.detailNote}</p>
+      <p className="text-xs italic text-secondary">{text.detailNote}</p>
     </section>
   );
 }
@@ -175,7 +173,7 @@ export function HelpCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
       <p className="text-sm font-medium text-text">{text.helpNever}</p>
       {groups.map(({ title, group }) => (
         <div key={group} className="space-y-2">
-          <h4 className="text-xs font-bold uppercase tracking-widest text-secondary">{title}</h4>
+          <h4 className="text-sm text-secondary">{title}</h4>
           <ul className="space-y-3">
             {contacts
               .filter((contact) => contact.group === group)
@@ -184,7 +182,7 @@ export function HelpCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
                   key={contact.id}
                   className="space-y-2 rounded-lg border border-border bg-surface p-3 text-sm"
                 >
-                  <p className="font-bold text-text">{contact.name}</p>
+                  <p className="display-text text-text">{contact.name}</p>
                   <p className="leading-relaxed text-text/80">{contact.when[lang]}</p>
                   <div className="flex flex-wrap gap-2">
                     {contact.tel && (
@@ -223,7 +221,7 @@ export function HelpCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
           </ul>
         </div>
       ))}
-      <p className="text-xs text-secondary">{text.helpChecked(CONTACTS_CHECKED)}</p>
+      <p className="text-xs italic text-secondary">{text.helpChecked(CONTACTS_CHECKED)}</p>
     </section>
   );
 }
@@ -249,7 +247,7 @@ export function PrivacyProofCard({ proof, lang }: { proof: RequestSummary | null
           ))}
         </ul>
       )}
-      <p className="text-xs text-secondary">{text.proofNote}</p>
+      <p className="text-xs italic text-secondary">{text.proofNote}</p>
     </section>
   );
 }

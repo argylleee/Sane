@@ -115,8 +115,6 @@ type Copy = {
   rulesTitle: string;
   noSignals: string;
   signalNote: string;
-  notAGuaranteeTitle: string;
-  notAGuarantee: string;
   learnTitle: string;
   learnDescription: string;
   learnLanguages: string;
@@ -246,9 +244,6 @@ export const COPY: Record<Lang, Copy> = {
     rulesTitle: 'Observed message details',
     noSignals: 'No specific warning signs were identified in the available text.',
     signalNote: 'A single word or link does not prove that a message is a scam.',
-    notAGuaranteeTitle: 'Not a guarantee',
-    notAGuarantee:
-      'No obvious warning signs do not prove that the sender or request is legitimate. Verify independently.',
     learnTitle: 'How to use Sane',
     learnDescription: 'Follow these steps to check a message and understand what to do next.',
     learnLanguages: 'Works with messages in English, Filipino, or Taglish',
@@ -433,9 +428,6 @@ export const COPY: Record<Lang, Copy> = {
     rulesTitle: 'Mga nakitang detalye',
     noSignals: 'Walang tiyak na babala na nakita sa nababasang text.',
     signalNote: 'Hindi sapat ang iisang salita o link para sabihing scam ang mensahe.',
-    notAGuaranteeTitle: 'Hindi garantiya',
-    notAGuarantee:
-      'Hindi patunay na lehitimo ang sender kapag walang nakitang babala. Mag-verify sa ibang paraan.',
     learnTitle: 'Paano gamitin ang Sane',
     learnDescription:
       'Sundin ang mga hakbang para suriin ang mensahe at malaman ang susunod na gagawin.',
@@ -619,9 +611,6 @@ export const COPY: Record<Lang, Copy> = {
     rulesTitle: 'Mga napansing detalye',
     noSignals: 'Walang partikular na warning signs sa nababasang text.',
     signalNote: 'Hindi proof ng scam ang isang word o link lang.',
-    notAGuaranteeTitle: 'Hindi guarantee',
-    notAGuarantee:
-      'Hindi ibig sabihin na legit ang sender kapag walang nakitang warning signs. Mag-verify nang hiwalay.',
     learnTitle: 'Paano gamitin ang Sane',
     learnDescription:
       'Sundin ang steps para i-check ang message at malaman ang susunod na gagawin.',

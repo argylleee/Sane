@@ -86,6 +86,13 @@ type InstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 };
 
+// Chrome can fire this before React mounts; catch it at module load so the Install button can use it.
+let earlyInstallPrompt: InstallPromptEvent | null = null;
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  earlyInstallPrompt = event as InstallPromptEvent;
+});
+
 function StatusMark({
   level,
   size = 24,
@@ -612,15 +619,19 @@ export function App() {
   }
 
   async function promptInstall() {
-    const prompt = installPrompt.current;
+    const prompt = installPrompt.current ?? earlyInstallPrompt;
     if (!prompt) {
       // No browser prompt (iOS, already dismissed, or not offered yet): explain the manual route.
       setShowInstallHelp(true);
       return;
     }
-    await prompt.prompt();
-    await prompt.userChoice;
+    // A prompt can be shown only once; clear it before awaiting so a second tap shows the help.
     installPrompt.current = null;
+    earlyInstallPrompt = null;
+    await prompt.prompt();
+    const { outcome } = await prompt.userChoice;
+    if (outcome === 'accepted') setIsInstalled(true);
+    else setShowInstallHelp(true);
   }
 
   function startAnotherCheck() {
@@ -1004,7 +1015,9 @@ export function App() {
                       </p>
                     )}
                   </div>
-                  <p className="text-xs text-secondary text-center mt-6">{copy.pasteOnlyNotice}</p>
+                  <p className="text-xs text-secondary italic text-center mt-6">
+                    {copy.pasteOnlyNotice}
+                  </p>
                 </form>
               </div>
 
@@ -1022,9 +1035,7 @@ export function App() {
                   )}
                 </div>
                 <section className="px-2">
-                  <h2 className="text-sm font-bold uppercase tracking-widest text-secondary mb-4">
-                    {copy.howTitle}
-                  </h2>
+                  <h2 className="text-base font-bold text-text mb-4">{copy.howTitle}</h2>
                   <ol className="space-y-4">
                     {copy.howSteps.map((step, i) => (
                       <li key={step} className="flex gap-4 text-sm text-text leading-relaxed">
@@ -1121,35 +1132,38 @@ export function App() {
                     </div>
                   )}
 
-                  {/* Evidence / Signals */}
-                  <div className="clay-panel rounded-2xl p-6 space-y-4">
-                    <h3 className="font-bold text-text">{copy.rulesTitle}</h3>
-                    {shown.signals.length > 0 ? (
-                      <ul className="space-y-3">
-                        {shown.signals.map((signal, index) => (
-                          <li
-                            key={`${signal.id}-${index}`}
-                            className="flex gap-3 text-sm text-text leading-relaxed bg-surface border border-border p-3 rounded-lg"
-                          >
-                            <WarningCircle size={18} className="shrink-0 text-caution mt-0.5" />
-                            {signal.label}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-sm text-secondary bg-neutral p-4 rounded-lg">
-                        {copy.noSignals}
-                      </p>
-                    )}
-                    <p className="text-xs text-secondary mt-2">{copy.signalNote}</p>
-                  </div>
+                  {/* Evidence / Signals. For "No obvious warning signs" with nothing found, the
+                      summary and the "Why this result" card already say so; skip the empty card. */}
+                  {(verdict.level !== 'probably_fine' || shown.signals.length > 0) && (
+                    <div className="clay-panel rounded-2xl p-6 space-y-4">
+                      <h3 className="font-bold text-text">{copy.rulesTitle}</h3>
+                      {shown.signals.length > 0 ? (
+                        <ul className="space-y-3">
+                          {shown.signals.map((signal, index) => (
+                            <li
+                              key={`${signal.id}-${index}`}
+                              className="flex gap-3 text-sm text-text leading-relaxed bg-surface border border-border p-3 rounded-lg"
+                            >
+                              <WarningCircle size={18} className="shrink-0 text-caution mt-0.5" />
+                              {signal.label}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-secondary bg-neutral p-4 rounded-lg">
+                          {copy.noSignals}
+                        </p>
+                      )}
+                      <p className="text-xs text-secondary italic mt-2">{copy.signalNote}</p>
+                    </div>
+                  )}
 
                   <DetailsCard verdict={shown} lang={lang} />
                   <ScamTypeCard verdict={shown} lang={lang} />
                   {verdict.level !== 'probably_fine' && <HelpCard verdict={shown} lang={lang} />}
                   {prefs.family ? (
                     <details className="clay-panel rounded-2xl p-4">
-                      <summary className="min-h-11 cursor-pointer py-2 font-bold text-text">
+                      <summary className="display-text min-h-11 cursor-pointer py-2 text-text">
                         {extra.moreDetails}
                       </summary>
                       <div className="space-y-6 pt-4">
@@ -1164,12 +1178,6 @@ export function App() {
                     </>
                   )}
 
-                  {verdict.level === 'probably_fine' && (
-                    <aside className="clay-panel bg-neutral/50 rounded-2xl p-6 space-y-2">
-                      <h3 className="font-bold text-text">{copy.notAGuaranteeTitle}</h3>
-                      <p className="text-sm text-secondary">{copy.notAGuarantee}</p>
-                    </aside>
-                  )}
                   <CheckNotice copy={copy} headingLevel={3} />
                   {resultIsImage && !resultMessage && (
                     <p
@@ -1193,14 +1201,12 @@ export function App() {
                         copy.imageOriginal
                       )}
                     </div>
-                    <p className="text-xs text-secondary">{copy.originalNote}</p>
+                    <p className="text-xs text-secondary italic">{copy.originalNote}</p>
                   </div>
 
                   {/* Tech stack transparency */}
                   <div className="clay-panel rounded-2xl p-6 space-y-3">
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-secondary">
-                      {copy.modelTitle}
-                    </h3>
+                    <h3 className="font-bold text-text">{copy.modelTitle}</h3>
                     <div className="text-sm text-text/80 space-y-2">
                       <p>
                         {verdict.usedModels.embeddings ||

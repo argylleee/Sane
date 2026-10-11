@@ -29,7 +29,7 @@ export function MobileNavigation({
         className="mx-auto flex w-full max-w-sm items-center justify-center gap-1 bg-highlight border border-border/80 p-1 rounded-full shadow-xs"
         aria-label={copy.mainNavigationLabel}
       >
-        {(['scan', 'learn', 'history'] as const).map((destination) => {
+        {(['learn', 'scan', 'history'] as const).map((destination) => {
           const isSelected =
             screen === destination || (destination === 'scan' && screen === 'result');
           const Icon = ICONS[destination];

@@ -76,7 +76,7 @@ export function HistoryScreen({
 
       <section className={PANEL}>
         <label className="flex min-h-11 cursor-pointer items-center justify-between gap-4">
-          <span className="font-bold text-text">{text.historyToggle}</span>
+          <span className="display-text text-lg text-text">{text.historyToggle}</span>
           <input
             type="checkbox"
             role="switch"

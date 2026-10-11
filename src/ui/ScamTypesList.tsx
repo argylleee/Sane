@@ -22,7 +22,7 @@ export function ScamTypesList({ lang }: { lang: Lang }) {
           if (!type) return null;
           return (
             <details key={id} className="clay-panel group rounded-2xl p-4">
-              <summary className="min-h-11 cursor-pointer list-none py-2 font-bold text-text outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              <summary className="display-text min-h-11 cursor-pointer list-none py-2 text-text outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 {name[lang]}
               </summary>
               <div className="space-y-3 pt-2 text-sm leading-relaxed text-text/90">

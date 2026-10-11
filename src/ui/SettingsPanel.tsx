@@ -21,7 +21,7 @@ export function SettingsPanel({
       </h2>
 
       <fieldset className="space-y-2">
-        <legend className="mb-2 text-sm font-bold text-text">{text.settingsLanguage}</legend>
+        <legend className="display-text mb-2 text-base text-text">{text.settingsLanguage}</legend>
         <div className="grid grid-cols-3 gap-2">
           {LANGS.map((lang) => (
             <button
@@ -45,7 +45,7 @@ export function SettingsPanel({
       ).map(([key, title, hint]) => (
         <label key={key} className="flex min-h-11 cursor-pointer items-start justify-between gap-4">
           <span className="space-y-1">
-            <span className="block font-bold text-text">{title}</span>
+            <span className="display-text block text-base text-text">{title}</span>
             <span className="block text-sm text-secondary">{hint}</span>
           </span>
           <input
