@@ -5,6 +5,7 @@ import { matchWithEvidence, type MatchWithEvidence } from '../ai/match';
 import { explain, localizeSignals } from '../explain/templates';
 import { runRules } from '../rules';
 import { findAsks, givesSafetyAdvice, goesInPerson } from '../rules/ask';
+import { findDetails } from '../rules/details';
 import { hasUnverifiedUrl, linkTrust } from '../rules/urls';
 import { score } from '../score/score';
 import { normalize } from './normalize';
@@ -77,6 +78,7 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions): Promis
       lang: opts.lang,
       explanation: explain(level, opts.lang, signals),
       usedModels: { ocr, embeddings: evidence !== null, llm: false },
+      findings: findDetails(text),
     };
     return opts.useLLM ? await addLlmExplanation(verdict, text) : verdict;
   } catch {

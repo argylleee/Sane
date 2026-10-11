@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import {
   extractText,
@@ -16,9 +16,21 @@ import {
 } from '../ai';
 import type { EmbeddingsStatus, LlmStatus, Tier } from '../ai';
 import { addLlmExplanation, analyze } from '../pipeline/analyze';
+import { explain, localizeSignals } from '../explain/templates';
+import { browserStorage, createHistoryStore, maskPreview } from '../history/store';
 import { normalize } from '../pipeline/normalize';
+import { loadPrefs, savePrefs } from '../prefs';
+import type { Prefs } from '../prefs';
+import { watchRequests } from '../privacy/networkProof';
+import type { RequestSummary } from '../privacy/networkProof';
 import type { Level, Signal, Verdict } from '../types';
 import { copyFor } from './copy';
+import { extraCopyFor } from './copyExtra';
+import { HistoryScreen } from './HistoryScreen';
+import { ResultActions, WrongVerdictCard } from './ResultActions';
+import { DetailsCard, HelpCard, PrivacyProofCard, ScamTypeCard, WhyCard } from './ResultInsights';
+import { ScamTypesList } from './ScamTypesList';
+import { SettingsPanel } from './SettingsPanel';
 import { Button } from '@heroui/react';
 import { ModelDownloadProgress } from './ModelDownloadProgress';
 import { ModelReadyNotification } from './ModelReadyNotification';
@@ -42,13 +54,14 @@ import {
   Download,
   RotateCcw,
   Languages,
+  History as HistoryIcon,
 } from 'lucide-react';
 
 const MAX_MESSAGE_LENGTH = 2_000;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 const SECONDARY_ACTION_CLASS =
   'w-full flex items-center justify-center gap-2 py-3.5 bg-surface transition-all duration-150 rounded-xl font-bold text-sm text-text cursor-pointer';
-type Screen = 'welcome' | 'scan' | 'result' | 'learn';
+type Screen = 'welcome' | 'scan' | 'result' | 'learn' | 'history';
 type Theme = 'system' | 'light' | 'dark';
 
 type OcrState = 'idle' | 'loading' | 'ready' | 'error';
@@ -239,16 +252,18 @@ function CheckNotice({
 function MainNavigation({
   screen,
   onNavigate,
+  labels,
 }: {
   screen: Screen;
-  onNavigate: (screen: 'scan' | 'learn') => void;
+  onNavigate: (screen: 'scan' | 'learn' | 'history') => void;
+  labels: Record<'scan' | 'learn' | 'history', string>;
 }) {
   return (
     <nav
       className="inline-flex items-center bg-highlight border border-border/80 backdrop-blur-xl p-1 rounded-full shadow-xs"
       aria-label="Main navigation"
     >
-      {(['learn', 'scan'] as const).map((navScreen) => {
+      {(['learn', 'scan', 'history'] as const).map((navScreen) => {
         const isSelected = screen === navScreen || (navScreen === 'scan' && screen === 'result');
         return (
           <button
@@ -264,10 +279,12 @@ function MainNavigation({
           >
             {navScreen === 'scan' ? (
               <Scan size={18} strokeWidth={isSelected ? 2.5 : 2} />
+            ) : navScreen === 'history' ? (
+              <HistoryIcon size={18} strokeWidth={isSelected ? 2.5 : 2} />
             ) : (
               <Info size={18} strokeWidth={isSelected ? 2.5 : 2} />
             )}
-            <span className="capitalize">{navScreen}</span>
+            <span>{labels[navScreen]}</span>
           </button>
         );
       })}
@@ -280,6 +297,9 @@ export function App() {
   const [mascotAttention, setMascotAttention] = useState(false);
   const [screen, setScreen] = useState<Screen>('welcome');
   const [theme, setTheme] = useState<Theme>('system');
+  const [prefs, setPrefs] = useState<Prefs>(() => loadPrefs(browserStorage()));
+  const historyStore = useMemo(() => createHistoryStore(browserStorage()), []);
+  const [proof, setProof] = useState<RequestSummary | null>(null);
 
   const [message, setMessage] = useState('');
   const [image, setImage] = useState<File | null>(null);
@@ -311,7 +331,23 @@ export function App() {
     if (llmTier === null || llmTier === 'C') return;
     void loadLlm(llmTier).catch(() => undefined);
   };
-  const copy = copyFor('en');
+  const lang = prefs.lang;
+  const copy = copyFor(lang);
+  const extra = extraCopyFor(lang);
+  // The result is re-written in the chosen language, so changing language updates it in place.
+  const shown = useMemo<Verdict | null>(
+    () =>
+      verdict && {
+        ...verdict,
+        lang,
+        signals: localizeSignals(verdict.signals, lang),
+        explanation: {
+          ...verdict.explanation,
+          ...explain(verdict.level, lang, verdict.signals),
+        },
+      },
+    [verdict, lang],
+  );
 
   const overLimit = message.length > MAX_MESSAGE_LENGTH;
   // Optional explanation model: downloaded only on request, then loads from cache.
@@ -479,8 +515,16 @@ export function App() {
   }, [clearScreenshot, selectScreenshot]);
 
   useEffect(() => {
-    document.documentElement.lang = 'en';
-  }, []);
+    window.scrollTo(0, 0);
+  }, [screen]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.lang = lang === 'fil' ? 'fil' : 'en';
+    root.dataset.family = String(prefs.family);
+    root.dataset.contrast = prefs.highContrast ? 'high' : 'normal';
+    savePrefs(browserStorage(), prefs);
+  }, [lang, prefs]);
 
   useEffect(() => {
     const colorScheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -526,16 +570,28 @@ export function App() {
 
     setFeedback(null);
     setIsAnalyzing(true);
+    const stopWatching = watchRequests();
     const sourceImage = image && !message.trim() ? image : null;
     const sourceMessage = message;
     const modelStateAtScan = getEmbeddingsStatus().state;
 
     try {
       const result = await analyze(sourceImage ? { image: sourceImage } : { text: sourceMessage }, {
-        lang: 'en',
+        lang,
         useLLM: false,
       });
+      setProof(stopWatching());
       setVerdict(result);
+      // Saved only when the reader turned history on; the store keeps a masked preview.
+      historyStore.add({
+        level: result.level,
+        score: result.score,
+        lang,
+        source: sourceImage ? 'image' : 'text',
+        preview: sourceImage ? '' : maskPreview(sourceMessage),
+        signalIds: result.signals.filter(({ weight }) => weight > 0).map(({ id }) => id),
+        archetypeId: result.archetypeId,
+      });
       if (getLlmStatus().state === 'ready' && sourceMessage.trim()) {
         // Show the verdict now; the on-device explanation fills in when it is written.
         setLlmWriting(true);
@@ -571,6 +627,7 @@ export function App() {
     setMessage('');
     clearScreenshot();
     setVerdict(null);
+    setProof(null);
     setResultMessage('');
     setResultIsImage(false);
     setResultUsedOcr(false);
@@ -614,7 +671,15 @@ export function App() {
           />
         </button>
         <div className="flex-1 flex justify-center hidden sm:flex">
-          <MainNavigation screen={screen} onNavigate={setScreen} />
+          <MainNavigation
+            screen={screen}
+            onNavigate={setScreen}
+            labels={{
+              scan: copy.navigationScan,
+              learn: copy.navigationLearn,
+              history: extra.navigationHistory,
+            }}
+          />
         </div>
         <div className="flex items-center gap-2 ml-auto">
           <ThemeToggle theme={theme} onChange={setTheme} copy={copy} />
@@ -978,7 +1043,7 @@ export function App() {
             </motion.div>
           )}
 
-          {screen === 'result' && verdict && (
+          {screen === 'result' && verdict && shown && (
             <motion.div
               key="result"
               initial={{ opacity: 0, y: 20 }}
@@ -1030,9 +1095,9 @@ export function App() {
                         {copy.assessment[verdict.level].nextStep}
                       </p>
                       {(verdict.level === 'likely_scam' || verdict.level === 'suspicious') &&
-                        verdict.explanation.steps.length > 0 && (
+                        shown.explanation.steps.length > 0 && (
                           <ul className="mt-3 space-y-2 list-disc pl-5 text-sm text-text/90 leading-relaxed">
-                            {verdict.explanation.steps.map((step) => (
+                            {shown.explanation.steps.map((step) => (
                               <li key={step}>{step}</li>
                             ))}
                           </ul>
@@ -1059,9 +1124,9 @@ export function App() {
                   {/* Evidence / Signals */}
                   <div className="clay-panel rounded-2xl p-6 space-y-4">
                     <h3 className="font-bold text-text">{copy.rulesTitle}</h3>
-                    {verdict.signals.length > 0 ? (
+                    {shown.signals.length > 0 ? (
                       <ul className="space-y-3">
-                        {verdict.signals.map((signal, index) => (
+                        {shown.signals.map((signal, index) => (
                           <li
                             key={`${signal.id}-${index}`}
                             className="flex gap-3 text-sm text-text leading-relaxed bg-surface border border-border p-3 rounded-lg"
@@ -1078,6 +1143,26 @@ export function App() {
                     )}
                     <p className="text-xs text-secondary mt-2">{copy.signalNote}</p>
                   </div>
+
+                  <DetailsCard verdict={shown} lang={lang} />
+                  <ScamTypeCard verdict={shown} lang={lang} />
+                  {verdict.level !== 'probably_fine' && <HelpCard verdict={shown} lang={lang} />}
+                  {prefs.family ? (
+                    <details className="clay-panel rounded-2xl p-4">
+                      <summary className="min-h-11 cursor-pointer py-2 font-bold text-text">
+                        {extra.moreDetails}
+                      </summary>
+                      <div className="space-y-6 pt-4">
+                        <WhyCard verdict={shown} lang={lang} />
+                        <PrivacyProofCard proof={proof} lang={lang} />
+                      </div>
+                    </details>
+                  ) : (
+                    <>
+                      <WhyCard verdict={shown} lang={lang} />
+                      <PrivacyProofCard proof={proof} lang={lang} />
+                    </>
+                  )}
 
                   {verdict.level === 'probably_fine' && (
                     <aside className="clay-panel bg-neutral/50 rounded-2xl p-6 space-y-2">
@@ -1146,6 +1231,14 @@ export function App() {
                     </div>
                   </div>
 
+                  <ResultActions verdict={shown} message={resultMessage} lang={lang} />
+                  <WrongVerdictCard
+                    verdict={shown}
+                    message={resultMessage}
+                    lang={lang}
+                    store={historyStore}
+                  />
+
                   <Button
                     variant="primary"
                     size="lg"
@@ -1201,6 +1294,10 @@ export function App() {
                 ))}
               </div>
 
+              <ScamTypesList lang={lang} />
+
+              <SettingsPanel prefs={prefs} onChange={setPrefs} />
+
               <CheckNotice copy={copy} />
 
               <div className="flex flex-col items-center gap-3 pt-8">
@@ -1236,9 +1333,25 @@ export function App() {
               </div>
             </motion.div>
           )}
+
+          {screen === 'history' && (
+            <motion.div
+              key="history"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+            >
+              <HistoryScreen store={historyStore} lang={lang} />
+            </motion.div>
+          )}
         </AnimatePresence>
       </main>
-      <MobileNavigation screen={screen} onNavigate={setScreen} copy={copy} />
+      <MobileNavigation
+        screen={screen}
+        onNavigate={setScreen}
+        copy={copy}
+        historyLabel={extra.navigationHistory}
+      />
       <footer className="site-footer w-full mt-auto">
         <div className="footer-inner mx-auto max-w-6xl px-4 sm:px-6 md:px-8 text-secondary">
           <div className="footer-brand">

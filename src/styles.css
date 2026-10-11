@@ -837,3 +837,51 @@ button.model-toast-close {
     display: none !important;
   }
 }
+
+/* Family mode: larger text everywhere, because every size is in rem. */
+html[data-family='true'] {
+  font-size: 118.75%;
+}
+
+/* High contrast: near-black on white (or the reverse) with strong borders and solid status colors. */
+html[data-contrast='high'][data-theme='light'] {
+  --color-background: #ffffff;
+  --color-surface: #f1f1f1;
+  --color-highlight: #ffffff;
+  --color-primary: #0b5c3d;
+  --color-primary-tonal: rgba(11, 92, 61, 0.16);
+  --color-on-primary: #ffffff;
+  --color-text: #000000;
+  --color-secondary: #1f1f1f;
+  --color-border: rgba(0, 0, 0, 0.6);
+  --color-high: #8a0000;
+  --color-high-surface: #ffe3e3;
+  --color-caution: #5c3d00;
+  --color-caution-surface: #fff1c2;
+  --color-good: #004d2b;
+  --color-good-surface: #d8f5e5;
+}
+
+html[data-contrast='high'][data-theme='dark'] {
+  --color-background: #000000;
+  --color-surface: #141414;
+  --color-highlight: #1f1f1f;
+  --color-primary: #7ee2b0;
+  --color-primary-tonal: rgba(126, 226, 176, 0.2);
+  --color-on-primary: #000000;
+  --color-text: #ffffff;
+  --color-secondary: #e6e6e6;
+  --color-border: rgba(255, 255, 255, 0.7);
+  --color-high: #ff8a8a;
+  --color-high-surface: #3d0000;
+  --color-caution: #ffd45c;
+  --color-caution-surface: #3d2c00;
+  --color-good: #7ee2b0;
+  --color-good-surface: #00331c;
+}
+
+html[data-contrast='high'] .clay-panel {
+  border-color: var(--color-border);
+  border-width: 2px;
+  box-shadow: none;
+}

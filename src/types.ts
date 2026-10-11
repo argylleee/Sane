@@ -8,6 +8,19 @@ export type Signal = { id: string; label: string; weight: number; span?: [number
 
 export type Match = { archetypeId: string; similarity: number };
 
+/**
+ * Facts code finds in the message that are shown to the reader as details. They never change the
+ * level: the scoring thresholds were measured without them (see src/rules/details.ts).
+ */
+export type Finding = {
+  kind: 'phone_ph' | 'phone_foreign' | 'payment_account';
+  value: string;
+  /** Wallet or bank named next to a payment account, such as "GCash". */
+  channel?: string;
+  /** The message tells the reader to send money to this number or account. */
+  askedToPay: boolean;
+};
+
 export type Verdict = {
   level: Level;
   score: number; // 0..100
@@ -17,6 +30,8 @@ export type Verdict = {
   lang: Lang;
   explanation: { headline: string; steps: string[]; extra?: string };
   usedModels: { ocr: boolean; embeddings: boolean; llm: boolean };
+  /** Numbers and payment accounts found in the message. Informational only. */
+  findings?: Finding[];
 };
 
 export type AnalyzeInput = { text: string } | { image: File };

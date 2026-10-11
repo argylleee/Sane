@@ -1,15 +1,25 @@
-import { Info, Scan } from 'lucide-react';
+import { History, Info, Scan } from 'lucide-react';
 import type { copyFor } from './copy';
+
+type Destination = 'scan' | 'learn' | 'history';
+const ICONS = { scan: Scan, learn: Info, history: History } as const;
 
 export function MobileNavigation({
   screen,
   onNavigate,
   copy,
+  historyLabel,
 }: {
   screen: string;
-  onNavigate: (screen: 'scan' | 'learn') => void;
+  onNavigate: (screen: Destination) => void;
   copy: ReturnType<typeof copyFor>;
+  historyLabel: string;
 }) {
+  const labels: Record<Destination, string> = {
+    scan: copy.navigationScan,
+    learn: copy.navigationLearn,
+    history: historyLabel,
+  };
   return (
     <div
       className="sm:hidden fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background px-4 pt-2"
@@ -19,11 +29,10 @@ export function MobileNavigation({
         className="mx-auto flex w-full max-w-sm items-center justify-center gap-1 bg-highlight border border-border/80 p-1 rounded-full shadow-xs"
         aria-label={copy.mainNavigationLabel}
       >
-        {(['scan', 'learn'] as const).map((destination) => {
+        {(['scan', 'learn', 'history'] as const).map((destination) => {
           const isSelected =
             screen === destination || (destination === 'scan' && screen === 'result');
-          const Icon = destination === 'scan' ? Scan : Info;
-          const label = destination === 'scan' ? copy.navigationScan : copy.navigationLearn;
+          const Icon = ICONS[destination];
           return (
             <button
               key={destination}
@@ -33,7 +42,7 @@ export function MobileNavigation({
               className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-xs font-semibold transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary ${isSelected ? 'bg-primary-tonal text-primary' : 'text-secondary hover:text-text hover:bg-neutral/40'}`}
             >
               <Icon size={20} strokeWidth={isSelected ? 2.5 : 2} aria-hidden="true" />
-              <span>{label}</span>
+              <span>{labels[destination]}</span>
             </button>
           );
         })}
