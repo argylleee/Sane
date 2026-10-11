@@ -13,6 +13,8 @@ type GuideCopy = {
 };
 
 type Copy = {
+  skipToContent: string;
+  homeLabel: string;
   languageName: string;
   openNavigation: string;
   closeNavigation: string;
@@ -135,6 +137,8 @@ type Copy = {
 
 export const COPY: Record<Lang, Copy> = {
   en: {
+    skipToContent: 'Skip to content',
+    homeLabel: 'Sane home',
     languageName: 'English',
     openNavigation: 'Open navigation',
     closeNavigation: 'Close navigation',
@@ -166,9 +170,9 @@ export const COPY: Record<Lang, Copy> = {
     messageLabel: 'Original message',
     extractedMessageLabel: 'Extracted message',
     messagePlaceholder: 'Paste or type the complete message here.',
-    paste: 'Paste',
+    paste: 'Paste copied text',
     upload: 'Choose screenshot',
-    analyze: 'Analyze',
+    analyze: 'Check message',
     checking: 'Checking on this device…',
     characterCount: (count, max) => `${count.toLocaleString('en')} / ${max.toLocaleString('en')}`,
     overLimit: 'This message is over the 2,000 character limit. Shorten it to continue.',
@@ -185,7 +189,7 @@ export const COPY: Record<Lang, Copy> = {
     howTitle: 'How to check',
     howSteps: [
       'Paste a message or choose a screenshot.',
-      'Review the message, then select Analyze.',
+      'Review the message, then choose Check message.',
       'Read the possible signs and next step.',
     ],
     pasteOnlyNotice: 'Clipboard is read only when you choose Paste. Links are never opened.',
@@ -275,7 +279,7 @@ export const COPY: Record<Lang, Copy> = {
       },
       {
         title: 'Review the text',
-        body: 'Check the extracted screenshot text, edit it if needed, then select Analyze.',
+        body: 'Check the extracted screenshot text, edit it if needed, then choose Check message.',
       },
       {
         title: 'Read the result',
@@ -323,6 +327,8 @@ export const COPY: Record<Lang, Copy> = {
     },
   },
   fil: {
+    skipToContent: 'Pumunta sa nilalaman',
+    homeLabel: 'Sane unang pahina',
     languageName: 'Filipino',
     openNavigation: 'Buksan ang nabigasyon',
     closeNavigation: 'Isara ang nabigasyon',
@@ -519,6 +525,8 @@ export const COPY: Record<Lang, Copy> = {
     },
   },
   taglish: {
+    skipToContent: 'Pumunta sa content',
+    homeLabel: 'Sane home',
     languageName: 'Taglish',
     openNavigation: 'Buksan ang navigation',
     closeNavigation: 'Isara ang navigation',

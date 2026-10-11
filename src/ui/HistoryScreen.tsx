@@ -70,7 +70,9 @@ export function HistoryScreen({
   return (
     <div className="mx-auto w-full max-w-3xl space-y-8">
       <div className="space-y-3 text-center">
-        <h1 className="page-heading mx-auto">{text.historyTitle}</h1>
+        <h1 id="page-title" tabIndex={-1} className="page-heading mx-auto">
+          {text.historyTitle}
+        </h1>
         <p className="mx-auto max-w-[55ch] text-lg text-secondary">{text.historyDescription}</p>
       </div>
 
@@ -123,7 +125,7 @@ export function HistoryScreen({
                   )}
                   <button
                     type="button"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-secondary hover:text-high cursor-pointer"
+                    className="action-destructive inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-secondary hover:text-high cursor-pointer"
                     onClick={() => {
                       store.remove(entry.id);
                       refresh();
@@ -165,7 +167,7 @@ export function HistoryScreen({
                   </p>
                   <button
                     type="button"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-secondary hover:text-high cursor-pointer"
+                    className="action-destructive inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-secondary hover:text-high cursor-pointer"
                     onClick={() => {
                       store.removeNote(note.id);
                       refresh();
@@ -190,7 +192,7 @@ export function HistoryScreen({
 
       <button
         type="button"
-        className={`flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold cursor-pointer ${confirmAll ? 'border-high bg-high text-white' : 'border-high/40 text-high'}`}
+        className={`action-destructive flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border px-4 text-sm font-bold cursor-pointer ${confirmAll ? 'is-confirming' : ''}`}
         onClick={deleteAll}
       >
         <Trash2 size={18} aria-hidden="true" />

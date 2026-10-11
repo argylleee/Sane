@@ -268,15 +268,17 @@ function MainNavigation({
   screen,
   onNavigate,
   labels,
+  navigationLabel,
 }: {
   screen: Screen;
   onNavigate: (screen: 'scan' | 'learn' | 'history') => void;
   labels: Record<'scan' | 'learn' | 'history', string>;
+  navigationLabel: string;
 }) {
   return (
     <nav
-      className="inline-flex items-center bg-highlight border border-border/80 backdrop-blur-xl p-1 rounded-full shadow-xs"
-      aria-label="Main navigation"
+      className="clay-navigation inline-flex items-center bg-highlight border border-border/80 backdrop-blur-xl p-1 rounded-full shadow-xs"
+      aria-label={navigationLabel}
     >
       {(['learn', 'scan', 'history'] as const).map((navScreen) => {
         const isSelected = screen === navScreen || (navScreen === 'scan' && screen === 'result');
@@ -286,7 +288,7 @@ function MainNavigation({
             type="button"
             aria-current={isSelected ? 'page' : undefined}
             onClick={() => onNavigate(navScreen)}
-            className={`flex items-center justify-center gap-2 px-5 py-1.5 rounded-full text-sm font-semibold transition-all cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+            className={`flex items-center justify-center gap-2 px-3 md:px-5 py-1.5 rounded-full text-sm font-semibold transition-all cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary ${
               isSelected
                 ? 'bg-primary text-on-primary shadow-sm font-bold'
                 : 'text-secondary hover:text-text hover:bg-neutral/40'
@@ -311,6 +313,14 @@ export function App() {
   const reducedMotion = useReducedMotion();
   const [mascotAttention, setMascotAttention] = useState(false);
   const [screen, setScreen] = useState<Screen>('welcome');
+  const mainContent = useRef<HTMLElement>(null);
+  const focusedScreen = useRef<Screen>('welcome');
+  function focusPage() {
+    if (focusedScreen.current === screen) return;
+    focusedScreen.current = screen;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    mainContent.current?.querySelector<HTMLElement>('h1')?.focus({ preventScroll: true });
+  }
   const [theme, setTheme] = useState<Theme>('system');
   const [prefs, setPrefs] = useState<Prefs>(() => loadPrefs(browserStorage()));
   const historyStore = useMemo(() => createHistoryStore(browserStorage()), []);
@@ -547,7 +557,7 @@ export function App() {
   }, [clearScreenshot, selectScreenshot]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [screen]);
 
   useEffect(() => {
@@ -679,11 +689,14 @@ export function App() {
 
   return (
     <div
-      className={`min-h-[100dvh] flex flex-col selection:bg-primary selection:text-white ${screen === 'welcome' ? 'home-shell' : ''}`}
+      className={`min-h-[100dvh] flex flex-col selection:bg-primary selection:text-on-primary ${screen === 'welcome' ? 'home-shell' : ''}`}
     >
+      <a href="#main-content" className="skip-link">
+        {copy.skipToContent}
+      </a>
       <ModelReadyNotification state={embeddingStatus.state} copy={copy} />
       <header
-        className={`sticky top-0 z-50 flex h-16 items-center px-4 md:px-8 gap-4 bg-background/90 backdrop-blur-md border-b border-border transition-colors ${screen === 'result' ? 'bg-surface/90' : ''}`}
+        className={`sticky top-0 z-50 flex h-16 items-center px-4 md:px-8 gap-2 md:gap-4 bg-background/90 backdrop-blur-md border-b border-border transition-colors ${screen === 'result' ? 'bg-surface/90' : ''}`}
       >
         {screen === 'result' ? (
           <Button
@@ -700,7 +713,7 @@ export function App() {
         <button
           className="brand-action flex items-center shrink-0 hover:opacity-85 transition-opacity cursor-pointer"
           type="button"
-          aria-label="Sane home"
+          aria-label={copy.homeLabel}
           onClick={() => setScreen('welcome')}
         >
           <img
@@ -711,6 +724,7 @@ export function App() {
         </button>
         <div className="flex-1 flex justify-center hidden sm:flex">
           <MainNavigation
+            navigationLabel={copy.mainNavigationLabel}
             screen={screen}
             onNavigate={setScreen}
             labels={{
@@ -726,12 +740,16 @@ export function App() {
       </header>
 
       <main
-        className={`flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-16 flex flex-col relative overflow-hidden ${screen === 'welcome' ? 'home-main' : ''}`}
+        id="main-content"
+        ref={mainContent}
+        tabIndex={-1}
+        className={`flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-16 flex flex-col relative ${screen === 'welcome' ? 'home-main' : ''}`}
       >
         <AnimatePresence mode="wait">
           {screen === 'welcome' && (
             <motion.section
               key="welcome"
+              onAnimationComplete={focusPage}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
@@ -742,6 +760,7 @@ export function App() {
                 <div className="space-y-4">
                   <h1
                     id="welcome-title"
+                    tabIndex={-1}
                     className="home-headline text-text mx-auto lg:mx-0"
                     lang="fil"
                   >
@@ -781,14 +800,17 @@ export function App() {
           {screen === 'scan' && (
             <motion.div
               key="scan"
-              initial={{ opacity: 0, y: 20 }}
+              onAnimationComplete={focusPage}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
               className="grid lg:grid-cols-[1fr_360px] gap-12 lg:gap-24"
             >
               <div className="space-y-8">
                 <div className="space-y-3">
-                  <h1 className="page-heading">{copy.scanTitle}</h1>
+                  <h1 id="page-title" tabIndex={-1} className="page-heading">
+                    {copy.scanTitle}
+                  </h1>
                   <p className="text-lg text-secondary max-w-[45ch]">{copy.scanDescription}</p>
                 </div>
 
@@ -842,7 +864,7 @@ export function App() {
                           setMessage(event.currentTarget.value);
                           setFeedback(null);
                         }}
-                        className="w-full clay-inset p-5 pb-10 text-base text-text placeholder:text-secondary/60 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all resize-y min-h-[180px]"
+                        className="w-full clay-inset p-5 pb-10 text-base text-text placeholder:text-secondary focus:outline-none focus:ring-0 transition-all resize-y min-h-[180px]"
                       />
                       <div
                         id="message-count"
@@ -1005,7 +1027,7 @@ export function App() {
                     {isAnalyzing ? (
                       <>
                         <motion.div
-                          animate={{ rotate: 360 }}
+                          animate={reducedMotion ? undefined : { rotate: 360 }}
                           transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                         >
                           <MagnifyingGlass size={20} />
@@ -1092,13 +1114,16 @@ export function App() {
           {screen === 'result' && verdict && shown && (
             <motion.div
               key="result"
-              initial={{ opacity: 0, y: 20 }}
+              onAnimationComplete={focusPage}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
               className="max-w-4xl mx-auto w-full space-y-8"
             >
               <div className="text-center space-y-3 mb-8">
-                <h1 className="page-heading mx-auto">{copy.resultTitle}</h1>
+                <h1 id="page-title" tabIndex={-1} className="page-heading mx-auto">
+                  {copy.resultTitle}
+                </h1>
                 <p className="text-lg text-secondary">{copy.resultSubtitle}</p>
               </div>
 
@@ -1168,7 +1193,7 @@ export function App() {
                   )}
 
                   {/* Evidence / Signals. For "No obvious warning signs" with nothing found, the
-                      summary and the "Why this result" card already say so; skip the empty card. */}
+                    summary and the "Why this result" card already say so; skip the empty card. */}
                   {(verdict.level !== 'probably_fine' || redFlags.length > 0) && (
                     <div className="clay-panel rounded-2xl p-6 space-y-4">
                       <h3 className="font-bold text-text">{copy.rulesTitle}</h3>
@@ -1285,13 +1310,16 @@ export function App() {
           {screen === 'learn' && (
             <motion.div
               key="learn"
-              initial={{ opacity: 0, y: 20 }}
+              onAnimationComplete={focusPage}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
               className="max-w-3xl mx-auto w-full space-y-12"
             >
               <div className="text-center space-y-4 mb-12">
-                <h1 className="page-heading mx-auto">{copy.learnTitle}</h1>
+                <h1 id="page-title" tabIndex={-1} className="page-heading mx-auto">
+                  {copy.learnTitle}
+                </h1>
                 <p className="text-lg text-secondary max-w-[50ch] mx-auto">
                   {copy.learnDescription}
                 </p>
@@ -1382,9 +1410,10 @@ export function App() {
           {screen === 'history' && (
             <motion.div
               key="history"
-              initial={{ opacity: 0, y: 20 }}
+              onAnimationComplete={focusPage}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : 12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : -8 }}
             >
               <HistoryScreen store={historyStore} lang={lang} />
             </motion.div>
@@ -1404,7 +1433,7 @@ export function App() {
               type="button"
               onClick={() => setScreen('welcome')}
               className="brand-action flex items-center hover:opacity-85 transition-opacity cursor-pointer"
-              aria-label="Sane home"
+              aria-label={copy.homeLabel}
             >
               <img src={`${import.meta.env.BASE_URL}icons/sane-logo.png`} alt="Sane" />
             </button>

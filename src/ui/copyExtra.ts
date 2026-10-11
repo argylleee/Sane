@@ -117,13 +117,12 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     moreDetails: 'More details',
 
     whyTitle: 'Why this result',
-    whyIntro:
-      'Code finds the facts. The meaning check only adds support. Neither one needs the internet.',
-    whyCode: 'Found by code',
-    whyNoFlags: 'Code found no red flags in this message.',
+    whyIntro: 'We look for warning signs. Known scam patterns add support when available.',
+    whyCode: 'Warning signs found',
+    whyNoFlags: 'No warning signs were found in this message.',
     whyCalming: 'Eased worry',
     whyMeaning: 'Closest known scam patterns (by meaning)',
-    whyMeaningNone: 'The meaning check did not run, so this result comes from code alone.',
+    whyMeaningNone: 'Only the warning-sign check ran for this message.',
     whyWriter: 'The on-device writer only wrote the explanation. It did not choose the result.',
     whyNoWriter: 'No language model wrote any of this result.',
     whyWriting: 'The on-device writer is still writing. It will not change the result.',
@@ -252,13 +251,12 @@ const EXTRA: Record<Lang, ExtraCopy> = {
 
     whyTitle: 'Bakit ito ang resulta',
     whyIntro:
-      'Ang code ang nakakahanap ng mga katotohanan. Taga-suporta lang ang pagsusuri ng kahulugan. Walang kailangang internet sa dalawa.',
-    whyCode: 'Nakita ng code',
-    whyNoFlags: 'Walang nakitang red flag ang code sa mensaheng ito.',
+      'Hinahanap namin ang mga babala. Tumutulong ang paghahambing sa mga kilalang scam kapag handa ito.',
+    whyCode: 'Mga nakitang babala',
+    whyNoFlags: 'Walang nakitang babala sa mensaheng ito.',
     whyCalming: 'Nakakabawas ng pag-aalala',
     whyMeaning: 'Pinakamalapit na kilalang scam (ayon sa kahulugan)',
-    whyMeaningNone:
-      'Hindi tumakbo ang pagsusuri ng kahulugan, kaya code lang ang batayan ng resulta.',
+    whyMeaningNone: 'Mga babala lang ang nasuri sa mensaheng ito.',
     whyWriter:
       'Ang writer sa device mo ang sumulat lang ng paliwanag. Hindi siya ang pumili ng resulta.',
     whyNoWriter: 'Walang language model na sumulat ng alinman sa resultang ito.',
@@ -391,12 +389,12 @@ const EXTRA: Record<Lang, ExtraCopy> = {
 
     whyTitle: 'Bakit ito ang result',
     whyIntro:
-      'Ang code ang nakakahanap ng facts. Support lang ang meaning check. Walang kailangang internet sa dalawa.',
-    whyCode: 'Nakita ng code',
-    whyNoFlags: 'Walang nakitang red flag ang code sa message na ito.',
+      'Hinahanap namin ang warning signs. Known scam patterns add support kapag ready ang comparison.',
+    whyCode: 'Mga warning sign na nakita',
+    whyNoFlags: 'Walang nakitang warning sign sa message na ito.',
     whyCalming: 'Nakakabawas ng worry',
     whyMeaning: 'Pinakamalapit na known scam patterns (by meaning)',
-    whyMeaningNone: 'Hindi tumakbo ang meaning check, kaya code lang ang basis ng result.',
+    whyMeaningNone: 'Warning signs lang ang nasuri sa message na ito.',
     whyWriter:
       'Ang on-device writer ang sumulat lang ng explanation. Hindi siya ang pumili ng result.',
     whyNoWriter: 'Walang language model na sumulat ng kahit anong part ng result na ito.',
