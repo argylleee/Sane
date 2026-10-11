@@ -44,6 +44,13 @@ try {
       process.exitCode = 2;
       break;
     }
+    // CI rejects any pushed commit whose message breaks docs/git-conventions.md; catch it here first.
+    console.log('\n> npm run check:git -- range origin/main');
+    if (
+      run(npmBin, [npmCli, 'run', 'check:git', '--', 'range', 'origin/main'], { inherit: true })
+        .status !== 0
+    )
+      throw new Error('A commit message breaks docs/git-conventions.md; reword it, then rerun.');
     for (const script of CHECKS) {
       console.log(`\n> npm run ${script}`);
       if (run(npmBin, [npmCli, 'run', script], { inherit: true }).status !== 0)
