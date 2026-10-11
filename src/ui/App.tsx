@@ -332,6 +332,7 @@ export function App() {
       (navigator as Navigator & { standalone?: boolean }).standalone === true,
   );
   const [showInstallHelp, setShowInstallHelp] = useState(false);
+  const [showInstallPending, setShowInstallPending] = useState(false);
   const installPrompt = useRef<InstallPromptEvent | null>(null);
   const ocrRequestId = useRef(0);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -640,8 +641,11 @@ export function App() {
     earlyInstallPrompt = null;
     await prompt.prompt();
     const { outcome } = await prompt.userChoice;
-    if (outcome === 'accepted') setIsInstalled(true);
-    else setShowInstallHelp(true);
+    if (outcome !== 'accepted') setShowInstallHelp(true);
+    // Android finishes the install through the Play Store, which can hold it silently in its queue,
+    // so keep the button and a hint until Chrome's "appinstalled" event confirms it really finished.
+    else if (/Android/i.test(navigator.userAgent)) setShowInstallPending(true);
+    else setIsInstalled(true);
   }
 
   function startAnotherCheck() {
@@ -1332,6 +1336,11 @@ export function App() {
                       : isAppleMobile
                         ? copy.iosInstallHint
                         : copy.installManual}
+                  </p>
+                )}
+                {showInstallPending && !showInstallHelp && !isInstalled && (
+                  <p className="text-xs text-secondary text-center max-w-[45ch]" role="status">
+                    {copy.installPending}
                   </p>
                 )}
               </div>
