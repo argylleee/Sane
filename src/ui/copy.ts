@@ -342,7 +342,7 @@ export const COPY: Record<Lang, Copy> = {
     themeDark: 'Madilim',
     welcomeTitle: 'May duda? I-check muna.',
     welcomeDescription:
-      'Kakaibang mensahe? I-paste dito para makita ang posibleng senyales ng scam.',
+      'Check suspicious messages privately, right on your device. No internet needed.',
     languageLabel: 'Wika',
     manualLabel: 'Manu-mano',
     manualTitle: 'I-paste para suriin',
@@ -539,7 +539,7 @@ export const COPY: Record<Lang, Copy> = {
     themeDark: 'Dark',
     welcomeTitle: 'May duda? I-check muna.',
     welcomeDescription:
-      'Kakaibang message? I-paste dito para makita ang posibleng senyales ng scam.',
+      'Check suspicious messages privately, right on your device. No internet needed.',
     languageLabel: 'Language',
     manualLabel: 'Manual check',
     manualTitle: 'Ikaw ang pipili ng ipa-paste',
