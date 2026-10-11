@@ -1,0 +1,116 @@
+[
+  {
+    "id": "high-1",
+    "lang": "en",
+    "expected": "likely_scam",
+    "text": "BDO Security: your account is locked due to unusual activity. Reply with your PIN and the OTP we sent to unlock it within 1 hour."
+  },
+  {
+    "id": "high-2",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "text": "GCash: Na-suspend ang iyong account. I-verify agad sa gcash-verify-ph.top at ilagay ang iyong MPIN para hindi mawala ang balanse mo."
+  },
+  {
+    "id": "high-3",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "text": "Congrats! Nanalo ka ng P50,000 sa Shopee anniversary raffle. Magbayad lang ng P500 processing fee muna bago ma-release ang premyo mo."
+  },
+  {
+    "id": "high-4",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "text": "Ma, new number ko to, nasira phone ko. Na-ospital ako, pa-send naman ng 3k sa GCash ko ngayon na please."
+  },
+  {
+    "id": "high-5",
+    "lang": "en",
+    "expected": "likely_scam",
+    "text": "Part-time job: earn 1,500 daily by liking videos. Top up your working balance first to unlock paid tasks. Message us on Telegram."
+  },
+  {
+    "id": "caution-1",
+    "lang": "en",
+    "expected": "suspicious",
+    "text": "Hi! Check out the photos from our trip, just click the link: trip-photos-share.net/album"
+  },
+  {
+    "id": "high-6",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "text": "BPI: Paki-update ang iyong account details sa bpi-update-info.com"
+  },
+  {
+    "id": "caution-2",
+    "lang": "en",
+    "expected": "suspicious",
+    "text": "Your subscription payment did not go through. Log in immediately at member-portal-login.net to keep watching."
+  },
+  {
+    "id": "caution-3",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "text": "Hi po, paki-send naman yung code na dumating sa phone mo, napindot ko kasi number mo by mistake."
+  },
+  {
+    "id": "caution-4",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "text": "Paalala: mag-e-expire na ang points mo ngayon na. I-redeem dito: points-rewards-ph.com"
+  },
+  {
+    "id": "fine-1",
+    "lang": "en",
+    "expected": "probably_fine",
+    "text": "Your OTP is 482913. It is valid for 5 minutes. Do not share this code with anyone."
+  },
+  {
+    "id": "fine-2",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "text": "Ma, uuwi ako mamayang gabi. Ano ang ulam natin?"
+  },
+  {
+    "id": "fine-3",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "text": "Team, meeting tayo bukas ng 3pm sa office. Paki-bring yung printed reports."
+  },
+  {
+    "id": "fine-4",
+    "lang": "en",
+    "expected": "probably_fine",
+    "text": "GCash will have scheduled maintenance this Sunday from 1 to 3 AM. Details at https://www.gcash.com."
+  },
+  {
+    "id": "fine-5",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "text": "Mag-ingat: huwag magbayad ng fee sa kahit sinong nag-aalok ng online job. Verify muna sa official page."
+  },
+  {
+    "id": "unsure-1",
+    "lang": "en",
+    "expected": "not_sure",
+    "text": "Photos from the party are here: myalbum-share.net/p/1"
+  },
+  {
+    "id": "unsure-2",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "text": "Hi! May tanong lang ako tungkol sa order mo, tawagan mo ako sa 09171234567."
+  },
+  {
+    "id": "unsure-3",
+    "lang": "fil",
+    "expected": "not_sure",
+    "text": "Tingnan mo ito: kwento-ngayon.net/balita"
+  },
+  {
+    "id": "unsure-4",
+    "lang": "en",
+    "expected": "not_sure",
+    "text": "Hey, is this still your number? Text me back when you can."
+  }
+]

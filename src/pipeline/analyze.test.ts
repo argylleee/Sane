@@ -103,12 +103,12 @@ describe('local rule verdicts', () => {
     expect(verdict.level).toBe('not_sure');
   });
 
-  it('does not flag advice against clicking a link and paying a fee', async () => {
+  it('treats advice against clicking a link and paying a fee as a safety reminder', async () => {
     const verdict = await analyze(
       { text: 'Scam alert: Never click the link and never pay the fee.' },
       opts,
     );
-    expect(verdict.level).toBe('not_sure');
+    expect(verdict.level).toBe('probably_fine');
   });
 
   it('recognizes obfuscated Filipino and Taglish credential requests', async () => {
@@ -158,7 +158,7 @@ describe('local rule verdicts', () => {
 
   it('returns a cautious verdict for a credential request alone', async () => {
     const verdict = await analyze(
-      { text: 'Please send your PIN to me.' },
+      { text: 'Please send your OTP to me.' },
       { lang: 'fil', useLLM: false },
     );
     expect(verdict.level).toBe('suspicious');
@@ -172,14 +172,14 @@ describe('local rule verdicts', () => {
 
   it.each([
     ['GCash: send OTP now at gcash-login.top', 'likely_scam'],
-    ['BPI alert: send your PIN to unlock your account', 'suspicious'],
+    ['BPI alert: send your PIN to unlock your account', 'likely_scam'],
     ['Anak, new number ko. Magpadala ng pera ngayon na.', 'likely_scam'],
     ['You won! Pay now for your processing fee.', 'likely_scam'],
     ['Your account is blocked. Pay now.', 'likely_scam'],
     ['Visit bpi-support.top for updates.', 'likely_scam'],
-    ['Please share your password.', 'suspicious'],
+    ['Please share your password.', 'likely_scam'],
     ['Your code is 123456. Never share your OTP.', 'probably_fine'],
-    ['Delivery update: parcel arrives tomorrow. Visit gcash.com.', 'not_sure'],
+    ['Delivery update: parcel arrives tomorrow. Visit gcash.com.', 'probably_fine'],
     ['Kumusta! Kita tayo bukas.', 'probably_fine'],
   ])('returns %s as %s in the ten-message smoke set', async (text, expected) => {
     const verdict = await analyze({ text }, opts);

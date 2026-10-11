@@ -29,7 +29,64 @@ type Engine = {
   };
 };
 
-export type LlmStatus = { state: 'idle' | 'loading' | 'ready' | 'error'; progress: number };
+export type LlmStatus = {
+  state: 'idle' | 'loading' | 'ready' | 'error';
+  progress: number;
+  /** Megabytes downloaded so far in this session (loading only). */
+  downloadedMb?: number;
+  /** Why loading failed (error only). */
+  message?: string;
+};
+
+// WebLLM reports progress only after each ~35 MB weight shard finishes, four in parallel, and restarts
+// from 0% when it copies the cached weights to the GPU. Counting the bytes as they arrive gives a bar
+// that moves from the first second: downloading fills 0-90%, loading onto the GPU fills 90-100%.
+const MODEL_HOSTS = /^https:\/\/(?:[\w-]+\.)*(?:huggingface\.co|hf\.co|githubusercontent\.com)\//;
+const DOWNLOAD_SHARE = 90;
+
+type Fetch = typeof globalThis.fetch;
+
+/**
+ * Wraps `fetch` while the model loads so every model-file response reports its bytes as they stream.
+ * Other requests pass through untouched. Returns a function that restores the original `fetch`.
+ */
+export function trackModelDownload(onBytes: (bytes: number) => void): () => void {
+  const original: Fetch = globalThis.fetch;
+  const tracked: Fetch = async (input, init) => {
+    const response = await original(input, init);
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    if (!response.ok || !response.body || !MODEL_HOSTS.test(url)) return response;
+    const counter = new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        onBytes(chunk.byteLength);
+        controller.enqueue(chunk);
+      },
+    });
+    return new Response(response.body.pipeThrough(counter), {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+    });
+  };
+  globalThis.fetch = tracked;
+  return () => {
+    if (globalThis.fetch === tracked) globalThis.fetch = original;
+  };
+}
+
+/** Overall percentage from streamed bytes and WebLLM's own report. Never goes backwards. */
+export function llmProgress(
+  previous: number,
+  downloadedBytes: number,
+  report: { progress: number; text: string } | undefined,
+): number {
+  const byBytes = Math.min(1, downloadedBytes / (LLM_DOWNLOAD_MB * 1024 * 1024));
+  let next = byBytes * DOWNLOAD_SHARE;
+  if (report?.text.startsWith('Fetching')) next = Math.max(next, report.progress * DOWNLOAD_SHARE);
+  if (report?.text.startsWith('Loading model from cache'))
+    next = DOWNLOAD_SHARE + report.progress * (100 - DOWNLOAD_SHARE);
+  return Math.min(99, Math.max(previous, Math.round(next)));
+}
 
 let status: LlmStatus = { state: 'idle', progress: 0 };
 const listeners = new Set<(status: LlmStatus) => void>();
@@ -79,7 +136,19 @@ export function loadLlm(requestedTier: Tier): Promise<void> {
   if (!LLM_MODEL_BY_TIER[requestedTier])
     return Promise.reject(new Error('This device cannot run the language model.'));
   enginePromise ??= (async () => {
-    setStatus({ state: 'loading', progress: 0 });
+    setStatus({ state: 'loading', progress: 0, downloadedMb: 0 });
+    let bytes = 0;
+    let report: { progress: number; text: string } | undefined;
+    const update = () =>
+      setStatus({
+        state: 'loading',
+        progress: llmProgress(status.progress, bytes, report),
+        downloadedMb: Math.round(bytes / (1024 * 1024)),
+      });
+    const stopTracking = trackModelDownload((chunk) => {
+      bytes += chunk;
+      update();
+    });
     try {
       // Inspect the real GPU adapter: a phone can expose WebGPU yet have no usable adapter or no f16.
       const capabilities = await refineCapabilities();
@@ -90,15 +159,23 @@ export function loadLlm(requestedTier: Tier): Promise<void> {
       if (!modelId) throw new Error('This device cannot run the language model.');
       const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
       const engine = (await CreateMLCEngine(modelId, {
-        initProgressCallback: (report) =>
-          setStatus({ state: 'loading', progress: Math.round(report.progress * 100) }),
+        initProgressCallback: (next) => {
+          report = next;
+          update();
+        },
       })) as unknown as Engine;
       setStatus({ state: 'ready', progress: 100 });
       return engine;
     } catch (error) {
       enginePromise = undefined;
-      setStatus({ state: 'error', progress: 0 });
+      setStatus({
+        state: 'error',
+        progress: 0,
+        message: error instanceof Error ? error.message : String(error),
+      });
       throw error;
+    } finally {
+      stopTracking();
     }
   })();
   return enginePromise.then(() => undefined);

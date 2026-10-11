@@ -8,6 +8,18 @@ export function hasUrl(text: string): boolean {
   return text.search(URL_TEXT) >= 0;
 }
 
+/** The text with every link replaced by spaces, so words inside a link are not read as requests. */
+export function stripUrls(text: string): string {
+  return text.replace(URL_TEXT, (link) => ' '.repeat(link.length));
+}
+
+// Official public-sector domains (any subdomain), on top of the brand domains in brands.json.
+const OFFICIAL_SUFFIXES = ['gov.ph'];
+// Group invites and meeting links of major chat apps. They open a chat, not a login or payment page.
+const PLATFORM_HOSTS = ['chat.whatsapp.com', 'meet.google.com', 'zoom.us', 'teams.microsoft.com'];
+
+export type LinkTrust = 'none' | 'official' | 'platform' | 'unverified';
+
 function hostOf(value: string): string | null {
   try {
     return new URL(/^https?:\/\//i.test(value) ? value : 'https://' + value).hostname.toLowerCase();
@@ -16,17 +28,32 @@ function hostOf(value: string): string | null {
   }
 }
 
-/** True when the text has a link whose host is not on a known official brand domain. */
-export function hasUnverifiedUrl(text: string): boolean {
+const onDomain = (host: string, domain: string) => host === domain || host.endsWith('.' + domain);
+
+/**
+ * The weakest link in the text: 'official' when every link is on a known brand or government domain,
+ * 'platform' when some are chat-app invites or meeting links, 'unverified' when any other host appears.
+ */
+export function linkTrust(text: string): LinkTrust {
+  let trust: LinkTrust = 'none';
   for (const match of text.matchAll(URL_TEXT)) {
     const host = hostOf(match[0].replace(/[),.!?;:]+$/, ''));
     if (!host || !host.includes('.')) continue;
-    const official = brands.brands.some(({ domains }) =>
-      domains.some((domain) => host === domain || host.endsWith('.' + domain)),
-    );
-    if (!official) return true;
+    if (
+      brands.brands.some(({ domains }) => domains.some((domain) => onDomain(host, domain))) ||
+      OFFICIAL_SUFFIXES.some((domain) => onDomain(host, domain))
+    ) {
+      if (trust === 'none') trust = 'official';
+    } else if (PLATFORM_HOSTS.some((domain) => onDomain(host, domain))) trust = 'platform';
+    else return 'unverified';
   }
-  return false;
+  return trust;
+}
+
+/** True when the text has a link whose host is not on a known official domain. */
+export function hasUnverifiedUrl(text: string): boolean {
+  const trust = linkTrust(text);
+  return trust === 'unverified' || trust === 'platform';
 }
 
 export function urlSignals(text: string): Signal[] {

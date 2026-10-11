@@ -40,9 +40,9 @@ const FINANCE_IMPERSONATION =
 const FINANCE_ACTION =
   /\b(?:read back|tell us|send|share|verify|confirm|update|unlock|reactivate|click|pindutin|link|otp|pin|password|code)\b/iu;
 const JOB_CONTEXT =
-  /\b(?:job|hiring|recruit|work from home|part-time|part time|reviewer|trabaho|empleo|kita|income|salary|sweldo|task)\b/iu;
+  /\b(?:job|hiring|recruit|work from home|part-time|part time|reviewer|trabaho|empleo|kita|income|salary|sweldo|tasks?|cash out|screening|onboarding)\b/iu;
 const JOB_RISK =
-  /\b(?:registration fee|training fee|deposit|pay|send money|guaranteed|personal information|telegram|bayad|mag-deposit|magpadala)\b/iu;
+  /\b(?:registration fee|training fee|deposit|pay|send money|guaranteed|personal information|telegram|bayad|mag-deposit|magpadala|top[ -]?up|working balance|valid id|selfie)\b/iu;
 const INVESTMENT_CONTEXT =
   /\b(?:invest|investment|crypto|trading|profit|returns|tubo|puhunan|mag-invest|pag-iinvest)\b/iu;
 const INVESTMENT_RISK =
@@ -58,29 +58,32 @@ const GAMBLING_CONTEXT =
   /\b(?:free\s*spins?|libreng\s+spin|spin\s+the\s+wheel|jackpot|casino|slot\s+(?:machines?|games?)|e-?sabong|online\s+sabong|betting|welcome\s+bonus|free\s+(?:bonus|credits?)|free\s+\d{2,4}\b(?!\s*(?:texts?|sms|mb|gb|mins?|minutes|calls?|load))|bonus\s+credits?|susunod\s+na\s+maswerte|lucky\s+(?:player|spin))\b/iu;
 const GAMBLING_ACTION =
   /\b(?:log\s?in|mag-?login|i-?login|sign\s?up|mag-?sign\s?up|register|mag-?register|join|sumali|maglaro|play|claim|i-?claim|withdraw|i-?withdraw|deposit|mag-?deposit|nakakuha|makukuha|makakuha|nanalo|panalo|manalo|won|win|ikaw na ang susunod|you(?:'re| are| could be) next)\b/iu;
+// An amount someone can supposedly earn ("earn 800 daily", "kumita ng P2,000").
+const EARN_PROMISE =
+  /\b(?:earn|earning|kumita|kikita|kita ka|income of)\b[^.!?\n]{0,25}(?:₱|php|p\s?\d|\d)/iu;
 const ROMANCE_CONTEXT =
   /\b(?:sweetheart|honey|darling|love|romance|dating|relationship|mahal|sinta|nakilala|girlfriend|boyfriend)\b/iu;
 const ROMANCE_ACTION =
-  /\b(?:send money|send funds|transfer funds|ipadala ang pera|padala|loan|pautang|invest|deposit|fee|magpadala|mag-invest)\b/iu;
+  /\b(?:send money|send funds|transfer funds|ipadala ang pera|ipadala mo|padala|loan|pautang|invest|deposit|fee|magpadala|mag-invest|kailangan ko ng pera|need money)\b/iu;
 
 // Match combinations rather than treating an ordinary payment alone as a scam.
 const BENEFIT_CONTEXT =
-  /\b(?:prize|raffle|reward|premyo|loan|pautang|utang|ayuda|aid|grant|tulong pinansyal|job|trabaho|task)\b/iu;
+  /\b(?:prize|raffle|reward|premyo|loan|pautang|utang|ayuda|aid|grant|tulong pinansyal|job|trabaho|tasks?|part-time|work)\b/iu;
 const ADVANCE_PAYMENT =
-  /\b(?:pay|send|transfer|magbayad|bayaran|magpadala|magdeposito)\b(?=[^.!?;]{0,70}\b(?:fee|charge|bayad|singil|deposit|collect|receive|release|matanggap|makuha)\b)[^.!?;]{0,55}\b(?:first|before|advance|upfront|muna|bago|paunang)\b|\b(?:top[ -]up|mag-top[ -]up|dagdagan)\b[^.!?;]{0,25}\b(?:working balance|balanse)\b/iu;
+  /\b(?:pay|send|transfer|magbayad|bayaran|magpadala|magdeposito)\b(?=[^.!?;]{0,70}\b(?:fee|charge|bayad|singil|deposit|collect|receive|release|matanggap|makuha)\b)[^.!?;]{0,55}\b(?:first|before|advance|upfront|muna|bago|paunang)\b|\b(?:top[ -]up|mag-top[ -]up|dagdagan)\b[^.!?;]{0,25}\b(?:working balance|balanse)\b|\b(?:fee|charge|bayad|singil)\b[^.!?;]{0,30}\b(?:paid|settled)\b[^.!?;]{0,20}\b(?:first|before|upfront|in advance)\b/iu;
 const MARKETPLACE_CONTEXT = /\b(?:marketplace|item|seller|binebenta\w*|gamit)\b/iu;
 const BEFORE_INSPECTION =
   /\b(?:send|pay|transfer|magdeposito|mag-deposit|magbayad)\b[^.!?;]{0,30}\b(?:deposit|reservation|bago)\b[^.!?;]{0,35}\b(?:before|bago)\b[^.!?;]{0,25}\b(?:inspect\w*|makita|ma-inspect|masuri)\b|\bmagdeposito\b[^.!?;]{0,25}\bbago\b[^.!?;]{0,25}\b(?:makita|masuri)\b/iu;
 const RELATIVE_CONTEXT =
-  /\b(?:sister|brother|daughter|son|mother|father|cousin|anak|kapatid|pinsan|nanay|tatay)\b/iu;
+  /\b(?:sister|brother|daughter|son|mother|father|mom|dad|mama|papa|cousin|anak|kapatid|pinsan|nanay|tatay|lola|lolo|tita|tito)\b/iu;
 const EMERGENCY_CONTEXT =
   /\b(?:clinic|hospital|emergency|treatment|ospital|pagpapagamot|aksidente)\b/iu;
 const MONEY_TRANSFER =
-  /\b(?:send (?:money|funds)|transfer (?:money|funds)|ipadala (?:ang )?pera|magpadala|magbayad|pay)\b/iu;
+  /\b(?:send (?:money|funds)|transfer (?:money|funds)|ipadala (?:ang )?pera|magpadala|magbayad|pay|cover (?:the |my )?(?:\w+ )?(?:bill|fee))\b/iu;
 
 // Mask only payment disclaimers and keep offsets for highlighting the original text.
 const NO_PAYMENT =
-  /\b(?:no\s+(?:payment|fee|deposit)(?:\s+is)?\s+(?:required|needed|due)|(?:do not|don't)\s+need\s+to\s+pay(?:\s+(?:a|the|handling|processing|delivery|fee)){0,4}|no need\s+(?:to\s+)?(?:pay|magbayad)(?:\s+(?:a|the|ng|ang|handling|processing|delivery|fee)){0,4}|walang\s+(?:kailangang\s+)?(?:bayaran|bayad|paunang bayad)|hindi\s+(?:kailangan|required)\s+(?:ang\s+)?(?:bayad|payment|magbayad)|(?:hindi|di)\s+(?:(?:mo|ka|po|na)\s+){0,3}kailangang?\s+(?:ng\s+)?(?:magbayad|mag-bayad|bayaran|bayad|payment)|(?:there\s+is\s+)?nothing\s+to\s+pay|(?:do not|don't)\s+have\s+to\s+pay(?:\s+(?:anything|a\s+thing))?|without\s+(?:any\s+)?(?:fees?|charges?|payments?))\b/giu;
+  /\b(?:no\s+(?:payment|fee|deposit)(?:\s+is)?\s+(?:required|needed|due)|(?:do not|don't)\s+need\s+to\s+pay(?:\s+(?:a|the|handling|processing|delivery|fee)){0,4}|no need\s+(?:to\s+)?(?:pay|magbayad)(?:\s+(?:a|the|ng|ang|handling|processing|delivery|fee)){0,4}|wala(?:ng|\s+(?:kang|kayong|po\s+kayong|pong))\s+(?:kailangang\s+)?(?:bayaran|bayad|paunang bayad)|hindi\s+(?:kailangan|required)\s+(?:ang\s+)?(?:bayad|payment|magbayad)|(?:hindi|di)\s+(?:(?:mo|ka|po|na)\s+){0,3}kailangang?\s+(?:ng\s+)?(?:magbayad|mag-bayad|bayaran|bayad|payment)|(?:there\s+is\s+)?nothing\s+to\s+pay|(?:do not|don't)\s+have\s+to\s+pay(?:\s+(?:anything|a\s+thing))?|without\s+(?:any\s+)?(?:fees?|charges?|payments?))\b/giu;
 
 // A sentence that only says nothing is owed ("walang bayad", "no fee", "libre") is a disclaimer, not a
 // payment demand. Mask its payment words, but only when the sentence has no demand marker, so a
@@ -91,6 +94,11 @@ const PAYMENT_WORDS =
   /\b(?:bayad|bayaran|babayaran|magbayad|mag-bayad|payment|pay|fees?|charges?|singil|cost)\b/giu;
 const DEMAND_MARKER =
   /\b(?:kung hindi|kapag hindi|pag hindi|if you|unless|otherwise|or else|bago|before|muna|first|link|click|tap|pindutin|i-click|otp|pin|mpin|code|password|send|ipadala|i-send|magpadala|deposit|magdeposito|verify|i-verify|confirm|i-confirm)\b/iu;
+
+/** Blanks "no payment needed" notices so their payment words do not read as a demand. */
+export function maskNoPayment(text: string): string {
+  return text.replace(NO_PAYMENT, (notice) => ' '.repeat(notice.length));
+}
 
 function maskDisclaimedPayments(text: string): string {
   return text.replace(/[^.!?;\n]+[.!?;]?/gu, (sentence) =>
@@ -166,8 +174,7 @@ function pushSignal(
 }
 
 export function runRules(text: string): Signal[] {
-  text = text.replace(NO_PAYMENT, (notice) => ' '.repeat(notice.length));
-  text = maskDisclaimedPayments(text);
+  text = maskDisclaimedPayments(maskNoPayment(text));
   const signals = urlSignals(text);
   const hasCredential = /\b(?:otp|pin|mpin|code|password|one-time password)\b/iu.test(text);
   const safe = [
@@ -268,6 +275,12 @@ export function runRules(text: string): Signal[] {
     const span = phraseSpan(text, keywords[id], true);
     if (span) signals.push({ id, label, weight, span });
   }
+  const earn = EARN_PROMISE.exec(text);
+  if (earn && !isNegated(text, earn.index))
+    pushSignal(signals, 'prize_or_job_bait', 'Promises a prize or easy income', 15, [
+      earn.index,
+      earn.index + earn[0].length,
+    ]);
 
   const safeNotice =
     (safe.length > 0 || SAFE_FINANCE_REQUEST.test(text)) && !request && !hasUrl(text);

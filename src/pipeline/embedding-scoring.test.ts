@@ -84,7 +84,7 @@ describe('embedding evidence in analyze()', () => {
 
   it('never promotes a sub-60 rule score to likely_scam with embedding help', async () => {
     match.mockResolvedValue(evidence());
-    const verdict = await analyze({ text: 'Please send your PIN to me.' }, opts);
+    const verdict = await analyze({ text: 'Please send your OTP to me.' }, opts);
     expect(verdict.level).toBe('suspicious');
     expect(verdict.score).toBe(59);
   });
@@ -128,7 +128,7 @@ describe('embedding evidence in analyze()', () => {
     match.mockResolvedValue(evidence(0.86, -0.09, 'none'));
     const link = await analyze({ text: 'Photos from the party: myalbum-share.net/p/1' }, opts);
     expect(link.level).toBe('not_sure');
-    const otp = await analyze({ text: 'Please send your PIN to me.' }, opts);
+    const otp = await analyze({ text: 'Please send your OTP to me.' }, opts);
     expect(otp.level).toBe('suspicious');
     const official = await analyze(
       { text: 'Your bill is ready. See gcash.com for details.' },

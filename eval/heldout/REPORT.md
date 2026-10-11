@@ -93,3 +93,26 @@ annotation was corrected after scoring; the frozen cases and detector stayed unc
 Full scoped validation passed outside the sandbox: ownership, repository checks,
 formatting, lint, 18 tooling tests, typecheck, 77 app tests (2 opt-in evaluations
 skipped), and production build. The existing large-bundle warning remains.
+
+## Re-run after held-out-informed fixes (no longer blind)
+
+October 10, 2026. At the user's request, the remaining held-out failures were inspected and fixed
+with general rules: official-domain and chat-invite links, safety reminders ("never pay a fee"),
+"no payment needed" notices, face-to-face payments, password/PIN requests, prize processing fees,
+task top-ups, replacement-number relatives and romance requests. Because the fixes were chosen by
+looking at these cases, the set is now a **development set**, not a holdout.
+
+| Run (rules + real embeddings, Node CPU) | Scams caught | False alarms | Not sure |
+| --------------------------------------- | ------------ | ------------ | -------- |
+| Before (TASK-219 revision `9b21cc6`)    | 18/21        | 1/21         | 12/42    |
+| After                                   | 21/21        | 0/21         | 0/42     |
+
+The other development sets did not regress (`eval/testset.json` 15/15 caught, 0 false alarms;
+`eval/dev2.json` 16/16, 0 false alarms; no scam scored "probably fine"), and 15 freshly written
+context cases are in `src/pipeline/context-asks.test.ts`. A new, independently written holdout is
+needed before quoting any accuracy figure.
+
+Follow-up the same day (dev2 gaps): `eval/dev2.json` with real embeddings went from 2/32 not sure
+and 24/32 exact levels to 0/32 not sure and 32/32 exact levels, still 16/16 caught and 0 false alarms.
+The no-request margin cap moved from 0.015 to 0.035 (measured basis in `src/score/score.ts`), and two
+red flags in an already-flagged message now read as "High concern".

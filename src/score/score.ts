@@ -2,6 +2,7 @@
 import type { Level, Match, Signal } from '../types';
 import { SIMILARITY_FLOOR, type EvidenceLevel } from '../ai/match';
 import type { AskKind } from '../rules/ask';
+import type { LinkTrust } from '../rules/urls';
 
 // Asking for a secret or using a fake brand link is the core of most scams on its own.
 const STRONG_ASK = new Set([
@@ -39,8 +40,12 @@ export const BENIGN_MARGIN_WITH_WEAK_CUE = -0.04;
  */
 export const ASK_MARGIN = 0.02;
 export const ASK_SIMILARITY = 0.85;
-/** Above this scam lean, a message that seems to ask for nothing stays "Not sure". */
-export const NO_ASK_MAX_MARGIN = 0.015;
+/**
+ * Above this scam lean, a message that seems to ask for nothing stays "Not sure". Measured on the
+ * held-out, practice, dev2 and probe sets (Node CPU): ordinary no-ask messages reached 0.029 (a
+ * received-money receipt) and the only scam with no detected ask or red flag sat at 0.046.
+ */
+export const NO_ASK_MAX_MARGIN = 0.035;
 // Cues that can appear in a harmless message that asks for nothing. Money and link cues are asks.
 const NO_ASK_CUES = new Set([
   'urgency',
@@ -67,6 +72,12 @@ export type ScoreContext = {
   unverifiedLink?: boolean;
   /** What the message asks the reader to do (see rules/ask.ts). Undefined: not analysed. */
   asks?: AskKind[];
+  /** Weakest link in the message (see rules/urls.ts linkTrust). */
+  linkTrust?: LinkTrust;
+  /** The message warns against paying or sharing (a safety reminder). */
+  advice?: boolean;
+  /** The message points to a face-to-face step, which a remote scammer cannot use. */
+  inPerson?: boolean;
 };
 
 export function score(
@@ -89,14 +100,32 @@ export function score(
     (ids.has('gambling_bait') && ids.size >= 2); // casino spam plus a prize or pressure cue
   if (combined) ruleScore = Math.max(ruleScore, LIKELY);
 
+  // Requests that stay risky in context: a link on an official domain, a chat-group invite with no
+  // red flag, or "verify first" inside a safety reminder cannot hand anything to a scammer.
+  const trust = context.linkTrust ?? (context.unverifiedLink ? 'unverified' : 'none');
+  const allWeak = risky.length <= 1 && risky.every(({ id }) => WEAK.has(id));
+  const asks = context.asks?.filter(
+    (kind) =>
+      !(kind === 'link' && (trust === 'official' || (trust === 'platform' && !risky.length))) &&
+      !(kind === 'account_action' && context.advice && allWeak && trust === 'none'),
+  );
+  const benignContext =
+    (asks?.length ?? 0) < (context.asks?.length ?? 0) || !!context.advice || !!context.inPerson;
+
   // A red flag (pressure, bait, threat, odd link) plus a request for money, a code or personal
   // details is a scam; plus a link, login or claim request it needs a closer look.
   // A single weak cue (also common in real promos and notices) only reaches "Suspicious".
-  const asks = context.asks;
   const hooks = risky.filter(({ id }) => !ASK_SIGNALS.has(id));
   const strongHook = hooks.some(({ id }) => !WEAK.has(id)) || hooks.length >= 2;
   const sensitiveAsk = asks?.some((kind) => SENSITIVE.includes(kind)) ?? false;
-  if (sensitiveAsk && strongHook) ruleScore = Math.max(ruleScore, LIKELY);
+  // Two independent red flags in a message that is already flagged (it asks for a click, login or
+  // reply, or the flags alone reach "Suspicious") is a classic scam shape. This only raises the
+  // level of flagged messages; it never flags a message on its own.
+  const twoFlags =
+    hooks.length >= 2 && (ruleScore >= 30 || (asks?.some((kind) => kind !== 'contact') ?? false));
+  // No bank, wallet or agency asks for a password or PIN by message.
+  if (asks?.includes('secret')) ruleScore = Math.max(ruleScore, LIKELY);
+  else if ((sensitiveAsk && strongHook) || twoFlags) ruleScore = Math.max(ruleScore, LIKELY);
   else if (asks && risky.length > 0 && asks.some((kind) => kind !== 'contact'))
     ruleScore = Math.max(ruleScore, 30);
 
@@ -140,13 +169,16 @@ export function score(
 
   // Nothing is asked of the reader: no link, number, money, code, personal details or login. Such a
   // message cannot cause harm by itself, so it is probably fine even without the model.
-  // Never when the model leans towards a scam pattern: an ask may be phrased in a way code misses.
+  // Never when the model leans towards a scam pattern: an ask may be phrased in a way code misses,
+  // unless the message itself shows it is harmless (official link, safety reminder, in person).
   if (
     asks &&
     asks.length === 0 &&
     !supporting &&
-    !(typeof margin === 'number' && margin > NO_ASK_MAX_MARGIN) &&
-    (risky.length === 0 || (risky.length === 1 && NO_ASK_CUES.has(risky[0].id)))
+    (benignContext || !(typeof margin === 'number' && margin > NO_ASK_MAX_MARGIN)) &&
+    (risky.length === 0 ||
+      (risky.length === 1 &&
+        (NO_ASK_CUES.has(risky[0].id) || (context.inPerson && risky[0].id === 'money_request'))))
   )
     return { level: 'probably_fine', score: total };
 

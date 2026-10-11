@@ -4,8 +4,8 @@ import { extractText } from '../ai/ocr';
 import { matchWithEvidence, type MatchWithEvidence } from '../ai/match';
 import { explain, localizeSignals } from '../explain/templates';
 import { runRules } from '../rules';
-import { findAsks } from '../rules/ask';
-import { hasUnverifiedUrl } from '../rules/urls';
+import { findAsks, givesSafetyAdvice, goesInPerson } from '../rules/ask';
+import { hasUnverifiedUrl, linkTrust } from '../rules/urls';
 import { score } from '../score/score';
 import { normalize } from './normalize';
 
@@ -64,6 +64,9 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions): Promis
       margin: evidence?.margin,
       unverifiedLink: hasUnverifiedUrl(text),
       asks: findAsks(text),
+      linkTrust: linkTrust(text),
+      advice: givesSafetyAdvice(text),
+      inPerson: goesInPerson(text),
     });
     const verdict: Verdict = {
       level,

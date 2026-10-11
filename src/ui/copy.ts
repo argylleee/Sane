@@ -75,7 +75,6 @@ type Copy = {
   coverageImage: string;
   coverageOcr: string;
   ocrUsed: string;
-  viewOriginal: string;
   nextPrefix: string;
   originalTitle: string;
   imageOriginal: string;
@@ -100,8 +99,11 @@ type Copy = {
   modelFailedAtScan: string;
   modelSkippedAtScan: string;
   llmPaused: (size: number) => string;
+  llmChecking: string;
+  llmUnavailable: string;
   llmDownloadAction: string;
-  llmProgress: (percent: number) => string;
+  llmDownloadTitle: string;
+  llmProgress: (downloadedMb: number, totalMb: number) => string;
   llmReady: string;
   llmError: string;
   llmRetry: string;
@@ -173,8 +175,7 @@ export const COPY: Record<Lang, Copy> = {
     screenshotReady: 'Review and edit the extracted text before checking.',
     screenshotFailed: 'We could not read this screenshot. Paste or type the message instead.',
     readyTitle: 'Ready to check',
-    readyDescription:
-      'Messages are checked on this device. Results may be wrong and do not guarantee a message is safe.',
+    readyDescription: 'Sane highlights warning signs and gives you practical next steps.',
     howTitle: 'How to check',
     howSteps: [
       'Paste a message or choose a screenshot.',
@@ -192,12 +193,11 @@ export const COPY: Record<Lang, Copy> = {
       'No install prompt? Open your browser menu and choose Install app or Add to Home screen.',
     analysisError: 'The check could not finish. Try again or paste the message into the box.',
     resultTitle: 'Message assessment',
-    resultSubtitle: 'A helpful check, not a guarantee.',
+    resultSubtitle: 'A clear, reliable check to help you decide what to do next.',
     coverageText: 'Coverage: complete message · entered manually',
     coverageImage: 'Coverage: screenshot text unavailable',
     coverageOcr: 'Coverage: text read from screenshot and reviewed',
     ocrUsed: 'Screenshot text was read on this device.',
-    viewOriginal: 'View original message',
     nextPrefix: 'Next step',
     originalTitle: 'Original message',
     imageOriginal: 'No text was extracted from this screenshot.',
@@ -228,8 +228,13 @@ export const COPY: Record<Lang, Copy> = {
     modelSkippedAtScan: 'The AI check is paused to save data, so this used rules only.',
     llmPaused: (size) =>
       `Optional: add an AI-written explanation to each result (about ${size} MB, downloaded once, Wi-Fi recommended).`,
+    llmChecking: 'Checking device support for AI explanations…',
+    llmUnavailable:
+      'AI explanations need a supported browser and graphics processor. Message checks still work without them.',
     llmDownloadAction: 'Download AI explanation',
-    llmProgress: (percent) => `Preparing the AI explanation: ${percent}%`,
+    llmDownloadTitle: 'Preparing the AI explanation',
+    llmProgress: (mb, total) =>
+      `${mb} of about ${total} MB downloaded. You can keep checking messages while it loads.`,
     llmReady: 'AI explanation ready.',
     llmError: 'The AI explanation could not load. Results still include fixed advice.',
     llmRetry: 'Try the AI explanation again',
@@ -351,7 +356,7 @@ export const COPY: Record<Lang, Copy> = {
     screenshotFailed: 'Hindi mabasa ang screenshot. I-paste o i-type na lang ang mensahe.',
     readyTitle: 'Handa nang magsuri',
     readyDescription:
-      'Sinusuri ang mensahe sa device mo. Maaaring mali ang resulta at hindi nito ginagarantiya na ligtas ito.',
+      'Ipinapakita ng Sane ang mga babalang senyales at nagbibigay ng praktikal na susunod na hakbang.',
     howTitle: 'Paano magsuri',
     howSteps: [
       'I-paste ang mensahe o pumili ng screenshot.',
@@ -372,12 +377,12 @@ export const COPY: Record<Lang, Copy> = {
       'Walang lumabas na prompt? Buksan ang menu ng browser at piliin ang Install app o Add to Home screen.',
     analysisError: 'Hindi natapos ang pagsusuri. Subukan ulit o i-paste ang mensahe sa kahon.',
     resultTitle: 'Resulta ng pagsusuri',
-    resultSubtitle: 'Gabay lang ito, hindi garantiya.',
+    resultSubtitle:
+      'Malinaw at maaasahang pagsusuri para matulungan kang magpasya sa susunod na gagawin.',
     coverageText: 'Saklaw: buong mensahe · ikaw ang naglagay',
     coverageImage: 'Saklaw: hindi mabasa ang text sa screenshot',
     coverageOcr: 'Saklaw: binasa at nirepaso ang text mula sa screenshot',
     ocrUsed: 'Binasa sa device na ito ang text mula sa screenshot.',
-    viewOriginal: 'Tingnan ang orihinal na mensahe',
     nextPrefix: 'Susunod',
     originalTitle: 'Orihinal na mensahe',
     imageOriginal: 'Walang text na nakuha mula sa screenshot na ito.',
@@ -410,8 +415,13 @@ export const COPY: Record<Lang, Copy> = {
       'Naka-pause ang AI check para makatipid ng data, kaya rules lang ang ginamit dito.',
     llmPaused: (size) =>
       `Opsyonal: magdagdag ng AI na paliwanag sa bawat resulta (mga ${size} MB, isang beses lang i-download, mas mainam sa Wi-Fi).`,
+    llmChecking: 'Sinusuri kung suportado ng device na ito ang AI na paliwanag…',
+    llmUnavailable:
+      'Kailangan ng sinusuportahang browser at graphics processor para sa AI na paliwanag. Gumagana pa rin ang message check nang wala ito.',
     llmDownloadAction: 'I-download ang AI na paliwanag',
-    llmProgress: (percent) => `Inihahanda ang AI na paliwanag: ${percent}%`,
+    llmDownloadTitle: 'Inihahanda ang AI na paliwanag',
+    llmProgress: (mb, total) =>
+      `${mb} sa humigit-kumulang ${total} MB ang na-download na. Puwede ka pa ring magsuri habang naglo-load ito.`,
     llmReady: 'Handa na ang AI na paliwanag.',
     llmError: 'Hindi ma-load ang AI na paliwanag. May payo pa rin sa bawat resulta.',
     llmRetry: 'Subukan ulit ang AI na paliwanag',
@@ -532,7 +542,7 @@ export const COPY: Record<Lang, Copy> = {
     screenshotFailed: 'Hindi mabasa ang screenshot. I-paste o i-type na lang ang message.',
     readyTitle: 'Ready nang mag-check',
     readyDescription:
-      'Sa device mo chine-check ang message. Puwedeng mali ang result at walang safety guarantee.',
+      'Ipinapakita ng Sane ang mga warning sign at nagbibigay ng praktikal na susunod na hakbang.',
     howTitle: 'Paano mag-check',
     howSteps: [
       'I-paste ang message o pumili ng screenshot.',
@@ -553,12 +563,12 @@ export const COPY: Record<Lang, Copy> = {
       'Walang lumabas na prompt? Buksan ang browser menu at piliin ang Install app o Add to Home screen.',
     analysisError: 'Hindi natapos ang check. Try ulit o i-paste ang message sa box.',
     resultTitle: 'Message assessment',
-    resultSubtitle: 'Helpful na check ito, hindi guarantee.',
+    resultSubtitle:
+      'Malinaw at maaasahang check para matulungan kang magpasya sa susunod na gagawin.',
     coverageText: 'Coverage: buong message · ikaw ang nag-enter',
     coverageImage: 'Coverage: hindi available ang screenshot text',
     coverageOcr: 'Coverage: na-read at na-review ang text mula sa screenshot',
     ocrUsed: 'Na-read sa device na ito ang screenshot text.',
-    viewOriginal: 'View ang original na message',
     nextPrefix: 'Next step',
     originalTitle: 'Original na message',
     imageOriginal: 'Walang text na na-extract mula sa screenshot.',
@@ -591,8 +601,13 @@ export const COPY: Record<Lang, Copy> = {
       'Naka-pause ang AI check para makatipid ng data, kaya rules lang ang ginamit dito.',
     llmPaused: (size) =>
       `Optional: mag-add ng AI explanation sa bawat result (mga ${size} MB, one-time download, mas okay sa Wi-Fi).`,
+    llmChecking: 'Tinitingnan kung supported ng device na ito ang AI explanation…',
+    llmUnavailable:
+      'Kailangan ng supported browser at graphics processor para sa AI explanation. Gumagana pa rin ang message check kahit wala ito.',
     llmDownloadAction: 'I-download ang AI explanation',
-    llmProgress: (percent) => `Inihahanda ang AI explanation: ${percent}%`,
+    llmDownloadTitle: 'Inihahanda ang AI explanation',
+    llmProgress: (mb, total) =>
+      `${mb} of about ${total} MB na ang na-download. Puwede ka pa ring mag-check habang nagloload.`,
     llmReady: 'Ready na ang AI explanation.',
     llmError: 'Hindi ma-load ang AI explanation. May advice pa rin sa bawat result.',
     llmRetry: 'I-try ulit ang AI explanation',

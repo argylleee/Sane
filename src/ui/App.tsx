@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import {
-  detectCapabilities,
   extractText,
   getEmbeddingsStatus,
   getLlmStatus,
   LLM_DOWNLOAD_MB,
   loadEmbeddings,
   loadLlm,
+  refineCapabilities,
   shouldAutoPreload,
   startEmbeddingsPreload,
   startLlmPreload,
   subscribeEmbeddings,
   subscribeLlm,
 } from '../ai';
-import type { EmbeddingsStatus, LlmStatus } from '../ai';
+import type { EmbeddingsStatus, LlmStatus, Tier } from '../ai';
 import { addLlmExplanation, analyze } from '../pipeline/analyze';
 import { normalize } from '../pipeline/normalize';
 import type { Level, Signal, Verdict } from '../types';
@@ -306,16 +306,36 @@ export function App() {
   const [modelAtScan, setModelAtScan] = useState<EmbeddingsStatus['state']>('idle');
   const [llmStatus, setLlmStatus] = useState<LlmStatus>(getLlmStatus);
   const [llmWriting, setLlmWriting] = useState(false);
-  const llmTier = detectCapabilities().tier;
-  const downloadLlm = () => void loadLlm(llmTier).catch(() => undefined);
+  const [llmTier, setLlmTier] = useState<Tier | null>(null);
+  const downloadLlm = () => {
+    if (llmTier === null || llmTier === 'C') return;
+    void loadLlm(llmTier).catch(() => undefined);
+  };
   const copy = copyFor('en');
 
   const overLimit = message.length > MAX_MESSAGE_LENGTH;
   // Optional explanation model: downloaded only on request, then loads from cache.
   const showLlmOffer =
-    llmTier !== 'C' && llmStatus.state === 'idle' && embeddingStatus.state !== 'loading';
+    llmTier !== null &&
+    llmTier !== 'C' &&
+    llmStatus.state === 'idle' &&
+    embeddingStatus.state !== 'loading';
   const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent);
   const showIosInstallHint = isAppleMobile && !isInstalled;
+
+  useEffect(() => {
+    let active = true;
+    void refineCapabilities()
+      .then(({ tier }) => {
+        if (active) setLlmTier(tier);
+      })
+      .catch(() => {
+        if (active) setLlmTier('C');
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     // The explanation model follows the embedding model so the two downloads do not compete.
@@ -780,6 +800,8 @@ export function App() {
                         )}
                       </>
                     )}
+                    {llmTier === null && <p role="status">{copy.llmChecking}</p>}
+                    {llmTier === 'C' && <p>{copy.llmUnavailable}</p>}
                     {showLlmOffer && (
                       <Button
                         type="button"
@@ -789,12 +811,20 @@ export function App() {
                         className={SECONDARY_ACTION_CLASS}
                         onPress={downloadLlm}
                       >
-                        <Download size={18} /> {copy.llmDownloadAction}
+                        <Download size={18} aria-hidden="true" /> {copy.llmDownloadAction}
                       </Button>
                     )}
-                    {llmStatus.state === 'loading' && <p>{copy.llmProgress(llmStatus.progress)}</p>}
+                    {llmStatus.state === 'loading' && (
+                      <ModelDownloadProgress
+                        id="llm-download"
+                        progress={llmStatus.progress}
+                        title={copy.llmDownloadTitle}
+                        note={copy.llmProgress(llmStatus.downloadedMb ?? 0, LLM_DOWNLOAD_MB)}
+                        copy={copy}
+                      />
+                    )}
                     {llmStatus.state === 'ready' && <p>{copy.llmReady}</p>}
-                    {llmStatus.state === 'error' && (
+                    {llmStatus.state === 'error' && llmTier !== null && llmTier !== 'C' && (
                       <>
                         <p>{copy.llmError}</p>
                         <Button
@@ -805,8 +835,14 @@ export function App() {
                           className={SECONDARY_ACTION_CLASS}
                           onPress={downloadLlm}
                         >
-                          <RotateCcw size={18} /> {copy.llmRetry}
+                          <RotateCcw size={18} aria-hidden="true" /> {copy.llmRetry}
                         </Button>
+                        {llmStatus.message && (
+                          <details>
+                            <summary>{copy.modelDetails}</summary>
+                            <p>{llmStatus.message}</p>
+                          </details>
+                        )}
                       </>
                     )}
                   </div>
@@ -1073,17 +1109,6 @@ export function App() {
                       )}
                     </div>
                     <p className="text-xs text-secondary">{copy.originalNote}</p>
-
-                    {resultMessage && normalize(resultMessage) !== resultMessage && (
-                      <details className="text-sm group">
-                        <summary className="cursor-pointer font-medium text-primary hover:text-text transition-colors pb-2">
-                          {copy.viewOriginal}
-                        </summary>
-                        <div className="bg-neutral rounded-lg p-3 text-xs font-mono text-secondary whitespace-pre-wrap">
-                          <InertMessage text={resultMessage} />
-                        </div>
-                      </details>
-                    )}
                   </div>
 
                   {/* Tech stack transparency */}
