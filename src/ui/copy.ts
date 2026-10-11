@@ -68,6 +68,11 @@ type Copy = {
   installApp: string;
   installOffline: string;
   installManual: string;
+  updateTitle: string;
+  updateNote: string;
+  updateAction: string;
+  updateLater: string;
+  updateApplying: string;
   analysisError: string;
   resultTitle: string;
   resultSubtitle: string;
@@ -189,6 +194,12 @@ export const COPY: Record<Lang, Copy> = {
     installOffline: 'You are offline. Sane still works; connect to the internet to install it.',
     installManual:
       'No install prompt? Open your browser menu and choose Install app or Add to Home screen.',
+    updateTitle: 'A new version of Sane is ready',
+    updateNote:
+      'It has already downloaded. Your settings and history stay on this device after updating.',
+    updateAction: 'Update now',
+    updateLater: 'Later',
+    updateApplying: 'Updating…',
     analysisError: 'The check could not finish. Try again or paste the message into the box.',
     resultTitle: 'Message assessment',
     resultSubtitle: 'A clear, reliable check to help you decide what to do next.',
@@ -370,6 +381,12 @@ export const COPY: Record<Lang, Copy> = {
       'Offline ka. Gumagana pa rin ang Sane; kumonekta sa internet para ma-install ito.',
     installManual:
       'Walang lumabas na prompt? Buksan ang menu ng browser at piliin ang Install app o Add to Home screen.',
+    updateTitle: 'May bagong bersyon ng Sane',
+    updateNote:
+      'Na-download na ito. Mananatili sa device na ito ang iyong settings at history pagkatapos mag-update.',
+    updateAction: 'I-update ngayon',
+    updateLater: 'Mamaya',
+    updateApplying: 'Ina-update…',
     analysisError: 'Hindi natapos ang pagsusuri. Subukan ulit o i-paste ang mensahe sa kahon.',
     resultTitle: 'Resulta ng pagsusuri',
     resultSubtitle:
@@ -553,6 +570,12 @@ export const COPY: Record<Lang, Copy> = {
       'Offline ka. Gumagana pa rin ang Sane; mag-connect sa internet para ma-install.',
     installManual:
       'Walang lumabas na prompt? Buksan ang browser menu at piliin ang Install app o Add to Home screen.',
+    updateTitle: 'May bagong version ng Sane',
+    updateNote:
+      'Na-download na ito. Naka-save pa rin sa device mo ang settings at history pagka-update.',
+    updateAction: 'I-update ngayon',
+    updateLater: 'Mamaya na',
+    updateApplying: 'Ina-update…',
     analysisError: 'Hindi natapos ang check. Try ulit o i-paste ang message sa box.',
     resultTitle: 'Message assessment',
     resultSubtitle:

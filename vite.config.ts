@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { defineConfig, type Plugin } from 'vitest/config';
@@ -74,9 +74,23 @@ function tesseractAssets(): Plugin {
   };
 }
 
+// Stamps a per-build ID into the copied service worker. A changed sw.js is how an installed app
+// learns that a new deployment exists, and the ID also names that version's offline cache.
+function serviceWorkerBuildId(): Plugin {
+  return {
+    name: 'sane-service-worker-build-id',
+    apply: 'build',
+    writeBundle({ dir }) {
+      const file = join(dir ?? 'dist', 'sw.js');
+      const source = readFileSync(file, 'utf8');
+      writeFileSync(file, source.replace('__SANE_BUILD_ID__', Date.now().toString(36)));
+    },
+  };
+}
+
 // base './' keeps the build portable across GitHub Pages, Netlify, and Cloudflare Pages.
 export default defineConfig({
   base: './',
-  plugins: [react(), tailwindcss(), onnxRuntimeAssets(), tesseractAssets()],
+  plugins: [react(), tailwindcss(), onnxRuntimeAssets(), tesseractAssets(), serviceWorkerBuildId()],
   test: { environment: 'node', include: ['src/**/*.test.ts', 'eval/**/*.test.ts'] },
 });

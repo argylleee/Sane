@@ -1,11 +1,43 @@
-const CACHE_NAME = 'sane-shell-v1';
+// The build replaces this stamp, so every deployment changes this file and browsers see an update.
+const BUILD_ID = '__SANE_BUILD_ID__';
+const CACHE_NAME = `sane-shell-${BUILD_ID}`;
 const MAX_SHARED_TEXT = 5000;
 const MAX_SHARED_IMAGE_BYTES = 8 * 1024 * 1024;
 
 let pendingShare = null;
 
+// Downloads the new version's page and the scripts and styles it names, so "Update now" switches
+// instantly and the updated app still opens offline. A failed download never blocks the install.
+async function precacheShell() {
+  try {
+    const cache = await caches.open(CACHE_NAME);
+    const scope = self.registration.scope;
+    const response = await fetch(scope, { cache: 'no-cache' });
+    if (!response.ok) return;
+    const html = await response.clone().text();
+    await cache.put(scope, response);
+    const assets = [...html.matchAll(/(?:src|href)="([^"]+\.(?:m?js|css|webmanifest|png|svg))"/g)]
+      .map(([, path]) => new URL(path, scope))
+      .filter((url) => url.origin === self.location.origin);
+    await Promise.all(
+      assets.map((url) =>
+        cache.add(new Request(url.href, { cache: 'no-cache' })).catch(() => undefined),
+      ),
+    );
+  } catch {
+    // Offline or blocked: the page and assets are fetched normally after the update instead.
+  }
+}
+
 self.addEventListener('install', (event) => {
-  event.waitUntil(self.skipWaiting());
+  event.waitUntil(
+    (async () => {
+      await precacheShell();
+      // A first install has nothing to replace, so it takes over at once. A new version waits until
+      // the reader chooses "Update now" (or closes every Sane window), so a check is never cut off.
+      if (!self.registration.active) await self.skipWaiting();
+    })(),
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -23,6 +55,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
+  if (event.data?.type === 'skip-waiting') {
+    event.waitUntil(self.skipWaiting());
+    return;
+  }
+
   if (event.data?.type === 'cache-shell') {
     event.waitUntil(
       (async () => {

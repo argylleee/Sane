@@ -527,6 +527,16 @@ button.brand-action {
   }
 }
 
+/* The update banner sits above the mobile bottom navigation, and in the corner on larger screens. */
+.update-prompt {
+  bottom: calc(5.75rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 640px) {
+  .update-prompt {
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+}
+
 /* Keep the footer inside the full-height home composition with a quiet surface boundary. */
 .home-shell {
   position: relative;
@@ -719,6 +729,7 @@ button.theme-toggle {
 }
 
 main :is(h2, h3, h4, .display-text),
+.update-prompt h2,
 .model-toast [data-slot='toast-title'] {
   font-family: var(--font-display);
   font-weight: 500;
