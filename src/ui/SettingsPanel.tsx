@@ -51,7 +51,7 @@ export function SettingsPanel({
           <input
             type="checkbox"
             role="switch"
-            className="mt-1 h-6 w-6 shrink-0 accent-[var(--color-primary)]"
+            className="clay-switch mt-0.5"
             checked={prefs[key]}
             onChange={(event) =>
               onChange(

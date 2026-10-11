@@ -347,6 +347,52 @@ button[aria-current='page'] {
     inset -2px -2px 4px rgba(255, 255, 255, 0.25);
 }
 
+/* On/off switch: a pressed-in clay track with a raised thumb, drawn on the native checkbox so the
+   label, keyboard and screen-reader "switch" role keep working. */
+input.clay-switch {
+  appearance: none;
+  position: relative;
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 1.875rem;
+  margin: 0;
+  border-radius: 9999px;
+  background: var(--color-background);
+  box-shadow:
+    inset 3px 3px 6px var(--shadow-clay-dark),
+    inset -3px -3px 6px var(--shadow-clay-light);
+  cursor: pointer;
+  transition:
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+input.clay-switch::before {
+  content: '';
+  position: absolute;
+  top: 0.1875rem;
+  left: 0.1875rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  background: var(--color-surface);
+  box-shadow:
+    2px 2px 4px var(--shadow-clay-dark),
+    -1px -1px 2px var(--shadow-clay-light);
+  transition: transform 180ms ease;
+}
+input.clay-switch:checked {
+  background: var(--color-primary);
+  box-shadow: inset 2px 2px 4px color-mix(in srgb, #000 25%, transparent);
+}
+input.clay-switch:checked::before {
+  transform: translateX(1.375rem);
+  background: var(--color-on-primary);
+}
+input.clay-switch:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
 /* Cards keep a quiet resting depth; light shifts without implying a click. */
 .clay-panel {
   border: 0;
@@ -818,6 +864,8 @@ button.model-toast-close {
   [role='button']:not([aria-disabled='true']),
   .button-clicked,
   .clay-panel,
+  .clay-switch,
+  .clay-switch::before,
   .model-toast,
   .model-progress-fill {
     animation: none !important;
@@ -884,4 +932,9 @@ html[data-contrast='high'] .clay-panel {
   border-color: var(--color-border);
   border-width: 2px;
   box-shadow: none;
+}
+
+html[data-contrast='high'] input.clay-switch:not(:focus-visible) {
+  outline: 2px solid var(--color-border);
+  outline-offset: 0;
 }

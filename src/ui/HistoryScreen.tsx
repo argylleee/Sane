@@ -80,7 +80,7 @@ export function HistoryScreen({
           <input
             type="checkbox"
             role="switch"
-            className="h-6 w-6 shrink-0 accent-[var(--color-primary)]"
+            className="clay-switch"
             checked={enabled}
             onChange={(event) => toggle(event.currentTarget.checked)}
           />
