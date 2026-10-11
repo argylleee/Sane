@@ -798,8 +798,22 @@ export function App() {
                       ease: [0.16, 1, 0.3, 1],
                     }}
                   >
-                    {copy.start}
-                  </Button>
+                    <Button
+                      size="lg"
+                      variant="primary"
+                      className="home-start px-8 py-4 bg-primary text-on-primary rounded-full font-semibold text-lg 
+hover:opacity-95 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20 cursor-pointer"
+                      onPress={() => setScreen('scan')}
+                      onPointerEnter={(event) => {
+                        if (event.pointerType !== 'touch') setMascotAttention(true);
+                      }}
+                      onPointerLeave={() => setMascotAttention(false)}
+                      onFocus={() => setMascotAttention(true)}
+                      onBlur={() => setMascotAttention(false)}
+                    >
+                      {copy.start}
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
 
