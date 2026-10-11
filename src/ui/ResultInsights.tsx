@@ -5,6 +5,7 @@ import archetypeData from '../data/archetypes.json';
 import { CONTACTS_CHECKED, rankContacts } from '../data/contacts';
 import { SCAM_TYPES } from '../data/scamTypes';
 import { buildBreakdown } from '../explain/breakdown';
+import { describeRun, type RunInput } from '../explain/runReport';
 import type { RequestSummary } from '../privacy/networkProof';
 import type { Lang, Verdict } from '../types';
 import { extraCopyFor } from './copyExtra';
@@ -17,7 +18,16 @@ const archetypeNames = new Map(
   ]),
 );
 
-export function WhyCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
+export function WhyCard({
+  verdict,
+  lang,
+  writing = false,
+}: {
+  verdict: Verdict;
+  lang: Lang;
+  /** The on-device writer is still working on this result. */
+  writing?: boolean;
+}) {
   const text = extraCopyFor(lang);
   const why = buildBreakdown(verdict);
   return (
@@ -76,7 +86,7 @@ export function WhyCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
       </div>
 
       <p className="text-xs italic text-secondary">
-        {why.usedWriter ? text.whyWriter : text.whyNoWriter}
+        {why.usedWriter ? text.whyWriter : writing ? text.whyWriting : text.whyNoWriter}
       </p>
     </section>
   );
@@ -248,6 +258,37 @@ export function PrivacyProofCard({ proof, lang }: { proof: RequestSummary | null
         </ul>
       )}
       <p className="text-xs italic text-secondary">{text.proofNote}</p>
+    </section>
+  );
+}
+
+/** One line per part that can run on this device, each saying what happened and why. */
+export function RunCard({ input, lang }: { input: RunInput; lang: Lang }) {
+  const text = extraCopyFor(lang);
+  const rows = describeRun(input);
+  return (
+    <section className={PANEL} aria-labelledby="run-title">
+      <h3 id="run-title" className="font-bold text-text">
+        {text.runTitle}
+      </h3>
+      <ul className="space-y-3 text-sm leading-relaxed text-text/90">
+        {rows.map(({ part, ran, reason }) => (
+          <li key={part} className="flex items-start gap-3">
+            <span
+              className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${ran ? 'bg-good' : 'bg-secondary'}`}
+              aria-hidden="true"
+            />
+            <span>
+              <span className="font-bold text-text">{text.runParts[part]}: </span>
+              {part === 'meaning'
+                ? text.runMeaning[reason as keyof typeof text.runMeaning]
+                : part === 'screenshot'
+                  ? text.runScreenshot
+                  : text.runWriter[reason as keyof typeof text.runWriter]}
+            </span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
