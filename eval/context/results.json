@@ -1,5 +1,5 @@
 {
-  "detectorRevision": "772cdb42f35ebc6d8d824905baa5ea93ba2b1527",
+  "detectorRevision": "d1d1a5cb69746ce546dd8ff22f9cfcdc58929912",
   "dirtyWorktree": true,
   "rulesOnly": {
     "contextDev": {
@@ -4428,12 +4428,12 @@
           "legit": 42,
           "caught": 42,
           "falseAlarms": 0,
-          "abstained": 8,
+          "abstained": 9,
           "precision": 1,
           "recall": 1,
           "falsePositiveRate": 0,
-          "abstentionRate": 0.08333333333333333,
-          "levelAgreement": 0.9583333333333334,
+          "abstentionRate": 0.09375,
+          "levelAgreement": 0.96875,
           "confusion": {
             "likely_scam": {
               "likely_scam": 42,
@@ -4455,9 +4455,9 @@
             },
             "not_sure": {
               "likely_scam": 0,
-              "suspicious": 1,
+              "suspicious": 0,
               "probably_fine": 3,
-              "not_sure": 8
+              "not_sure": 9
             }
           },
           "perLabel": {
@@ -4473,12 +4473,12 @@
             },
             "suspicious": {
               "expected": 0,
-              "predicted": 1,
+              "predicted": 0,
               "tp": 0,
-              "fp": 1,
-              "precision": 0,
+              "fp": 0,
+              "precision": null,
               "recall": null,
-              "falsePositiveRate": 0.010416666666666666,
+              "falsePositiveRate": 0,
               "abstentionRate": null
             },
             "probably_fine": {
@@ -4493,13 +4493,13 @@
             },
             "not_sure": {
               "expected": 12,
-              "predicted": 8,
-              "tp": 8,
+              "predicted": 9,
+              "tp": 9,
               "fp": 0,
               "precision": 1,
-              "recall": 0.6666666666666666,
+              "recall": 0.75,
               "falsePositiveRate": 0,
-              "abstentionRate": 0.6666666666666666
+              "abstentionRate": 0.75
             }
           },
           "missedScams": [],
@@ -4512,14 +4512,10 @@
             "cd-fil-ambiguous-03",
             "cd-fil-ambiguous-04",
             "cd-taglish-ambiguous-01",
+            "cd-taglish-ambiguous-03",
             "cd-taglish-ambiguous-04"
           ],
-          "mismatchIds": [
-            "cd-en-ambiguous-02",
-            "cd-fil-ambiguous-02",
-            "cd-taglish-ambiguous-02",
-            "cd-taglish-ambiguous-03"
-          ]
+          "mismatchIds": ["cd-en-ambiguous-02", "cd-fil-ambiguous-02", "cd-taglish-ambiguous-02"]
         },
         "perLanguage": {
           "en": {
@@ -4698,12 +4694,12 @@
             "legit": 14,
             "caught": 14,
             "falseAlarms": 0,
-            "abstained": 2,
+            "abstained": 3,
             "precision": 1,
             "recall": 1,
             "falsePositiveRate": 0,
-            "abstentionRate": 0.0625,
-            "levelAgreement": 0.9375,
+            "abstentionRate": 0.09375,
+            "levelAgreement": 0.96875,
             "confusion": {
               "likely_scam": {
                 "likely_scam": 14,
@@ -4725,9 +4721,9 @@
               },
               "not_sure": {
                 "likely_scam": 0,
-                "suspicious": 1,
+                "suspicious": 0,
                 "probably_fine": 1,
-                "not_sure": 2
+                "not_sure": 3
               }
             },
             "perLabel": {
@@ -4743,12 +4739,12 @@
               },
               "suspicious": {
                 "expected": 0,
-                "predicted": 1,
+                "predicted": 0,
                 "tp": 0,
-                "fp": 1,
-                "precision": 0,
+                "fp": 0,
+                "precision": null,
                 "recall": null,
-                "falsePositiveRate": 0.03125,
+                "falsePositiveRate": 0,
                 "abstentionRate": null
               },
               "probably_fine": {
@@ -4763,26 +4759,30 @@
               },
               "not_sure": {
                 "expected": 4,
-                "predicted": 2,
-                "tp": 2,
+                "predicted": 3,
+                "tp": 3,
                 "fp": 0,
                 "precision": 1,
-                "recall": 0.5,
+                "recall": 0.75,
                 "falsePositiveRate": 0,
-                "abstentionRate": 0.5
+                "abstentionRate": 0.75
               }
             },
             "missedScams": [],
             "falseAlarmIds": [],
-            "abstentionIds": ["cd-taglish-ambiguous-01", "cd-taglish-ambiguous-04"],
-            "mismatchIds": ["cd-taglish-ambiguous-02", "cd-taglish-ambiguous-03"]
+            "abstentionIds": [
+              "cd-taglish-ambiguous-01",
+              "cd-taglish-ambiguous-03",
+              "cd-taglish-ambiguous-04"
+            ],
+            "mismatchIds": ["cd-taglish-ambiguous-02"]
           }
         },
         "ambiguousOutcomes": {
           "likely_scam": 0,
-          "suspicious": 1,
+          "suspicious": 0,
           "probably_fine": 3,
-          "not_sure": 8
+          "not_sure": 9
         },
         "rows": [
           {
@@ -4917,7 +4917,7 @@
             "expected": "likely_scam",
             "actual": "likely_scam",
             "category": "scam",
-            "score": 62,
+            "score": 87,
             "signals": ["lookalike_domain", "urgency", "account_threat"]
           },
           {
@@ -5016,7 +5016,7 @@
             "expected": "likely_scam",
             "actual": "likely_scam",
             "category": "scam",
-            "score": 85,
+            "score": 60,
             "signals": ["coercion"]
           },
           {
@@ -5282,7 +5282,7 @@
             "expected": "likely_scam",
             "actual": "likely_scam",
             "category": "scam",
-            "score": 60,
+            "score": 85,
             "signals": ["suspicious_link"]
           },
           {
@@ -5300,7 +5300,7 @@
             "expected": "likely_scam",
             "actual": "likely_scam",
             "category": "scam",
-            "score": 72,
+            "score": 85,
             "signals": ["coercion", "urgency", "money_request"]
           },
           {
@@ -5640,9 +5640,9 @@
             "id": "cd-taglish-ambiguous-03",
             "lang": "taglish",
             "expected": "not_sure",
-            "actual": "suspicious",
+            "actual": "not_sure",
             "category": "ambiguous",
-            "score": 30,
+            "score": 0,
             "signals": []
           },
           {
@@ -5663,12 +5663,12 @@
           "legit": 21,
           "caught": 18,
           "falseAlarms": 0,
-          "abstained": 6,
+          "abstained": 5,
           "precision": 1,
           "recall": 1,
           "falsePositiveRate": 0,
-          "abstentionRate": 0.13333333333333333,
-          "levelAgreement": 0.6888888888888889,
+          "abstentionRate": 0.1111111111111111,
+          "levelAgreement": 0.6666666666666666,
           "confusion": {
             "likely_scam": {
               "likely_scam": 10,
@@ -5690,9 +5690,9 @@
             },
             "not_sure": {
               "likely_scam": 0,
-              "suspicious": 2,
+              "suspicious": 3,
               "probably_fine": 1,
-              "not_sure": 3
+              "not_sure": 2
             }
           },
           "perLabel": {
@@ -5708,12 +5708,12 @@
             },
             "suspicious": {
               "expected": 0,
-              "predicted": 10,
+              "predicted": 11,
               "tp": 0,
-              "fp": 10,
+              "fp": 11,
               "precision": 0,
               "recall": null,
-              "falsePositiveRate": 0.2222222222222222,
+              "falsePositiveRate": 0.24444444444444444,
               "abstentionRate": null
             },
             "probably_fine": {
@@ -5728,13 +5728,13 @@
             },
             "not_sure": {
               "expected": 6,
-              "predicted": 6,
-              "tp": 3,
+              "predicted": 5,
+              "tp": 2,
               "fp": 3,
-              "precision": 0.5,
-              "recall": 0.5,
+              "precision": 0.4,
+              "recall": 0.3333333333333333,
               "falsePositiveRate": 0.07692307692307693,
-              "abstentionRate": 0.5
+              "abstentionRate": 0.3333333333333333
             }
           },
           "missedScams": [],
@@ -5743,7 +5743,6 @@
             "ch-en-legit-04",
             "ch-en-ambiguous-01",
             "ch-fil-legit-05",
-            "ch-fil-ambiguous-02",
             "ch-taglish-legit-02",
             "ch-taglish-ambiguous-01"
           ],
@@ -5758,6 +5757,7 @@
             "ch-fil-scam-02",
             "ch-fil-scam-05",
             "ch-fil-ambiguous-01",
+            "ch-fil-ambiguous-02",
             "ch-taglish-legit-02",
             "ch-taglish-scam-01",
             "ch-taglish-scam-05",
@@ -5862,12 +5862,12 @@
             "legit": 7,
             "caught": 6,
             "falseAlarms": 0,
-            "abstained": 2,
+            "abstained": 1,
             "precision": 1,
             "recall": 1,
             "falsePositiveRate": 0,
-            "abstentionRate": 0.13333333333333333,
-            "levelAgreement": 0.6666666666666666,
+            "abstentionRate": 0.06666666666666667,
+            "levelAgreement": 0.6,
             "confusion": {
               "likely_scam": {
                 "likely_scam": 3,
@@ -5889,9 +5889,9 @@
               },
               "not_sure": {
                 "likely_scam": 0,
-                "suspicious": 0,
+                "suspicious": 1,
                 "probably_fine": 1,
-                "not_sure": 1
+                "not_sure": 0
               }
             },
             "perLabel": {
@@ -5907,12 +5907,12 @@
               },
               "suspicious": {
                 "expected": 0,
-                "predicted": 3,
+                "predicted": 4,
                 "tp": 0,
-                "fp": 3,
+                "fp": 4,
                 "precision": 0,
                 "recall": null,
-                "falsePositiveRate": 0.2,
+                "falsePositiveRate": 0.26666666666666666,
                 "abstentionRate": null
               },
               "probably_fine": {
@@ -5927,24 +5927,25 @@
               },
               "not_sure": {
                 "expected": 2,
-                "predicted": 2,
-                "tp": 1,
+                "predicted": 1,
+                "tp": 0,
                 "fp": 1,
-                "precision": 0.5,
-                "recall": 0.5,
+                "precision": 0,
+                "recall": 0,
                 "falsePositiveRate": 0.07692307692307693,
-                "abstentionRate": 0.5
+                "abstentionRate": 0
               }
             },
             "missedScams": [],
             "falseAlarmIds": [],
-            "abstentionIds": ["ch-fil-legit-05", "ch-fil-ambiguous-02"],
+            "abstentionIds": ["ch-fil-legit-05"],
             "mismatchIds": [
               "ch-fil-legit-05",
               "ch-fil-scam-01",
               "ch-fil-scam-02",
               "ch-fil-scam-05",
-              "ch-fil-ambiguous-01"
+              "ch-fil-ambiguous-01",
+              "ch-fil-ambiguous-02"
             ]
           },
           "taglish": {
@@ -6040,9 +6041,9 @@
         },
         "ambiguousOutcomes": {
           "likely_scam": 0,
-          "suspicious": 2,
+          "suspicious": 3,
           "probably_fine": 1,
-          "not_sure": 3
+          "not_sure": 2
         },
         "rows": [
           {
@@ -6310,9 +6311,9 @@
             "id": "ch-fil-ambiguous-02",
             "lang": "fil",
             "expected": "not_sure",
-            "actual": "not_sure",
+            "actual": "suspicious",
             "category": "ambiguous",
-            "score": 0,
+            "score": 30,
             "signals": []
           },
           {
@@ -8239,7 +8240,7 @@
             "lang": "taglish",
             "expected": "suspicious",
             "actual": "likely_scam",
-            "score": 60,
+            "score": 85,
             "signals": ["money_request", "delivery_scam"]
           },
           {
@@ -8279,7 +8280,7 @@
             "lang": "taglish",
             "expected": "suspicious",
             "actual": "suspicious",
-            "score": 55,
+            "score": 42,
             "signals": ["government_bait"]
           },
           {
