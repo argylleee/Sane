@@ -43,7 +43,7 @@ export function ScamTypesList({ lang }: { lang: Lang }) {
                 aria-expanded={isOpen}
                 aria-controls={`scamtype-${id}-panel`}
                 onClick={() => toggle(id)}
-                className="display-text flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-lg py-2 text-left text-text outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="accordion-trigger display-text flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 rounded-lg py-2 text-left text-text outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 {name[lang]}
                 <span
@@ -70,16 +70,22 @@ export function ScamTypesList({ lang }: { lang: Lang }) {
                     transition={{ duration, ease: [0.4, 0, 0.2, 1] }}
                     className="overflow-hidden"
                   >
-                    <div className="space-y-3 pt-2 text-sm leading-relaxed text-text/90">
-                      <p>
-                        <span className="font-bold text-text">{text.scamTypeTell}: </span>
-                        {type.tell[lang]}
-                      </p>
-                      <p>
-                        <span className="font-bold text-text">{text.scamTypeDo}: </span>
-                        {type.doThis[lang]}
-                      </p>
-                    </div>
+                    {/* A recessed box, so the description reads as detail under the title. Its
+                        edges line up with the title row above. */}
+                    <dl className="mt-2 space-y-4 rounded-xl border border-border bg-background/50 p-4 text-sm leading-relaxed">
+                      <div className="space-y-1">
+                        <dt className="text-xs font-bold uppercase tracking-widest text-secondary">
+                          {text.scamTypeTell}
+                        </dt>
+                        <dd className="text-text/90">{type.tell[lang]}</dd>
+                      </div>
+                      <div className="space-y-1">
+                        <dt className="text-xs font-bold uppercase tracking-widest text-secondary">
+                          {text.scamTypeDo}
+                        </dt>
+                        <dd className="text-text/90">{type.doThis[lang]}</dd>
+                      </div>
+                    </dl>
                   </motion.div>
                 )}
               </AnimatePresence>

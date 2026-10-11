@@ -4,7 +4,7 @@ import { dirname, join } from 'node:path';
 import { defineConfig, type Plugin } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
-import { CONTENT_SECURITY_POLICY } from './src/security/csp';
+import { CONTENT_SECURITY_POLICY } from './src/security/csp.ts';
 
 // Serve and bundle the onnxruntime-web WASM files ourselves so no check or model load fetches a
 // public CDN (zero-network and offline requirement). The embedding code loads them from ort/.

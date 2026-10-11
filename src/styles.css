@@ -467,6 +467,17 @@ button.brand-action {
   padding: 0.25rem;
 }
 
+/* An accordion header already sits on a clay panel, so the button stays flat instead of drawing a
+   second raised bar inside the card. No side padding, so the title, the chevron and the
+   description box below all share the card's own padding as their left and right edge. */
+button.accordion-trigger {
+  background: transparent;
+  background-image: none;
+  box-shadow: none !important;
+  transform: none !important;
+  padding-inline: 0;
+}
+
 /* One footer layout for every page; mobile stacks a centred brand line over a single credit line. */
 .site-footer {
   border-top: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
