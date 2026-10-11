@@ -39,7 +39,7 @@ export function MobileNavigation({
               type="button"
               aria-current={isSelected ? 'page' : undefined}
               onClick={() => onNavigate(destination)}
-              className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-xs font-semibold transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary ${isSelected ? 'bg-primary-tonal text-primary' : 'text-secondary hover:text-text hover:bg-neutral/40'}`}
+              className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-2 py-1 text-xs font-semibold transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary ${isSelected ? 'bg-primary-tonal text-primary-ink' : 'text-secondary hover:text-text hover:bg-neutral/40'}`}
             >
               <Icon size={20} strokeWidth={isSelected ? 2.5 : 2} aria-hidden="true" />
               <span>{labels[destination]}</span>

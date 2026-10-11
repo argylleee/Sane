@@ -13,6 +13,7 @@
   --color-surface: var(--color-surface);
   --color-primary: var(--color-primary);
   --color-primary-tonal: var(--color-primary-tonal);
+  --color-primary-ink: var(--color-primary-ink);
   --color-on-primary: var(--color-on-primary);
   --color-text: var(--color-text);
   --color-secondary: var(--color-secondary);
@@ -33,18 +34,19 @@
   --color-highlight: #f7f5ee; /* Light surfaces and highlights / Cream */
   --color-primary: #79b99a; /* Mint green / Primary actions */
   --color-primary-tonal: rgba(121, 185, 154, 0.25);
-  --color-on-primary: #244b3b; /* Dark green text on mint */
+  --color-on-primary: #214637; /* Dark green text on mint (4.6:1) */
+  --color-primary-ink: #3a594a; /* Mint family colour that is readable as text on sage */
   --color-text: #244b3b; /* Primary text */
-  --color-secondary: #53685c; /* Secondary text */
+  --color-secondary: #4c5f54; /* Secondary text */
   --color-border: rgba(36, 75, 59, 0.1);
 
   /* Semantic colors adapted to blend with the Sage & Cream palette */
-  --color-high: #a93f3f;
-  --color-high-surface: rgba(169, 63, 63, 0.12);
-  --color-caution: #9e7000;
-  --color-caution-surface: rgba(158, 112, 0, 0.12);
-  --color-good: #2e6b4b;
-  --color-good-surface: rgba(46, 107, 75, 0.12);
+  --color-high: #9a3939;
+  --color-high-surface: rgba(154, 57, 57, 0.12);
+  --color-caution: #775400;
+  --color-caution-surface: rgba(119, 84, 0, 0.12);
+  --color-good: #2b6547;
+  --color-good-surface: rgba(43, 101, 71, 0.12);
 
   --shadow-clay-light: rgba(255, 255, 255, 0.7);
   --shadow-clay-dark: rgba(163, 188, 172, 0.6);
@@ -60,16 +62,17 @@
   --color-highlight: #34483d;
   --color-primary: #79b99a;
   --color-primary-tonal: rgba(121, 185, 154, 0.25);
+  --color-primary-ink: #79b99a;
   --color-on-primary: #12241c;
   --color-text: #f7f5ee;
   --color-secondary: #a3b5ac;
   --color-border: rgba(247, 245, 238, 0.1);
 
-  --color-high: #cc5454;
+  --color-high: #da8484;
   --color-high-surface: rgba(204, 84, 84, 0.15);
   --color-caution: #d4a01c;
   --color-caution-surface: rgba(212, 160, 28, 0.15);
-  --color-good: #4fac7c;
+  --color-good: #58b083;
   --color-good-surface: rgba(79, 172, 124, 0.15);
 
   --shadow-clay-light: rgba(52, 72, 61, 0.5);
@@ -913,6 +916,7 @@ html[data-contrast='high'][data-theme='light'] {
   --color-highlight: #ffffff;
   --color-primary: #0b5c3d;
   --color-primary-tonal: rgba(11, 92, 61, 0.16);
+  --color-primary-ink: #0b5c3d;
   --color-on-primary: #ffffff;
   --color-text: #000000;
   --color-secondary: #1f1f1f;
@@ -931,6 +935,7 @@ html[data-contrast='high'][data-theme='dark'] {
   --color-highlight: #1f1f1f;
   --color-primary: #7ee2b0;
   --color-primary-tonal: rgba(126, 226, 176, 0.2);
+  --color-primary-ink: #7ee2b0;
   --color-on-primary: #000000;
   --color-text: #ffffff;
   --color-secondary: #e6e6e6;

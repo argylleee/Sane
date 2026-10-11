@@ -190,7 +190,8 @@ export const COPY: Record<Lang, Copy> = {
     sharedLimitError:
       'This shared message is over the 2,000 character limit. Paste a shorter part to check.',
     shareEmpty: 'No message or screenshot came through. Paste or choose one to check.',
-    iosInstallHint: 'On iPhone or iPad, use Share, then Add to Home Screen to keep Sane handy.',
+    iosInstallHint:
+      'On iPhone or iPad, open Sane in Safari, tap Share, then Add to Home Screen. If you see a switch called Open as Web App, keep it on. Then open Sane from its new icon, not from Safari.',
     installApp: 'Install Sane',
     installOffline: 'You are offline. Sane still works; connect to the internet to install it.',
     installManual:
@@ -378,7 +379,7 @@ export const COPY: Record<Lang, Copy> = {
       'Lampas sa 2,000 character ang mensaheng ipinasa. Mag-paste ng mas maikling bahagi para masuri.',
     shareEmpty: 'Walang dumating na mensahe o screenshot. Mag-paste o pumili ng susuriin.',
     iosInstallHint:
-      'Sa iPhone o iPad, piliin ang Share, saka Add to Home Screen para madaling buksan ang Sane.',
+      'Sa iPhone o iPad, buksan ang Sane sa Safari, i-tap ang Share, saka Add to Home Screen. Kung may switch na Open as Web App, iwanang naka-on. Pagkatapos, buksan ang Sane mula sa bagong icon, hindi sa Safari.',
     installApp: 'I-install ang Sane',
     installOffline:
       'Offline ka. Gumagana pa rin ang Sane; kumonekta sa internet para ma-install ito.',
@@ -569,7 +570,7 @@ export const COPY: Record<Lang, Copy> = {
       'Lampas 2,000 characters ang shared message. I-paste ang mas maikling part para ma-check.',
     shareEmpty: 'Walang dumating na message o screenshot. Mag-paste o pumili ng iche-check.',
     iosInstallHint:
-      'Sa iPhone o iPad, tap Share, tapos Add to Home Screen para madaling balikan ang Sane.',
+      'Sa iPhone o iPad, buksan ang Sane sa Safari, tap Share, tapos Add to Home Screen. Kung may switch na Open as Web App, iwanang naka-on. Pagkatapos, i-open ang Sane mula sa bagong icon, hindi sa Safari.',
     installApp: 'I-install ang Sane',
     installOffline:
       'Offline ka. Gumagana pa rin ang Sane; mag-connect sa internet para ma-install.',

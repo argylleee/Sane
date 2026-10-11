@@ -34,8 +34,10 @@ export function UpdatePrompt() {
       }
     };
     // Reload only after the reader chose to update; the first install also changes the controller.
+    // Go to the app's own root (always inside the manifest scope) rather than reloading whatever
+    // URL is open: iOS opens Safari when a standalone app navigates to a URL outside its scope.
     const onControllerChange = () => {
-      if (userAsked.current) window.location.reload();
+      if (userAsked.current) window.location.replace(registration?.scope ?? document.baseURI);
     };
 
     void sw.ready.then((ready) => {
@@ -75,7 +77,7 @@ export function UpdatePrompt() {
     >
       <div className="flex items-start gap-3">
         <span
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-tonal text-primary"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-tonal text-primary-ink"
           aria-hidden="true"
         >
           <RefreshCw size={18} strokeWidth={2.5} />

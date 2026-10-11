@@ -14,10 +14,10 @@ export type CardContent = {
 const WIDTH = 1080;
 const PAD = 72;
 const TONES: Record<Level, { bg: string; fg: string; accent: string }> = {
-  likely_scam: { bg: '#f6dcdc', fg: '#6e2020', accent: '#a93f3f' },
-  suspicious: { bg: '#f7ecc8', fg: '#5e4400', accent: '#9e7000' },
-  probably_fine: { bg: '#d6ebdf', fg: '#1d4a33', accent: '#2e6b4b' },
-  not_sure: { bg: '#e4e8e5', fg: '#2f3d36', accent: '#53685c' },
+  likely_scam: { bg: '#f6dcdc', fg: '#6e2020', accent: '#9a3939' },
+  suspicious: { bg: '#f7ecc8', fg: '#5e4400', accent: '#775400' },
+  probably_fine: { bg: '#d6ebdf', fg: '#1d4a33', accent: '#2b6547' },
+  not_sure: { bg: '#e4e8e5', fg: '#2f3d36', accent: '#4c5f54' },
 };
 
 /** Splits text into lines that fit a width. `measure` returns the width of a string. */

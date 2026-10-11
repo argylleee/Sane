@@ -129,7 +129,7 @@ function InertMessage({ text }: { text: string }) {
       {parts.map((part, index) =>
         /^https?:\/\//i.test(part) || /^www\./i.test(part) ? (
           <code
-            className="text-primary font-semibold break-all"
+            className="text-primary-ink font-semibold break-all"
             aria-label={part}
             key={`${part}-${index}`}
           >
@@ -222,7 +222,7 @@ function ThemeToggle({
           <Sun
             size={20}
             strokeWidth={2.25}
-            className="text-primary hover:scale-110 transition-transform"
+            className="text-primary-ink hover:scale-110 transition-transform"
           />
         ) : (
           <Moon
@@ -254,7 +254,7 @@ function CheckNotice({
         <Info size={18} strokeWidth={2.5} />
       </span>
       <div className="space-y-1">
-        <Heading className="text-base font-bold tracking-tight text-primary">
+        <Heading className="text-base font-bold tracking-tight text-primary-ink">
           {copy.learnDisclaimerTitle}
         </Heading>
         <p className="text-sm text-text/80 leading-relaxed">{copy.learnDisclaimer}</p>
@@ -503,7 +503,7 @@ export function App() {
 
     navigator.serviceWorker.addEventListener('message', onWorkerMessage);
     void navigator.serviceWorker
-      .register(new URL('sw.js', appRoot), { scope: appRoot.pathname })
+      .register(new URL('sw.js', appRoot), { scope: appRoot.pathname, updateViaCache: 'none' })
       .then(async (registration) => {
         const ready = await navigator.serviceWorker.ready;
         const worker = registration.active ?? ready.active;
@@ -794,7 +794,7 @@ export function App() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-sm font-bold text-primary hover:text-text transition-colors px-3 py-1.5 rounded-full hover:bg-neutral shrink-0 cursor-pointer"
+                        className="text-sm font-bold text-primary-ink hover:text-text transition-colors px-3 py-1.5 rounded-full hover:bg-neutral shrink-0 cursor-pointer"
                         onPress={clearScreenshot}
                       >
                         {copy.useText}
@@ -816,7 +816,10 @@ export function App() {
                         rows={6}
                         value={message}
                         placeholder={copy.messagePlaceholder}
-                        aria-describedby="message-count"
+                        aria-describedby={
+                          overLimit ? 'message-count message-limit-error' : 'message-count'
+                        }
+                        aria-invalid={overLimit}
                         disabled={ocrState === 'loading'}
                         onChange={(event) => {
                           setMessage(event.currentTarget.value);
@@ -833,7 +836,11 @@ export function App() {
                       </div>
                     </div>
                     {overLimit && (
-                      <p className="text-sm text-high font-medium flex items-center gap-1.5 mt-2">
+                      <p
+                        id="message-limit-error"
+                        role="alert"
+                        className="text-sm text-high font-medium flex items-center gap-1.5 mt-2"
+                      >
                         <WarningCircle size={16} />
                         {copy.overLimit}
                       </p>
@@ -1050,7 +1057,7 @@ export function App() {
                   <ol className="space-y-4">
                     {copy.howSteps.map((step, i) => (
                       <li key={step} className="flex gap-4 text-sm text-text leading-relaxed">
-                        <span className="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-primary-tonal text-primary font-bold text-xs">
+                        <span className="flex-shrink-0 flex items-center justify-center h-6 w-6 rounded-full bg-primary-tonal text-primary-ink font-bold text-xs">
                           {i + 1}
                         </span>
                         {step}
@@ -1275,7 +1282,7 @@ export function App() {
                   <Languages
                     size={16}
                     strokeWidth={2.25}
-                    className="text-primary"
+                    className="text-primary-ink"
                     aria-hidden="true"
                   />
                   {copy.learnLanguages}
@@ -1287,7 +1294,7 @@ export function App() {
                   <div className="clay-panel rounded-2xl p-6 md:p-8 space-y-3" key={guide.title}>
                     <h2 className="text-xl font-bold tracking-tight flex items-center gap-3">
                       <span
-                        className="h-8 w-8 rounded-full bg-primary-tonal text-primary flex items-center justify-center shrink-0 text-base"
+                        className="h-8 w-8 rounded-full bg-primary-tonal text-primary-ink flex items-center justify-center shrink-0 text-base"
                         aria-hidden="true"
                       >
                         {index + 1}
@@ -1319,7 +1326,7 @@ export function App() {
                     <Button
                       size="lg"
                       variant="outline"
-                      className="w-full sm:w-auto px-8 py-4 bg-surface text-primary rounded-full font-bold text-lg active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full sm:w-auto px-8 py-4 bg-surface text-primary-ink rounded-full font-bold text-lg active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
                       onPress={promptInstall}
                     >
                       <Download size={20} /> {copy.installApp}
