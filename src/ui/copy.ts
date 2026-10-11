@@ -68,6 +68,7 @@ type Copy = {
   installApp: string;
   installOffline: string;
   installManual: string;
+  installPending: string;
   updateTitle: string;
   updateNote: string;
   updateAction: string;
@@ -194,6 +195,8 @@ export const COPY: Record<Lang, Copy> = {
     installOffline: 'You are offline. Sane still works; connect to the internet to install it.',
     installManual:
       'No install prompt? Open your browser menu and choose Install app or Add to Home screen.',
+    installPending:
+      "If Sane isn't in your apps within a minute, open the Play Store once, then reload this page and tap Install again.",
     updateTitle: 'A new version of Sane is ready',
     updateNote:
       'It has already downloaded. Your settings and history stay on this device after updating.',
@@ -381,6 +384,8 @@ export const COPY: Record<Lang, Copy> = {
       'Offline ka. Gumagana pa rin ang Sane; kumonekta sa internet para ma-install ito.',
     installManual:
       'Walang lumabas na prompt? Buksan ang menu ng browser at piliin ang Install app o Add to Home screen.',
+    installPending:
+      'Kung wala pa ang Sane sa iyong apps pagkalipas ng isang minuto, buksan muna ang Play Store, i-reload ang page na ito, saka i-tap ulit ang I-install.',
     updateTitle: 'May bagong bersyon ng Sane',
     updateNote:
       'Na-download na ito. Mananatili sa device na ito ang iyong settings at history pagkatapos mag-update.',
@@ -570,6 +575,8 @@ export const COPY: Record<Lang, Copy> = {
       'Offline ka. Gumagana pa rin ang Sane; mag-connect sa internet para ma-install.',
     installManual:
       'Walang lumabas na prompt? Buksan ang browser menu at piliin ang Install app o Add to Home screen.',
+    installPending:
+      'Kung wala pa ang Sane sa apps mo after one minute, buksan muna ang Play Store, i-reload ang page, tapos i-tap ulit ang I-install.',
     updateTitle: 'May bagong version ng Sane',
     updateNote:
       'Na-download na ito. Naka-save pa rin sa device mo ang settings at history pagka-update.',
