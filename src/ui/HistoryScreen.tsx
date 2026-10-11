@@ -152,7 +152,7 @@ export function HistoryScreen({
               {notes.map((note) => (
                 <li
                   key={note.id}
-                  className="space-y-1 rounded-lg border border-border bg-surface p-3"
+                  className="space-y-2 rounded-lg border border-border bg-surface p-3"
                 >
                   <p className="text-sm font-semibold text-text">
                     {note.userSays === 'scam' ? text.noteScam : text.noteFine}
@@ -165,7 +165,7 @@ export function HistoryScreen({
                   </p>
                   <button
                     type="button"
-                    className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary hover:text-high cursor-pointer"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-lg px-2 text-sm font-semibold text-secondary hover:text-high cursor-pointer"
                     onClick={() => {
                       store.removeNote(note.id);
                       refresh();

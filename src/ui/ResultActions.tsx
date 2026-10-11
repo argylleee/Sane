@@ -119,7 +119,7 @@ export function ResultActions({
           </button>
         )}
       </div>
-      <p className="min-h-5 text-sm text-text" role="status">
+      <p className={status ? 'text-sm text-text' : 'sr-only'} role="status">
         {status}
       </p>
     </section>
@@ -160,7 +160,7 @@ export function WrongVerdictCard({
           {text.wrongFine}
         </button>
       </div>
-      <p className="min-h-5 text-sm text-text" role="status">
+      <p className={status ? 'text-sm text-text' : 'sr-only'} role="status">
         {status}
       </p>
     </section>
