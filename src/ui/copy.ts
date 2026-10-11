@@ -66,6 +66,8 @@ type Copy = {
   shareEmpty: string;
   iosInstallHint: string;
   installApp: string;
+  installOffline: string;
+  installManual: string;
   analysisError: string;
   resultTitle: string;
   resultSubtitle: string;
@@ -115,6 +117,7 @@ type Copy = {
   notAGuarantee: string;
   learnTitle: string;
   learnDescription: string;
+  learnLanguages: string;
   guides: readonly GuideCopy[];
   learnDisclaimerTitle: string;
   learnDisclaimer: string;
@@ -144,8 +147,7 @@ export const COPY: Record<Lang, Copy> = {
     manualDescription: 'You choose what to paste. Sane does not automatically read your clipboard.',
     localLabel: 'On device',
     localTitle: 'Local phone analysis',
-    localDescription:
-      'The baseline may miss or incorrectly flag messages. Its accuracy is not validated.',
+    localDescription: 'The baseline may miss or incorrectly flag messages.',
     privacyFootnote: 'No account needed. Messages are checked on your device.',
     start: 'Check a message',
     backToScan: 'Back to scan',
@@ -185,6 +187,9 @@ export const COPY: Record<Lang, Copy> = {
     shareEmpty: 'No message or screenshot came through. Paste or choose one to check.',
     iosInstallHint: 'On iPhone or iPad, use Share, then Add to Home Screen to keep Sane handy.',
     installApp: 'Install Sane',
+    installOffline: 'You are offline. Sane still works; connect to the internet to install it.',
+    installManual:
+      'No install prompt? Open your browser menu and choose Install app or Add to Home screen.',
     analysisError: 'The check could not finish. Try again or paste the message into the box.',
     resultTitle: 'Message assessment',
     resultSubtitle: 'A helpful check, not a guarantee.',
@@ -201,13 +206,13 @@ export const COPY: Record<Lang, Copy> = {
     another: 'Check another message',
     modelTitle: 'Model assessment',
     modelRan: 'An on-device model ran for this check.',
-    noModel: 'No AI model ran for this check. Accuracy is not validated.',
+    noModel: 'No AI model ran for this check.',
     modelPreparing: (percent) =>
       `Preparing the AI check: ${percent}%. You can still check a message; it will use rules only until this is ready.`,
     modelDownloadTitle: 'Preparing the AI check',
     modelDownloadNote:
       'Downloading and setting up the model. You can keep checking messages with rules while it prepares.',
-    modelReadyStatus: 'AI check ready.',
+    modelReadyStatus: 'AI check ready',
     modelReadyNote: 'The model is ready to help check your next message on this device.',
     notificationLabel: 'AI model notifications',
     dismissNotification: 'Dismiss notification',
@@ -241,6 +246,7 @@ export const COPY: Record<Lang, Copy> = {
       'No obvious warning signs do not prove that the sender or request is legitimate. Verify independently.',
     learnTitle: 'How to use Sane',
     learnDescription: 'Follow these steps to check a message and understand what to do next.',
+    learnLanguages: 'Works with messages in English, Filipino, or Taglish',
     guides: [
       {
         title: 'Add a message',
@@ -261,7 +267,7 @@ export const COPY: Record<Lang, Copy> = {
     ],
     learnDisclaimerTitle: 'A check, not a verdict',
     learnDisclaimer:
-      'The local baseline can make mistakes. Its accuracy is not validated. Independent verification still matters.',
+      'The local baseline can make mistakes. Independent verification still matters.',
     learnAction: 'Check a message',
     assessment: {
       likely_scam: {
@@ -318,8 +324,7 @@ export const COPY: Record<Lang, Copy> = {
       'Ikaw ang pipili at magpa-paste ng mensahe. Hindi awtomatikong binabasa ang clipboard.',
     localLabel: 'Sa device',
     localTitle: 'Pagsusuri sa telepono',
-    localDescription:
-      'Maaaring may hindi makita o maling ma-flag ang baseline. Hindi pa napatunayan ang accuracy nito.',
+    localDescription: 'Maaaring may hindi makita o maling ma-flag ang baseline.',
     privacyFootnote: 'Walang account na kailangan. Sa iyong device lang sinusuri ang mensahe.',
     start: 'Suriin ang Mensahe',
     backToScan: 'Bumalik sa pagsusuri',
@@ -361,6 +366,10 @@ export const COPY: Record<Lang, Copy> = {
     iosInstallHint:
       'Sa iPhone o iPad, piliin ang Share, saka Add to Home Screen para madaling buksan ang Sane.',
     installApp: 'I-install ang Sane',
+    installOffline:
+      'Offline ka. Gumagana pa rin ang Sane; kumonekta sa internet para ma-install ito.',
+    installManual:
+      'Walang lumabas na prompt? Buksan ang menu ng browser at piliin ang Install app o Add to Home screen.',
     analysisError: 'Hindi natapos ang pagsusuri. Subukan ulit o i-paste ang mensahe sa kahon.',
     resultTitle: 'Resulta ng pagsusuri',
     resultSubtitle: 'Gabay lang ito, hindi garantiya.',
@@ -377,13 +386,13 @@ export const COPY: Record<Lang, Copy> = {
     another: 'Suriin ang ibang mensahe',
     modelTitle: 'Pagtatasa ng modelo',
     modelRan: 'May on-device model na tumakbo sa pagsusuring ito.',
-    noModel: 'Walang AI model na ginamit. Hindi pa napatunayan ang accuracy.',
+    noModel: 'Walang AI model na ginamit.',
     modelPreparing: (percent) =>
       `Inihahanda ang AI check: ${percent}%. Maaari ka pa ring mag-check ng mensahe; rules lang ang gagamitin hanggang handa na ito.`,
     modelDownloadTitle: 'Inihahanda ang AI check',
     modelDownloadNote:
       'Dina-download at inihahanda ang modelo. Maaari ka pa ring magsuri ng mensahe gamit ang rules.',
-    modelReadyStatus: 'Handa na ang AI check.',
+    modelReadyStatus: 'Handa na ang AI check',
     modelReadyNote: 'Handa na ang modelo para tumulong sa susunod na pagsusuri sa device na ito.',
     notificationLabel: 'Mga abiso ng AI model',
     dismissNotification: 'Isara ang abiso',
@@ -420,6 +429,7 @@ export const COPY: Record<Lang, Copy> = {
     learnTitle: 'Paano gamitin ang Sane',
     learnDescription:
       'Sundin ang mga hakbang para suriin ang mensahe at malaman ang susunod na gagawin.',
+    learnLanguages: 'Nasusuri ang mensaheng nasa English, Filipino, o Taglish',
     guides: [
       {
         title: 'Maglagay ng mensahe',
@@ -440,7 +450,7 @@ export const COPY: Record<Lang, Copy> = {
     ],
     learnDisclaimerTitle: 'Pagsusuri lang, hindi hatol',
     learnDisclaimer:
-      'Maaaring magkamali ang lokal na baseline. Hindi pa napatunayan ang accuracy nito. Mahalaga pa rin ang sariling beripikasyon.',
+      'Maaaring magkamali ang lokal na baseline. Mahalaga pa rin ang sariling beripikasyon.',
     learnAction: 'Suriin ang mensahe',
     assessment: {
       likely_scam: {
@@ -495,7 +505,7 @@ export const COPY: Record<Lang, Copy> = {
     manualDescription: 'Hindi automatic na binabasa ng Sane ang clipboard mo.',
     localLabel: 'Sa device',
     localTitle: 'Local na message check',
-    localDescription: 'Puwedeng magkamali ang result. Hindi pa validated ang accuracy.',
+    localDescription: 'Puwedeng magkamali ang result.',
     privacyFootnote: 'Walang account na kailangan. Sa device mo lang sinusuri ang message.',
     start: 'I-check ang Message',
     backToScan: 'Bumalik sa pag-check',
@@ -537,6 +547,10 @@ export const COPY: Record<Lang, Copy> = {
     iosInstallHint:
       'Sa iPhone o iPad, tap Share, tapos Add to Home Screen para madaling balikan ang Sane.',
     installApp: 'I-install ang Sane',
+    installOffline:
+      'Offline ka. Gumagana pa rin ang Sane; mag-connect sa internet para ma-install.',
+    installManual:
+      'Walang lumabas na prompt? Buksan ang browser menu at piliin ang Install app o Add to Home screen.',
     analysisError: 'Hindi natapos ang check. Try ulit o i-paste ang message sa box.',
     resultTitle: 'Message assessment',
     resultSubtitle: 'Helpful na check ito, hindi guarantee.',
@@ -553,13 +567,13 @@ export const COPY: Record<Lang, Copy> = {
     another: 'Mag-check ng ibang message',
     modelTitle: 'Model assessment',
     modelRan: 'May on-device model na tumakbo sa check na ito.',
-    noModel: 'Walang AI model na tumakbo. Hindi pa validated ang accuracy.',
+    noModel: 'Walang AI model na tumakbo.',
     modelPreparing: (percent) =>
       `Inihahanda ang AI check: ${percent}%. Pwede ka pa ring mag-check ng message; rules lang ang gagamitin hangga't hindi pa ready.`,
     modelDownloadTitle: 'Inihahanda ang AI check',
     modelDownloadNote:
       'Dina-download at sine-set up ang model. Pwede ka pa ring mag-check ng messages gamit ang rules.',
-    modelReadyStatus: 'Ready na ang AI check.',
+    modelReadyStatus: 'Ready na ang AI check',
     modelReadyNote: 'Ready na ang model para tumulong sa next message check sa device na ito.',
     notificationLabel: 'AI model notifications',
     dismissNotification: 'Isara ang notification',
@@ -596,6 +610,7 @@ export const COPY: Record<Lang, Copy> = {
     learnTitle: 'Paano gamitin ang Sane',
     learnDescription:
       'Sundin ang steps para i-check ang message at malaman ang susunod na gagawin.',
+    learnLanguages: 'Pwedeng i-check ang messages na English, Filipino, o Taglish',
     guides: [
       {
         title: 'Add a message',
@@ -616,7 +631,7 @@ export const COPY: Record<Lang, Copy> = {
     ],
     learnDisclaimerTitle: 'Check lang, hindi verdict',
     learnDisclaimer:
-      'Puwedeng magkamali ang local baseline. Hindi pa validated ang accuracy. Importante pa rin ang sariling verification.',
+      'Puwedeng magkamali ang local baseline. Importante pa rin ang sariling verification.',
     learnAction: 'Mag-check ng message',
     assessment: {
       likely_scam: {

@@ -418,9 +418,67 @@ button.brand-action {
   padding: 0.25rem;
 }
 
+/* One footer layout for every page; mobile stacks a centred brand line over a single credit line. */
 .site-footer {
-  border-top: 1px solid var(--color-border);
-  background: color-mix(in srgb, var(--color-surface) 30%, var(--color-background));
+  border-top: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 55%, var(--color-background));
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 1.25rem calc(6.25rem + env(safe-area-inset-bottom));
+  text-align: center;
+}
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  font-size: 0.8125rem;
+}
+.footer-brand img {
+  height: 1.5rem;
+  width: auto;
+}
+.footer-brand > p,
+.footer-credit > p {
+  margin-block: 0;
+}
+.footer-credit {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+.footer-separator {
+  opacity: 0.6;
+}
+@media (min-width: 640px) {
+  .footer-inner {
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
+  }
+  .footer-credit {
+    font-size: 0.8125rem;
+  }
+}
+@media (min-width: 768px) {
+  .footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+    text-align: left;
+  }
+  .footer-credit {
+    gap: 0.25rem 0.75rem;
+  }
+}
+@media (min-width: 1024px) {
+  .footer-inner {
+    padding-block: 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+  }
 }
 
 /* Keep the footer inside the full-height home composition with a quiet surface boundary. */
@@ -449,42 +507,10 @@ button.brand-action {
 .home-shell .site-footer {
   position: absolute;
   inset: auto 0 0;
-  border-top: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
-  background: color-mix(in srgb, var(--color-surface) 55%, var(--color-background));
-}
-.home-shell .footer-inner {
-  gap: 0.75rem;
-  padding-block: 1rem calc(6.25rem + env(safe-area-inset-bottom));
-}
-.home-shell .footer-brand {
-  flex-direction: row;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 0.8125rem;
-}
-.home-shell .footer-brand img {
-  height: 1.5rem;
-}
-.home-shell .footer-credit {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 0.25rem 1rem;
-  font-size: 0.8125rem;
-}
-.home-shell .footer-credit > p {
-  margin-block: 0;
-}
-.home-shell .footer-team {
-  font-size: 0.875rem;
 }
 @media (min-width: 640px) {
   .home-shell .home-main {
     padding-bottom: calc(8rem + env(safe-area-inset-bottom));
-  }
-  .home-shell .footer-inner {
-    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom));
   }
 }
 @media (min-width: 1024px) {
@@ -501,14 +527,11 @@ button.brand-action {
   .home-shell .home-mascot-wrap {
     width: min(100%, 25rem);
   }
-  .home-shell .footer-inner {
-    padding-block: 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
-  }
 }
 
 .footer-team {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--color-text);
   white-space: nowrap;
@@ -649,7 +672,7 @@ button.theme-toggle {
   text-wrap: balance;
 }
 
-main :is(h2, h3),
+main :is(h2, h3, .display-text),
 .model-toast [data-slot='toast-title'] {
   font-family: var(--font-display);
   font-weight: 500;

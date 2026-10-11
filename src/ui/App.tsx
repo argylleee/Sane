@@ -39,10 +39,15 @@ import {
   Sun,
   Moon,
   CircleCheck,
+  Download,
+  RotateCcw,
+  Languages,
 } from 'lucide-react';
 
 const MAX_MESSAGE_LENGTH = 2_000;
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+const SECONDARY_ACTION_CLASS =
+  'w-full flex items-center justify-center gap-2 py-3.5 bg-surface transition-all duration-150 rounded-xl font-bold text-sm text-text cursor-pointer';
 type Screen = 'welcome' | 'scan' | 'result' | 'learn';
 type Theme = 'system' | 'light' | 'dark';
 
@@ -204,6 +209,33 @@ function ThemeToggle({
   );
 }
 
+/* A callout, not a card: tinted, outlined and icon-led so it never reads as another numbered step. */
+function CheckNotice({
+  copy,
+  headingLevel = 2,
+}: {
+  copy: ReturnType<typeof copyFor>;
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 3 ? 'h3' : 'h2';
+  return (
+    <aside className="flex items-start gap-4 rounded-2xl border border-dashed border-primary/40 bg-primary-tonal/40 p-5 md:p-6 text-left">
+      <span
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary"
+        aria-hidden="true"
+      >
+        <Info size={18} strokeWidth={2.5} />
+      </span>
+      <div className="space-y-1">
+        <Heading className="text-base font-bold tracking-tight text-primary">
+          {copy.learnDisclaimerTitle}
+        </Heading>
+        <p className="text-sm text-text/80 leading-relaxed">{copy.learnDisclaimer}</p>
+      </div>
+    </aside>
+  );
+}
+
 function MainNavigation({
   screen,
   onNavigate,
@@ -217,9 +249,7 @@ function MainNavigation({
       aria-label="Main navigation"
     >
       {(['learn', 'scan'] as const).map((navScreen) => {
-        const isSelected =
-          screen === navScreen ||
-          (navScreen === 'scan' && (screen === 'result' || screen === 'welcome'));
+        const isSelected = screen === navScreen || (navScreen === 'scan' && screen === 'result');
         return (
           <button
             key={navScreen}
@@ -261,7 +291,13 @@ export function App() {
   const [feedback, setFeedback] = useState<FeedbackKey | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const [canInstall, setCanInstall] = useState(false);
+  const [isOnline, setIsOnline] = useState(() => navigator.onLine);
+  const [isInstalled, setIsInstalled] = useState(
+    () =>
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as Navigator & { standalone?: boolean }).standalone === true,
+  );
+  const [showInstallHelp, setShowInstallHelp] = useState(false);
   const installPrompt = useRef<InstallPromptEvent | null>(null);
   const ocrRequestId = useRef(0);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -275,11 +311,11 @@ export function App() {
   const copy = copyFor('en');
 
   const overLimit = message.length > MAX_MESSAGE_LENGTH;
+  // Optional explanation model: downloaded only on request, then loads from cache.
+  const showLlmOffer =
+    llmTier !== 'C' && llmStatus.state === 'idle' && embeddingStatus.state !== 'loading';
   const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  const isStandalone =
-    window.matchMedia('(display-mode: standalone)').matches ||
-    (navigator as Navigator & { standalone?: boolean }).standalone === true;
-  const showIosInstallHint = isAppleMobile && !isStandalone;
+  const showIosInstallHint = isAppleMobile && !isInstalled;
 
   useEffect(() => {
     // The explanation model follows the embedding model so the two downloads do not compete.
@@ -333,17 +369,22 @@ export function App() {
     const onInstallPrompt = (event: Event) => {
       event.preventDefault();
       installPrompt.current = event as InstallPromptEvent;
-      setCanInstall(true);
+      setShowInstallHelp(false);
     };
     const onInstalled = () => {
       installPrompt.current = null;
-      setCanInstall(false);
+      setIsInstalled(true);
     };
+    const onConnectionChange = () => setIsOnline(navigator.onLine);
     window.addEventListener('beforeinstallprompt', onInstallPrompt);
     window.addEventListener('appinstalled', onInstalled);
+    window.addEventListener('online', onConnectionChange);
+    window.addEventListener('offline', onConnectionChange);
     return () => {
       window.removeEventListener('beforeinstallprompt', onInstallPrompt);
       window.removeEventListener('appinstalled', onInstalled);
+      window.removeEventListener('online', onConnectionChange);
+      window.removeEventListener('offline', onConnectionChange);
     };
   }, []);
 
@@ -496,11 +537,14 @@ export function App() {
 
   async function promptInstall() {
     const prompt = installPrompt.current;
-    if (!prompt) return;
+    if (!prompt) {
+      // No browser prompt (iOS, already dismissed, or not offered yet): explain the manual route.
+      setShowInstallHelp(true);
+      return;
+    }
     await prompt.prompt();
     await prompt.userChoice;
     installPrompt.current = null;
-    setCanInstall(false);
   }
 
   function startAnotherCheck() {
@@ -558,7 +602,7 @@ export function App() {
       </header>
 
       <main
-        className={`flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-16 pb-24 sm:pb-8 md:pb-16 flex flex-col relative overflow-hidden ${screen === 'welcome' ? 'home-main' : ''}`}
+        className={`flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-8 md:py-16 flex flex-col relative overflow-hidden ${screen === 'welcome' ? 'home-main' : ''}`}
       >
         <AnimatePresence mode="wait">
           {screen === 'welcome' && (
@@ -687,6 +731,9 @@ export function App() {
                         {copy.overLimit}
                       </p>
                     )}
+                    {showLlmOffer && (
+                      <p className="text-xs text-secondary">{copy.llmPaused(LLM_DOWNLOAD_MB)}</p>
+                    )}
                   </div>
 
                   <div
@@ -703,9 +750,12 @@ export function App() {
                         <Button
                           type="button"
                           variant="outline"
+                          size="md"
+                          fullWidth
+                          className={SECONDARY_ACTION_CLASS}
                           onPress={() => void loadEmbeddings().catch(() => undefined)}
                         >
-                          {copy.modelPrepare}
+                          <Download size={18} /> {copy.modelPrepare}
                         </Button>
                       </>
                     )}
@@ -715,9 +765,12 @@ export function App() {
                         <Button
                           type="button"
                           variant="outline"
+                          size="md"
+                          fullWidth
+                          className={SECONDARY_ACTION_CLASS}
                           onPress={() => void loadEmbeddings().catch(() => undefined)}
                         >
-                          {copy.modelRetry}
+                          <RotateCcw size={18} /> {copy.modelRetry}
                         </Button>
                         {embeddingStatus.message && (
                           <details>
@@ -727,24 +780,32 @@ export function App() {
                         )}
                       </>
                     )}
-                    {/* Optional explanation model: downloaded only on request, then loads from cache. */}
-                    {llmTier !== 'C' &&
-                      llmStatus.state === 'idle' &&
-                      embeddingStatus.state !== 'loading' && (
-                        <>
-                          <p>{copy.llmPaused(LLM_DOWNLOAD_MB)}</p>
-                          <Button type="button" variant="outline" onPress={downloadLlm}>
-                            {copy.llmDownloadAction}
-                          </Button>
-                        </>
-                      )}
+                    {showLlmOffer && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="md"
+                        fullWidth
+                        className={SECONDARY_ACTION_CLASS}
+                        onPress={downloadLlm}
+                      >
+                        <Download size={18} /> {copy.llmDownloadAction}
+                      </Button>
+                    )}
                     {llmStatus.state === 'loading' && <p>{copy.llmProgress(llmStatus.progress)}</p>}
                     {llmStatus.state === 'ready' && <p>{copy.llmReady}</p>}
                     {llmStatus.state === 'error' && (
                       <>
                         <p>{copy.llmError}</p>
-                        <Button type="button" variant="outline" onPress={downloadLlm}>
-                          {copy.llmRetry}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="md"
+                          fullWidth
+                          className={SECONDARY_ACTION_CLASS}
+                          onPress={downloadLlm}
+                        >
+                          <RotateCcw size={18} /> {copy.llmRetry}
                         </Button>
                       </>
                     )}
@@ -755,7 +816,7 @@ export function App() {
                       variant="outline"
                       size="md"
                       fullWidth
-                      className="w-full flex items-center justify-center gap-2 py-3.5 bg-surface transition-all duration-150 rounded-xl font-bold text-sm text-text cursor-pointer"
+                      className={SECONDARY_ACTION_CLASS}
                       onPress={pasteFromClipboard}
                     >
                       <ClipboardText size={18} /> {copy.paste}
@@ -764,7 +825,7 @@ export function App() {
                       variant="outline"
                       size="md"
                       fullWidth
-                      className="w-full flex items-center justify-center gap-2 py-3.5 bg-surface transition-all duration-150 rounded-xl font-bold text-sm text-text cursor-pointer"
+                      className={SECONDARY_ACTION_CLASS}
                       onPress={() => fileInput.current?.click()}
                     >
                       <UploadSimple size={18} /> {copy.upload}
@@ -853,7 +914,7 @@ export function App() {
                   </h2>
                   <p className="text-sm text-secondary leading-relaxed">{copy.readyDescription}</p>
                   {embeddingStatus.state === 'ready' && (
-                    <p className="mt-3 flex items-center gap-2 text-sm text-text font-medium">
+                    <p className="display-text mt-3 flex items-center gap-2 text-base text-text">
                       <CircleCheck size={18} className="text-good" />
                       {copy.modelReadyStatus}
                     </p>
@@ -988,6 +1049,7 @@ export function App() {
                       <p className="text-sm text-secondary">{copy.notAGuarantee}</p>
                     </aside>
                   )}
+                  <CheckNotice copy={copy} headingLevel={3} />
                   {resultIsImage && !resultMessage && (
                     <p
                       className="text-sm text-high font-medium flex items-center gap-1.5"
@@ -1068,18 +1130,6 @@ export function App() {
                   >
                     {copy.another}
                   </Button>
-
-                  {canInstall && (
-                    <Button
-                      variant="outline"
-                      size="md"
-                      fullWidth
-                      className="w-full py-3 bg-surface text-primary font-bold text-sm rounded-xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
-                      onPress={promptInstall}
-                    >
-                      {copy.installApp}
-                    </Button>
-                  )}
                 </aside>
               </div>
             </motion.div>
@@ -1097,6 +1147,15 @@ export function App() {
                 <h1 className="page-heading mx-auto">{copy.learnTitle}</h1>
                 <p className="text-lg text-secondary max-w-[50ch] mx-auto">
                   {copy.learnDescription}
+                </p>
+                <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-semibold text-text">
+                  <Languages
+                    size={16}
+                    strokeWidth={2.25}
+                    className="text-primary"
+                    aria-hidden="true"
+                  />
+                  {copy.learnLanguages}
                 </p>
               </div>
 
@@ -1117,20 +1176,38 @@ export function App() {
                 ))}
               </div>
 
-              <aside className="clay-panel bg-neutral/50 rounded-2xl p-6 md:p-8 text-center space-y-3">
-                <h2 className="font-bold text-text">{copy.learnDisclaimerTitle}</h2>
-                <p className="text-sm text-secondary">{copy.learnDisclaimer}</p>
-              </aside>
+              <CheckNotice copy={copy} />
 
-              <div className="flex justify-center pt-8">
-                <Button
-                  size="lg"
-                  variant="primary"
-                  className="px-8 py-4 bg-primary text-on-primary rounded-full font-bold text-lg hover:opacity-95 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20 cursor-pointer"
-                  onPress={() => setScreen('scan')}
-                >
-                  {copy.learnAction}
-                </Button>
+              <div className="flex flex-col items-center gap-3 pt-8">
+                <div className="flex w-full flex-col sm:flex-row sm:justify-center gap-3">
+                  <Button
+                    size="lg"
+                    variant="primary"
+                    className="w-full sm:w-auto px-8 py-4 bg-primary text-on-primary rounded-full font-bold text-lg hover:opacity-95 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20 cursor-pointer"
+                    onPress={() => setScreen('scan')}
+                  >
+                    {copy.learnAction}
+                  </Button>
+                  {!isInstalled && (
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full sm:w-auto px-8 py-4 bg-surface text-primary rounded-full font-bold text-lg active:scale-95 transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer"
+                      onPress={promptInstall}
+                    >
+                      <Download size={20} /> {copy.installApp}
+                    </Button>
+                  )}
+                </div>
+                {!isInstalled && (!isOnline || showInstallHelp) && (
+                  <p className="text-xs text-secondary text-center max-w-[45ch]" role="status">
+                    {!isOnline
+                      ? copy.installOffline
+                      : isAppleMobile
+                        ? copy.iosInstallHint
+                        : copy.installManual}
+                  </p>
+                )}
               </div>
             </motion.div>
           )}
@@ -1138,27 +1215,26 @@ export function App() {
       </main>
       <MobileNavigation screen={screen} onNavigate={setScreen} copy={copy} />
       <footer className="site-footer w-full mt-auto">
-        <div className="footer-inner mx-auto flex max-w-6xl flex-col md:flex-row items-center justify-between gap-8 px-4 sm:px-6 md:px-8 py-10 sm:py-12 pb-24 sm:pb-12 text-sm text-secondary">
-          <div className="footer-brand flex flex-col items-center md:items-start gap-3">
+        <div className="footer-inner mx-auto max-w-6xl px-4 sm:px-6 md:px-8 text-secondary">
+          <div className="footer-brand">
             <button
               type="button"
               onClick={() => setScreen('welcome')}
-              className="brand-action flex items-center gap-2 hover:opacity-85 transition-opacity cursor-pointer"
+              className="brand-action flex items-center hover:opacity-85 transition-opacity cursor-pointer"
               aria-label="Sane home"
             >
-              <img
-                src={`${import.meta.env.BASE_URL}icons/sane-logo.png`}
-                alt="Sane"
-                className="h-7 w-auto"
-              />
+              <img src={`${import.meta.env.BASE_URL}icons/sane-logo.png`} alt="Sane" />
             </button>
             <p>{copy.footerSlogan}</p>
           </div>
-          <div className="footer-credit text-center md:text-right space-y-3">
+          <div className="footer-credit">
             <p>
               {copy.footerDevelopedBy} <span className="footer-team">What if I Call</span>
             </p>
-            <p className="text-xs">&copy; {new Date().getFullYear()} Sane</p>
+            <span className="footer-separator" aria-hidden="true">
+              &middot;
+            </span>
+            <p>&copy; {new Date().getFullYear()} Sane</p>
           </div>
         </div>
       </footer>

@@ -21,8 +21,7 @@ export function MobileNavigation({
       >
         {(['scan', 'learn'] as const).map((destination) => {
           const isSelected =
-            screen === destination ||
-            (destination === 'scan' && (screen === 'result' || screen === 'welcome'));
+            screen === destination || (destination === 'scan' && screen === 'result');
           const Icon = destination === 'scan' ? Scan : Info;
           const label = destination === 'scan' ? copy.navigationScan : copy.navigationLearn;
           return (
