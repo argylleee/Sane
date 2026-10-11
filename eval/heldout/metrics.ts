@@ -9,7 +9,8 @@ export type Case = {
   pattern: string;
   provenance: string;
 };
-export type Row = Pick<Case, 'id' | 'lang' | 'expected'> & { actual: Level };
+// Expected 'not_sure' marks an ambiguous case: neither a scam nor a legitimate message in the counts.
+export type Row = Pick<Case, 'id' | 'lang'> & { expected: Level; actual: Level };
 const flagged = (level: Level) => level === 'likely_scam' || level === 'suspicious';
 const ratio = (n: number, d: number) => (d === 0 ? null : n / d);
 

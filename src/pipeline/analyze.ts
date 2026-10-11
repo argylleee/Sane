@@ -6,8 +6,8 @@ import { explain, localizeSignals } from '../explain/templates';
 import { runRules } from '../rules';
 import { findAsks, givesSafetyAdvice, goesInPerson } from '../rules/ask';
 import { findDetails } from '../rules/details';
-import { hasUnverifiedUrl, linkTrust } from '../rules/urls';
-import { score } from '../score/score';
+import { hasUnverifiedUrl, hasUrl, linkTrust } from '../rules/urls';
+import { BENIGN_NOTICES, NOTICE_BREAKING, score } from '../score/score';
 import { normalize } from './normalize';
 
 function fallback(opts: AnalyzeOptions, ocrFailed = false): Verdict {
@@ -57,6 +57,8 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions): Promis
     }
 
     const matches = evidence?.matches ?? [];
+    const asks = findAsks(text);
+    const trust = linkTrust(text);
     const {
       level,
       score: total,
@@ -64,19 +66,26 @@ export async function analyze(input: AnalyzeInput, opts: AnalyzeOptions): Promis
     } = score(signals, matches, evidence?.level, {
       margin: evidence?.margin,
       unverifiedLink: hasUnverifiedUrl(text),
-      asks: findAsks(text),
-      linkTrust: linkTrust(text),
+      asks,
+      linkTrust: trust,
       advice: givesSafetyAdvice(text),
       inPerson: goesInPerson(text),
     });
+    // A reassurance such as "paid only on delivery" is not shown for a message that also asks for
+    // money, details, a call or a link visit: that claim would not hold for the message as a whole.
+    const shown = asks.some(
+      (kind) => NOTICE_BREAKING.includes(kind) && !(kind === 'link' && trust === 'official'),
+    )
+      ? signals.filter(({ id }) => id === 'safe_credential_notice' || !BENIGN_NOTICES.has(id))
+      : signals;
     const verdict: Verdict = {
       level,
       score: total,
-      signals: localizeSignals(signals, opts.lang),
+      signals: localizeSignals(shown, opts.lang),
       matches,
       archetypeId,
       lang: opts.lang,
-      explanation: explain(level, opts.lang, signals),
+      explanation: explain(level, opts.lang, shown),
       usedModels: { ocr, embeddings: evidence !== null, llm: false },
       findings: findDetails(text),
     };
@@ -107,6 +116,7 @@ export async function addLlmExplanation(verdict: Verdict, text: string): Promise
           signals: verdict.signals.filter(({ weight }) => weight > 0).map(({ label }) => label),
           advice: verdict.explanation.steps,
           text,
+          evidence: { signalIds: verdict.signals.map(({ id }) => id), hasLink: hasUrl(text) },
         });
       })(),
       new Promise<null>((resolve) => {

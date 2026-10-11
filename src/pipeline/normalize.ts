@@ -25,6 +25,7 @@ export function normalize(text: string): string {
   return text
     .normalize('NFKC')
     .replace(ZERO_WIDTH, '')
+    .replace(/[\u2018\u2019\u02BC]/g, "'")
     .replace(/[аеорсхуіӏАЕОРСХУІӀ]/g, (char) => CONFUSABLES[char])
     .trim();
 }

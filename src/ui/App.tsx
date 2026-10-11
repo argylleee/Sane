@@ -146,7 +146,7 @@ function InertMessage({ text }: { text: string }) {
 function HighlightedMessage({ text, signals }: { text: string; signals: Signal[] }) {
   const normalized = normalize(text);
   const spans = signals
-    .flatMap((signal) => (signal.span ? [signal.span] : []))
+    .flatMap((signal) => (signal.weight > 0 && signal.span ? [signal.span] : []))
     .map(([start, end]) => [Math.max(0, start), Math.min(normalized.length, end)] as const)
     .filter(([start, end]) => end > start)
     .sort(([left], [right]) => left - right);
@@ -364,6 +364,8 @@ export function App() {
       },
     [verdict, lang],
   );
+  // Calming cues (weight 0) are listed in the "Why this result" card, never as warnings.
+  const redFlags = shown?.signals.filter(({ weight }) => weight > 0) ?? [];
 
   const overLimit = message.length > MAX_MESSAGE_LENGTH;
   // Optional explanation model: downloaded only on request, then loads from cache.
@@ -1152,12 +1154,12 @@ export function App() {
 
                   {/* Evidence / Signals. For "No obvious warning signs" with nothing found, the
                       summary and the "Why this result" card already say so; skip the empty card. */}
-                  {(verdict.level !== 'probably_fine' || shown.signals.length > 0) && (
+                  {(verdict.level !== 'probably_fine' || redFlags.length > 0) && (
                     <div className="clay-panel rounded-2xl p-6 space-y-4">
                       <h3 className="font-bold text-text">{copy.rulesTitle}</h3>
-                      {shown.signals.length > 0 ? (
+                      {redFlags.length > 0 ? (
                         <ul className="space-y-3">
-                          {shown.signals.map((signal, index) => (
+                          {redFlags.map((signal, index) => (
                             <li
                               key={`${signal.id}-${index}`}
                               className="flex gap-3 text-sm text-text leading-relaxed bg-surface border border-border p-3 rounded-lg"

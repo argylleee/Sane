@@ -9,6 +9,11 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     suspicious_link: 'Shortened link or unusual domain ending',
     otp_pin_request: 'Asks for a one-time code or password',
     safe_credential_notice: 'Says not to share a code',
+    cod_notice: 'Payment is only due when the parcel is delivered',
+    official_payment_notice: 'Says to pay only through official apps or accredited partners',
+    scam_awareness: 'Warns about a scam and advises not to act on it',
+    cod_unusual_payment:
+      'Asks you to pay in advance or to a personal account for a cash-on-delivery parcel',
     urgency: 'Pressures you to act quickly',
     account_threat: 'Threatens account access',
     money_request: 'Asks for money or a fee',
@@ -34,6 +39,11 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     suspicious_link: 'Pinaikling link o di-karaniwang dulo ng domain',
     otp_pin_request: 'Humihingi ng code o password',
     safe_credential_notice: 'Sinasabing huwag ibigay ang code',
+    cod_notice: 'Babayaran lang kapag naihatid na ang parcel',
+    official_payment_notice: 'Sinasabing magbayad lang sa opisyal na app o accredited na partner',
+    scam_awareness: 'Nagbababala tungkol sa scam at sinasabing huwag itong sundin',
+    cod_unusual_payment:
+      'Pinapabayad ka nang maaga o sa personal na account kahit cash on delivery ang parcel',
     urgency: 'Pinagmamadali kang kumilos',
     account_threat: 'Nagbabanta tungkol sa access sa account',
     money_request: 'Humihingi ng pera o bayad',
@@ -59,6 +69,10 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     suspicious_link: 'Shortened link o kakaibang domain ending',
     otp_pin_request: 'Humihingi ng code o password',
     safe_credential_notice: 'Sinasabing huwag i-share ang code',
+    cod_notice: 'Babayaran lang pag na-deliver na ang parcel',
+    official_payment_notice: 'Sinasabing mag-pay lang sa official app o accredited partners',
+    scam_awareness: 'Nagwa-warn tungkol sa scam at sinasabing huwag itong sundin',
+    cod_unusual_payment: 'Pinapa-pay ka in advance o sa personal account kahit COD ang parcel',
     urgency: 'Minamadali kang mag-action',
     account_threat: 'May banta sa account access',
     money_request: 'Humihingi ng money o fee',
@@ -236,6 +250,15 @@ const ADVICE: [string[], Advice][] = [
     },
   ],
   [
+    ['cod_unusual_payment'],
+    {
+      en: 'With cash on delivery you pay only when the parcel is in your hands. Do not send money in advance or to a personal number.',
+      fil: 'Sa cash on delivery, magbabayad ka lang kapag hawak mo na ang parcel. Huwag magpadala ng pera nang maaga o sa personal na numero.',
+      taglish:
+        'Sa COD, magbabayad ka lang kapag hawak mo na ang parcel. Huwag mag-send ng pera in advance o sa personal number.',
+    },
+  ],
+  [
     ['delivery_scam'],
     {
       en: "Check the tracking number in the courier's official app, not through this message.",
@@ -320,6 +343,94 @@ const ADVICE: [string[], Advice][] = [
   ],
 ];
 
+// A cash-on-delivery reminder with nothing else wrong (rules/index.ts maskDeliveryNotice). The text
+// cannot prove who sent it, so the advice keeps the reader in control of the payment.
+const codNotice: Record<Lang, Verdict['explanation']> = {
+  en: {
+    headline:
+      'This looks like a normal cash-on-delivery reminder. The text alone cannot confirm who sent it.',
+    steps: [
+      'Pay only when the parcel is in your hands, and only if you really ordered it.',
+      'Check the order and tracking number in the shop or courier app. Do not send money or a code in advance.',
+    ],
+  },
+  fil: {
+    headline:
+      'Mukhang karaniwang paalala ito ng cash on delivery. Hindi makukumpirma mula sa mensahe lang kung sino ang nagpadala.',
+    steps: [
+      'Magbayad lang kapag hawak mo na ang parcel, at kung ikaw talaga ang umorder nito.',
+      'Tingnan ang order at tracking number sa app ng shop o courier. Huwag magpadala ng pera o code nang maaga.',
+    ],
+  },
+  taglish: {
+    headline:
+      'Mukhang normal na COD reminder ito. Pero hindi ma-confirm sa message lang kung sino talaga ang sender.',
+    steps: [
+      'Mag-pay lang kapag hawak mo na ang parcel, at kung talagang nag-order ka.',
+      'I-check ang order at tracking number sa shop o courier app. Huwag mag-send ng pera o code in advance.',
+    ],
+  },
+};
+
+// A bill or installment reminder that points only to official payment channels.
+const paymentNotice: Record<Lang, Verdict['explanation']> = {
+  en: {
+    headline:
+      'This looks like a normal payment reminder that points to official payment channels. The text alone cannot confirm who sent it.',
+    steps: [
+      'Pay through the app, online banking or payment center you already use, not through a link or number in a message.',
+      'If the amount or due date looks wrong, check your account in the official app.',
+    ],
+  },
+  fil: {
+    headline:
+      'Mukhang karaniwang paalala ito ng bayarin na tumuturo sa opisyal na paraan ng pagbabayad. Hindi makukumpirma mula sa mensahe lang kung sino ang nagpadala.',
+    steps: [
+      'Magbayad sa app, online banking o payment center na ginagamit mo na, hindi sa link o numero sa mensahe.',
+      'Kung mukhang mali ang halaga o petsa, tingnan ang account mo sa opisyal na app.',
+    ],
+  },
+  taglish: {
+    headline:
+      'Mukhang normal na payment reminder ito na tumuturo sa official payment channels. Pero hindi ma-confirm sa message lang kung sino ang sender.',
+    steps: [
+      'Mag-pay sa app, online banking o payment center na gamit mo na, hindi sa link o number sa message.',
+      'Kung mukhang mali ang amount o due date, i-check ang account mo sa official app.',
+    ],
+  },
+};
+
+// A message that warns about a scam and asks the reader for nothing.
+const awarenessNotice: Record<Lang, Verdict['explanation']> = {
+  en: {
+    headline: 'This message warns about a scam and asks you for nothing.',
+    steps: [
+      'Follow its advice: do not click links, pay or share codes from unexpected messages.',
+      'If you are unsure about an account, open the official app yourself.',
+    ],
+  },
+  fil: {
+    headline: 'Nagbababala ang mensaheng ito tungkol sa scam at wala itong hinihingi sa iyo.',
+    steps: [
+      'Sundin ang payo: huwag pindutin ang link, magbayad o magbigay ng code mula sa di-inaasahang mensahe.',
+      'Kung hindi ka sigurado sa account mo, ikaw mismo ang magbukas ng opisyal na app.',
+    ],
+  },
+  taglish: {
+    headline: 'Nagwa-warn ang message na ito tungkol sa scam at wala itong hinihingi sa iyo.',
+    steps: [
+      'Sundin ang advice: huwag i-click ang links, mag-pay o mag-share ng code galing sa unexpected messages.',
+      'Kung hindi ka sure sa account mo, ikaw mismo mag-open ng official app.',
+    ],
+  },
+};
+
+const NOTICE_EXPLANATIONS: [string, Record<Lang, Verdict['explanation']>][] = [
+  ['cod_notice', codNotice],
+  ['official_payment_notice', paymentNotice],
+  ['scam_awareness', awarenessNotice],
+];
+
 const MAX_STEPS = 3;
 
 /**
@@ -332,6 +443,9 @@ export function explain(
   signals: Pick<Signal, 'id'>[] = [],
 ): Verdict['explanation'] {
   const base = templates[lang][level];
+  const notice = NOTICE_EXPLANATIONS.find(([id]) => signals.some((signal) => signal.id === id));
+  if ((level === 'probably_fine' || level === 'not_sure') && notice)
+    return { headline: notice[1][lang].headline, steps: [...notice[1][lang].steps] };
   if (level === 'probably_fine' || level === 'not_sure' || signals.length === 0)
     return { headline: base.headline, steps: [...base.steps] };
   const ids = new Set(signals.map(({ id }) => id));

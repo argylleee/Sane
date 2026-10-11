@@ -199,6 +199,7 @@ export async function explainWithLlm(facts: LlmFacts): Promise<string | null> {
     return validateLlmOutput(reply.choices[0]?.message.content, {
       level: facts.level,
       lang: facts.lang,
+      evidence: facts.evidence,
     });
   } catch {
     return null;
