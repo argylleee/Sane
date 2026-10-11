@@ -11,6 +11,15 @@
     { "name": "landbank", "domains": ["landbank.com"] },
     { "name": "pnb", "domains": ["pnb.com.ph"] },
     { "name": "gotyme", "domains": ["gotyme.com.ph"] },
-    { "name": "coinsph", "domains": ["coins.ph"] }
+    { "name": "coinsph", "domains": ["coins.ph"] },
+    { "name": "jtexpress", "domains": ["jtexpress.ph"] },
+    { "name": "lbcexpress", "domains": ["lbcexpress.com"] },
+    { "name": "flashexpress", "domains": ["flashexpress.ph"] },
+    { "name": "ninjavan", "domains": ["ninjavan.co"] },
+    { "name": "shopee", "domains": ["shopee.ph"] },
+    { "name": "lazada", "domains": ["lazada.com.ph"] },
+    { "name": "globe", "domains": ["globe.com.ph"] },
+    { "name": "meralco", "domains": ["meralco.com.ph"] },
+    { "name": "pldt", "domains": ["pldthome.com", "pldt.com"] }
   ]
 }

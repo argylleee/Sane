@@ -54,6 +54,7 @@ describe('optional LLM explanation', () => {
       signals: verdict.signals.map(({ label }) => label),
       advice: verdict.explanation.steps,
       text: normalize(raw),
+      evidence: { signalIds: verdict.signals.map(({ id }) => id), hasLink: true },
     });
     expect(verdict.signals.find(({ id }) => id === 'otp_pin_request')?.label).toMatch(/Humihingi/);
     expect(verdict.explanation.extra).toBe('Huwag ibigay ang iyong code.');
@@ -69,6 +70,7 @@ describe('optional LLM explanation', () => {
     expect(Object.keys(ai.explain.mock.calls[0][0]).sort()).toEqual([
       'advice',
       'archetypeName',
+      'evidence',
       'lang',
       'level',
       'signals',

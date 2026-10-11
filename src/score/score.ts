@@ -57,6 +57,15 @@ const NO_ASK_CUES = new Set([
 
 // Asks for money, a code or personal details turn any red flag into a classic scam shape.
 const SENSITIVE: AskKind[] = ['money', 'credential', 'personal'];
+// Asks that a bank or wallet code notice never makes. Code requests are decided by runRules.
+export const NOTICE_BREAKING: AskKind[] = ['money', 'personal', 'secret', 'contact', 'link'];
+// Code-detected notices that are ordinary when nothing else is wrong with the message.
+export const BENIGN_NOTICES = new Set([
+  'safe_credential_notice',
+  'cod_notice',
+  'official_payment_notice',
+  'scam_awareness',
+]);
 // Signals that only restate one of those asks; they need a separate hook to escalate.
 const ASK_SIGNALS = new Set([
   'money_request',
@@ -107,7 +116,8 @@ export function score(
   const asks = context.asks?.filter(
     (kind) =>
       !(kind === 'link' && (trust === 'official' || (trust === 'platform' && !risky.length))) &&
-      !(kind === 'account_action' && context.advice && allWeak && trust === 'none'),
+      !(kind === 'account_action' && context.advice && allWeak && trust === 'none') &&
+      !(kind === 'account_action' && trust === 'official' && !risky.length),
   );
   const benignContext =
     (asks?.length ?? 0) < (context.asks?.length ?? 0) || !!context.advice || !!context.inPerson;
@@ -130,8 +140,15 @@ export function score(
     ruleScore = Math.max(ruleScore, 30);
 
   // Keep the established no-share guardrail. Similarity is not a credential request.
-  if (ruleScore === 0 && signals.some(({ id }) => id === 'safe_credential_notice'))
+  // The same holds for a cash-on-delivery reminder (rules/index.ts maskDeliveryNotice): it has no link
+  // outside known domains, deadline, threat or code request, so meaning similarity to a delivery
+  // scam alone does not flag it.
+  // A code notice that also asks you to pay, call a number or give details is not a plain notice.
+  const benignNotice = signals.some(({ id }) => BENIGN_NOTICES.has(id));
+  if (ruleScore === 0 && benignNotice && !asks?.some((kind) => NOTICE_BREAKING.includes(kind)))
     return { level: 'probably_fine', score: 0 };
+  if (benignNotice && asks?.some((kind) => kind === 'money' || kind === 'personal'))
+    ruleScore = Math.max(ruleScore, 30);
 
   const top = matches[0];
   const supporting =

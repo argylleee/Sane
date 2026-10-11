@@ -1,13 +1,13 @@
 // OWNER: backend. All matching is local and never opens a message link.
 import keywords from '../data/keywords.json';
 import type { Signal } from '../types';
-import { hasUrl, urlSignals } from './urls';
+import { hasUnverifiedUrl, hasUrl, urlSignals } from './urls';
 
 const WORD = /[\p{L}\p{N}]/u;
 const SAFE_CREDENTIAL =
-  /(?:do not|don't|never|huwag|wag)\s+(?:(?:ask\s+(?:you\s+)?to)\s+)?(?:share|send|give|provide|enter|submit|reply|ibigay|i-send|sabihin|ipasa|ibahagi|i-share|ibabahagi)[^.!?;]{0,35}\b(?:otp|pin|mpin|code|password)\b/giu;
+  /(?:do not|don't|never|huwag|wag)\s+(?:(?:ask\s+(?:you\s+)?to)\s+)?(?:share|send|give|provide|enter|i-enter|submit|reply|ibigay|i-send|sabihin|ipasa|ibahagi|i-share|ibabahagi)[^.!?;]{0,35}\b(?:otp|pin|mpin|code|password)\b/giu;
 const SAFE_PRONOUN =
-  /(?:do not|don't|never|huwag|wag)\s+(?:share|send|give|ibigay|i-send|i-share)[^.!?;]{0,20}\b(?:it|ito|yan)\b/giu;
+  /(?:huwag|wag)\s+(?:itong|ito|iyan|yan)\s+(?:ibigay|ibahagi|i-?share|i-?send|ipadala|sabihin)\b|(?:do not|don't|never|huwag|wag)\s+(?:share|send|give|enter|i-enter|ibigay|i-send|i-share)[^.!?;]{0,20}\b(?:it|ito|yan|this|them)\b/giu;
 const CREDENTIAL_REQUEST =
   /\b(?:send|share|give|provide|enter|submit|reply|confirm|verify|forward|i-forward|ibigay|ipadala|ipasa|ibahagi|isend|i-send|paki-send|pakisend|pakisabi|sabihin|ilagay|i-share|pa-send)\b[^.!?;]{0,35}\b(?:otp|pin|mpin|password|code)\b/giu;
 const CARD_DATA_REQUEST =
@@ -17,7 +17,7 @@ const FOLLOWUP_CODE_REQUEST =
 const READ_BACK_CODE =
   /\b(?:read back|tell us|tell me|pakisabi)\b.{0,35}\b(?:six|6|anim)\s*[- ]?\s*(?:digit|digits|number|numero)\b/giu;
 const PERSONAL_DATA_REQUEST =
-  /\b(?:ibigay|send|share|provide|ilagay|submit|provide us)\b[^.!?;]{0,60}\b(?:buong pangalan|full name|bank account|account number|numero ng bank account|card number|home address|address|birthday|date of birth|government id|id number|sss number|philhealth number|selfie)\b/giu;
+  /\b(?:ibigay|send|share|provide|ilagay|submit|provide us|reply|i-?reply|i-?type)\b[^.!?;]{0,60}\b(?:buong pangalan|full name|bank account|account number|numero ng bank account|card number|home address|address|birthday|date of birth|government id|id number|sss number|philhealth number|selfie)\b/giu;
 const SAFE_PERSONAL_DATA =
   /(?:do not|don't|never|huwag|wag)\s+(?:(?:ask\s+(?:you\s+)?to)\s+)?(?:ibigay|send|share|provide|ilagay|submit)[^.!?;]{0,60}\b(?:buong pangalan|full name|bank account|account number|numero ng bank account|card number|home address|address|birthday|date of birth|government id|id number|sss number|philhealth number|selfie)\b/giu;
 const SAFE_CARD_DATA =
@@ -27,7 +27,7 @@ const SAFE_FINANCE_REQUEST =
 const LINK_ACTION =
   /\b(?:pindutin|i-click|click|tap|buksan|open|visit|bisitahin|go to|punta sa|at|sa)\b.{0,20}\blink\b/giu;
 const COERCION =
-  /\b(?:i-text|isasabi|sabihin|expose|report|i-send|send|ipakita|ikakalat|ikalat|i-post|post|leak)\b.{0,60}\b(?:family|friends|pamilya|kamag-anak|kaibigan|contacts)\b/giu;
+  /\b(?:i-text|ite-?text|isasabi|sabihin|expose|report|i-send|send|ipakita|ikakalat|ikalat|ipapakalat|ipagkakalat|i-post|ipo-?post|post|leak|contact|message|i-?message|tawagan)\b.{0,60}\b(?:family|friends|pamilya|kamag-anak|kaibigan|contacts|contact list|kakilala)\b|\b(?:post|i-?post|ipo-?post|ipopost|ipapakalat|ikakalat|ipagkakalat|expose|leak)\b[^.!?\n]{0,25}\b(?:photos?|pictures?|pics?|litrato|larawan|selfie|videos?)\b/giu;
 
 const DELIVERY_CONTEXT =
   /\b(?:parcel|package|delivery|rider|courier|warehouse|shipment|order|padala|package)\b/iu;
@@ -36,7 +36,7 @@ const DELIVERY_ACTION =
 const FINANCE_CONTEXT =
   /\b(?:gcash|maya|bdo|bpi|unionbank|metrobank|security bank|rcbc|landbank|pnb|gotyme|coins\.ph|bank|bangko|e-wallet|wallet|card)\b/iu;
 const FINANCE_IMPERSONATION =
-  /\b(?:security desk|security team|support team|customer service|helpdesk|bank staff|wallet team|account department|card security|empleyado ng bangko|customer service)\b/iu;
+  /\b(?:security desk|security team|support team|customer service|helpdesk|bank staff|wallet team|account department|card security|empleyado ng bangko|customer service|fraud (?:team|department|unit)|anti-?fraud|taga-?(?:bdo|bpi|gcash|maya|bangko|bank|landbank|metrobank|unionbank))\b/iu;
 const FINANCE_ACTION =
   /\b(?:read back|tell us|send|share|verify|confirm|update|unlock|reactivate|click|pindutin|link|otp|pin|password|code)\b/iu;
 const JOB_CONTEXT =
@@ -58,6 +58,9 @@ const GAMBLING_CONTEXT =
   /\b(?:free\s*spins?|libreng\s+spin|spin\s+the\s+wheel|jackpot|casino|slot\s+(?:machines?|games?)|e-?sabong|online\s+sabong|betting|welcome\s+bonus|free\s+(?:bonus|credits?)|free\s+\d{2,4}\b(?!\s*(?:texts?|sms|mb|gb|mins?|minutes|calls?|load))|bonus\s+credits?|susunod\s+na\s+maswerte|lucky\s+(?:player|spin))\b/iu;
 const GAMBLING_ACTION =
   /\b(?:log\s?in|mag-?login|i-?login|sign\s?up|mag-?sign\s?up|register|mag-?register|join|sumali|maglaro|play|claim|i-?claim|withdraw|i-?withdraw|deposit|mag-?deposit|nakakuha|makukuha|makakuha|nanalo|panalo|manalo|won|win|ikaw na ang susunod|you(?:'re| are| could be) next)\b/iu;
+// A prize someone has supposedly won ("your number won PHP 50,000", "nanalo ng bagong cellphone").
+const PRIZE_WIN =
+  /\b(?:won|wins|nanalo|winner|panalo)\b[^.!?\n]{0,30}(?:₱|php|p\s?\d|\d{1,3},\d{3}|prize|premyo|iphone|cellphone|raffle)/iu;
 // An amount someone can supposedly earn ("earn 800 daily", "kumita ng P2,000").
 const EARN_PROMISE =
   /\b(?:earn|earning|kumita|kikita|kita ka|income of)\b[^.!?\n]{0,25}(?:₱|php|p\s?\d|\d)/iu;
@@ -70,10 +73,10 @@ const ROMANCE_ACTION =
 const BENEFIT_CONTEXT =
   /\b(?:prize|raffle|reward|premyo|loan|pautang|utang|ayuda|aid|grant|tulong pinansyal|job|trabaho|tasks?|part-time|work)\b/iu;
 const ADVANCE_PAYMENT =
-  /\b(?:pay|send|transfer|magbayad|bayaran|magpadala|magdeposito)\b(?=[^.!?;]{0,70}\b(?:fee|charge|bayad|singil|deposit|collect|receive|release|matanggap|makuha)\b)[^.!?;]{0,55}\b(?:first|before|advance|upfront|muna|bago|paunang)\b|\b(?:top[ -]up|mag-top[ -]up|dagdagan)\b[^.!?;]{0,25}\b(?:working balance|balanse)\b|\b(?:fee|charge|bayad|singil)\b[^.!?;]{0,30}\b(?:paid|settled)\b[^.!?;]{0,20}\b(?:first|before|upfront|in advance)\b/iu;
+  /\b(?:pay|paying|send|transfer|magbayad|bayaran|magpadala|magdeposito)\b(?=[^.!?;]{0,70}\b(?:fee|charge|bayad|singil|deposit|collect|receive|release|matanggap|makuha)\b)[^.!?;]{0,55}\b(?:first|before|advance|upfront|muna|bago|paunang)\b|\b(?:top[ -]up|mag-top[ -]up|dagdagan)\b[^.!?;]{0,25}\b(?:working balance|balanse)\b|\b(?:fee|charge|bayad|singil)\b[^.!?;]{0,30}\b(?:paid|settled)\b[^.!?;]{0,20}\b(?:first|before|upfront|in advance)\b/iu;
 const MARKETPLACE_CONTEXT = /\b(?:marketplace|item|seller|binebenta\w*|gamit)\b/iu;
 const BEFORE_INSPECTION =
-  /\b(?:send|pay|transfer|magdeposito|mag-deposit|magbayad)\b[^.!?;]{0,30}\b(?:deposit|reservation|bago)\b[^.!?;]{0,35}\b(?:before|bago)\b[^.!?;]{0,25}\b(?:inspect\w*|makita|ma-inspect|masuri)\b|\bmagdeposito\b[^.!?;]{0,25}\bbago\b[^.!?;]{0,25}\b(?:makita|masuri)\b/iu;
+  /\b(?:send|pay|transfer|magdeposito|mag-deposit|magbayad)\b[^.!?;]{0,30}\b(?:deposit|reservation|reserve|bago)\b[^.!?;]{0,35}\b(?:before|bago)\b[^.!?;]{0,25}\b(?:inspect\w*|see|view|makita|ma-inspect|masuri|tingnan)\b|\bmagdeposito\b[^.!?;]{0,25}\bbago\b[^.!?;]{0,25}\b(?:makita|masuri)\b/iu;
 const RELATIVE_CONTEXT =
   /\b(?:sister|brother|daughter|son|mother|father|mom|dad|mama|papa|cousin|anak|kapatid|pinsan|nanay|tatay|lola|lolo|tita|tito)\b/iu;
 const EMERGENCY_CONTEXT =
@@ -116,9 +119,279 @@ function isNegated(text: string, at: number): boolean {
       .at(-1) ?? '';
   // A conditional threat ("kung hindi mo bayaran") demands payment.
   if (/\b(?:kung hindi|if you (?:do not|don't))(?:\s+[\w-]+){0,4}\s*$/iu.test(clause)) return false;
-  return /\b(?:do not|don't|does not|cannot|never|huwag|wag|hindi|walang|no|no need)(?:\s+[\w-]+){0,6}\s*$/iu.test(
-    clause,
+  if (
+    /\b(?:do not|don't|does not|cannot|never|huwag|wag|hindi|walang|no|no need)(?:\s+[\w-]+){0,6}\s*$/iu.test(
+      clause,
+    )
+  )
+    return true;
+  // A verb joined by "or" to a prohibition is prohibited too: "don't enter your OTP on any site or
+  // send it to anyone", "wag i-enter ang OTP o i-send ito".
+  const longer =
+    text
+      .slice(Math.max(0, at - 90), at)
+      .split(/[.!?;,]|\b(?:but|pero|subalit|however|instead|just|only|lang)\b/iu)
+      .at(-1) ?? '';
+  return /\b(?:do not|don't|never|huwag|wag)(?:\s+[\w'-]+){1,10}\s+(?:or|nor|o|ni)\s*$/iu.test(
+    longer,
   );
+}
+
+// "Did you request to SEND MONEY to ...? If not, don't share your OTP." Real wallets and banks ask
+// the reader to confirm their own transaction before showing the code. The question describes the
+// transaction; it does not ask the reader to pay, call the number in it, or log in.
+const OWN_TRANSACTION_QUESTION =
+  /(?<=^|[.!?\n]\s*)(?:did you|have you|were you|are you trying to|was (?:this|that|it) you|is (?:this|that|it) you|ikaw ba|nag-?[\p{L}-]+ ka ba|ikaw ba ito)\b[^?\n]{0,220}\?/giu;
+// "for your transfer of PHP 1,000.00 to account ending 1234" describes what the code is for.
+const OWN_TRANSACTION_DETAIL =
+  /\b(?:for|of|sa|a|an)\s+(?:your|the|iyong|ang|inyong)?\s*(?:transfer|transaction|payment|purchase|cash[- ]?in|cash[- ]?out|withdrawal|remittance|send money|padala)\b[^!?\n]{0,120}?(?=[.!?](?:\s|$)|\n|$)/giu;
+// The message delivers a code ("your OTP is 482072", "ang OTP mo ay 482072").
+const CODE_DELIVERY =
+  /\b(?:otp|one[- ]time (?:pin|password|code)|verification code|authentication code|code|pin)\b[^.!?\n\d]{0,25}\b\d{4,8}\b/iu;
+
+// Outside the masked description, a mobile number or a payment request keeps the full check:
+// banks and wallets do not ask you to call a mobile number or pay to cancel a transaction.
+const UNMASKABLE =
+  /(?:\+?63|\b0)9\d{2}[\s.-]?\d{3}[\s.-]?\d{4}\b|\b(?:pay|magbayad|mag-?pay|bayaran|send money|transfer|magpadala|ipadala|deposit|mag-?deposit|top[ -]?up|fees?|bayad|singil)\b/iu;
+// "Never share your OTP except with our agent" still asks for the code.
+const CREDENTIAL_EXCEPTION =
+  /\b(?:do not|don't|never|huwag|wag)\b[^.!?\n]{0,80}\b(?:otp|pin|mpin|code|password|it|ito)\b[^.!?\n]{0,40}?\b(?:except|other than|apart from|maliban|bukod|(?:anyone|anybody|no one|nobody|kahit kanino) but)\b[^.!?\n]*/giu;
+
+function blank(text: string, pattern: RegExp): string {
+  return text.replace(pattern, (part) => ' '.repeat(part.length));
+}
+
+function safeNotices(text: string): RegExpExecArray[] {
+  const hasCredential = /\b(?:otp|pin|mpin|code|password|one-time password)\b/iu.test(text);
+  return [
+    ...text.matchAll(SAFE_CREDENTIAL),
+    ...(hasCredential ? [...text.matchAll(SAFE_PRONOUN)] : []),
+  ];
+}
+
+function credentialRequest(text: string): RegExpExecArray | undefined {
+  const hasCredential = /\b(?:otp|pin|mpin|code|password|one-time password)\b/iu.test(text);
+  const safe = safeNotices(text);
+  const exception = hasCredential ? text.matchAll(CREDENTIAL_EXCEPTION).next().value : undefined;
+  if (exception) return exception;
+  return [
+    ...text.matchAll(CREDENTIAL_REQUEST),
+    ...text.matchAll(READ_BACK_CODE),
+    ...(hasCredential ? [...text.matchAll(FOLLOWUP_CODE_REQUEST)] : []),
+  ].find(
+    (match) =>
+      !isNegated(text, match.index) &&
+      !safe.some(
+        (notice) =>
+          match.index >= notice.index &&
+          match.index + match[0].length <= notice.index + notice[0].length,
+      ),
+  );
+}
+
+/**
+ * Blanks the description of the reader's own transaction in a code notice from a bank or wallet.
+ * Only when the message delivers a code or says not to share it, has no link, and asks for no code;
+ * otherwise the text is returned unchanged, so a scam copying the format is still checked in full.
+ */
+export function maskOwnTransaction(text: string): string {
+  const masked = blank(blank(text, OWN_TRANSACTION_QUESTION), OWN_TRANSACTION_DETAIL);
+  if (masked === text || hasUrl(text) || UNMASKABLE.test(masked)) return text;
+  if (!safeNotices(masked).length && !CODE_DELIVERY.test(masked)) return text;
+  return credentialRequest(masked) ? text : masked;
+}
+
+// Cash on delivery: the reader pays the rider when the parcel is in their hands, so a COD amount is
+// not a remote money request. Delivery scams instead ask for a fee by link, number or transfer first.
+const COD_CONTEXT =
+  /\b(?:cod|c\.o\.d|cash[- ]on[- ]delivery|(?:upon|on) (?:delivery|receipt|arrival)|pagdating ng (?:rider|parcel|package|order|item)|pag-?deliver|(?:sa|to (?:the|our|your)) rider)\b/iu;
+// A sentence that sends money somewhere, pays in advance or names a scam-style fee stays a request.
+const REMOTE_PAYMENT =
+  /(?:\+?63|\b0)9\d{2}[\s.-]?\d{3}[\s.-]?\d{4}\b|\b(?:send|i-?send|mag-?send|ipadala|magpadala|padalhan|transfer|i-?transfer|deposit|mag-?deposit|magdeposito|advance|first|muna|before|bago|link|click|tap|pindutin|i-?click|account (?:number|no)|acct|(?:this|my|our|personal) (?:number|gcash|maya|account|e-?wallet)|numerong ito|number na ito|(?:gcash|maya|account|number) ko|personal|customs|redelivery|re-delivery|storage|handling|release|clearance|processing|insurance|penalty|unpaid|outstanding|overdue)\b/iu;
+// Any delivery problem, deadline or threat means the whole message gets the full check.
+const DELIVERY_PROBLEM =
+  /\b(?:on hold|held|naka-?hold|cannot be delivered|could not be delivered|can't be delivered|failed (?:delivery|attempt)|hindi (?:ma-?deliver|na-?deliver|maide-?deliver)|ibabalik|return(?:ed)? to sender|be returned|disposed|forfeit\w*|incomplete address|kulang ang address|invalid address|update (?:your )?address|to avoid|para hindi|or else|otherwise|kung hindi)\b/iu;
+const COD_PAYMENT_WORDS =
+  /\b(?:bayad|bayaran|babayaran|magbayad|magbabayad|mag-?bayad|payment|pay|mag-?pay|i-?pay|fees?|charges?|singil|cost)\b/giu;
+const COD_PAYMENT_WORD = new RegExp(COD_PAYMENT_WORDS.source, 'iu');
+const RIDER = /\b(?:rider|courier|driver|delivery (?:agent|personnel|staff))\b/iu;
+const PH_MOBILE = /(?:\+?63|\b0)9\d{2}[\s.-]?\d{3}[\s.-]?\d{4}\b/gu;
+// Sentences end at punctuation followed by a space, so "PHP 1,250.00" stays one sentence.
+const SENTENCE = /(?:[^.!?;\n]|[.!?;](?!\s|$))+[.!?;]?/gu;
+
+// A delivery notice with no link outside known domains, deadline, threat, delivery problem or code
+// request. Only such notices get the cash-on-delivery and rider-number masking below.
+function isOrdinaryDelivery(text: string): boolean {
+  return (
+    (COD_CONTEXT.test(text) || DELIVERY_CONTEXT.test(text)) &&
+    !hasUnverifiedUrl(text) &&
+    !DELIVERY_PROBLEM.test(text) &&
+    !phraseSpan(text, [...keywords.urgency, ...keywords.account_threat]) &&
+    !credentialRequest(text)
+  );
+}
+
+/**
+ * In an ordinary delivery notice, blanks the payment words of sentences that pay on delivery (cash
+ * on delivery) and the rider's number when the sentence only names who will deliver. Returns the
+ * text unchanged otherwise, so a scam using delivery or COD wording gets the full check.
+ */
+export function maskDeliveryNotice(text: string): string {
+  if (!isOrdinaryDelivery(text)) return text;
+  const cod = COD_CONTEXT.test(text);
+  return text.replace(SENTENCE, (sentence) => {
+    if (cod && !REMOTE_PAYMENT.test(sentence)) return blank(sentence, COD_PAYMENT_WORDS);
+    // "Rider: Mark 0917..." names who will deliver; it asks for nothing.
+    const rest = blank(sentence, PH_MOBILE);
+    return RIDER.test(sentence) &&
+      rest !== sentence &&
+      !REMOTE_PAYMENT.test(rest) &&
+      !COD_PAYMENT_WORD.test(rest)
+      ? rest
+      : sentence;
+  });
+}
+
+// A bill, statement or installment reminder that says to pay through the provider's app, online
+// banking or accredited partners. Paying there cannot hand money to whoever sent the text.
+const PAYMENT_CONTEXT =
+  /\b(?:bill|billing|due|statement|installment|amortization|hulog|bayarin|amount due|minimum amount|subscription|renewal)\b/iu;
+const OFFICIAL_CHANNEL =
+  /\b(?:(?:the|our|your|aming|sa)\s+(?:official\s+|opisyal na\s+)?[\p{L}-]+\s+(?:app|mobile app)|official app|opisyal na app|online banking|mobile banking|accredited (?:payment )?(?:centers?|partners?|outlets?)|payment (?:centers?|partners?)|partner outlets?|(?:any|mga) (?:authorized|accredited|partner)|bayad center|over[- ]the[- ]counter)\b/iu;
+// What turns a payment reminder into a request: a number, link, transfer, personal account or a
+// scam-style fee. Unlike delivery notices, "before" is fine here: bills are due before a date.
+const PAYMENT_REMOTE =
+  /(?:\+?63|\b0)9\d{2}[\s.-]?\d{3}[\s.-]?\d{4}\b|\b(?:send|i-?send|mag-?send|ipadala|magpadala|padalhan|transfer|i-?transfer|deposit|mag-?deposit|magdeposito|advance|first|muna|link|click|tap|pindutin|i-?click|to (?:account|acct)|account (?:number|no)|(?:this|my|our|personal) (?:number|gcash|maya|account|e-?wallet)|numerong ito|number na ito|(?:gcash|maya|account|number) ko|personal|processing|release|clearance|penalty)\b/iu;
+
+function isOfficialPaymentNotice(text: string): boolean {
+  return (
+    PAYMENT_CONTEXT.test(text) &&
+    OFFICIAL_CHANNEL.test(text) &&
+    !PAYMENT_REMOTE.test(text) &&
+    !hasUnverifiedUrl(text) &&
+    !DELIVERY_PROBLEM.test(text) &&
+    !phraseSpan(text, [...keywords.urgency, ...keywords.account_threat]) &&
+    !credentialRequest(text)
+  );
+}
+
+/** Blanks the payment words of a payment reminder that points only to official channels. */
+export function maskOfficialPayment(text: string): string {
+  return isOfficialPaymentNotice(text) ? blank(text, COD_PAYMENT_WORDS) : text;
+}
+
+function officialPaymentSpan(text: string): [number, number] | undefined {
+  const channel = OFFICIAL_CHANNEL.exec(text);
+  return channel && isOfficialPaymentNotice(text)
+    ? [channel.index, channel.index + channel[0].length]
+    : undefined;
+}
+
+// A message that warns about a scam ("there's a fake GCash text going around", "may kumakalat na
+// text") and tells the reader not to act describes the scam; its words are reported, not demanded.
+const AWARENESS_CUE =
+  /\b(?:scams?|scammers?|fake|peke|modus|manloloko|nagpapanggap|nagpapakilala\w*|posing as|pretending|beware|mag-?ingat|ingat|heads up|be careful|kumakalat|going around|circulating)\b/iu;
+const NOT_A_SCAM =
+  /\b(?:not a scam|no scam|hindi (?:ito |po )?scam|legit (?:ito|po|kami)|this is legit|we are legit)\b/iu;
+const PROTECTIVE_ADVICE =
+  /(?<!\b(?:kung|kapag|pag|if you|unless you)\s+)\b(?:do not|don't|never|huwag|wag|hindi)\b(?:\s+[\w'-]+){0,4}\s+(?:click|open|pay|send|share|give|reply|enter|tap|transfer|believe|pindutin|buksan|magbayad|magbabayad|ibigay|ibibigay|i-?send|i-?share|i-?click|ipadala|magpadala|sagutin|mag-?reply|maniwala|hihingi|hingin|humingi)\b/iu;
+// Instructions that hand over money, details or access. In an awareness message they may only
+// appear negated ("huwag magbayad") or inside a report of the scam ("a text saying you must pay").
+const AWARENESS_ACTION =
+  /\b(?:pay|paying|magbayad|mag-?pay|bayaran|send|i-?send|pakisend|paki-?send|ipadala|magpadala|transfer|i-?transfer|deposit|mag-?deposit|claim|i-?claim|verify|i-?verify|register|mag-?register|reply|i-?reply|update|i-?update|log ?in|mag-?log ?in|click|i-?click|tap|pindutin|install|download|confirm|i-?confirm|activate|i-?activate|redeem|i-?redeem|avail|i-?avail|visit|bisitahin)\b/giu;
+const REPORTING_CUE =
+  /\b(?:saying|says|claiming|claims? that|telling you|asking you|nagsasabing|nagsasabi|daw|raw|kumakalat|going around|circulating|posing|nagpapanggap|pretending|fake|peke|scammers?|manloloko)\b/iu;
+
+function givesOwnInstruction(text: string): boolean {
+  for (const sentence of text.matchAll(SENTENCE)) {
+    if (REPORTING_CUE.test(sentence[0])) continue;
+    for (const action of sentence[0].matchAll(AWARENESS_ACTION))
+      if (!isNegated(text, sentence.index + action.index)) return true;
+  }
+  return false;
+}
+
+// "Will reflect within 24 hours" or "umuwi ka agad" sets a time but asks for nothing risky.
+function demandsAction(text: string): boolean {
+  const verbs = new RegExp(AWARENESS_ACTION.source, 'giu');
+  return (
+    hasUrl(text) ||
+    new RegExp(PH_MOBILE.source, 'u').test(text) ||
+    [...text.matchAll(verbs)].some((match) => !isNegated(text, match.index)) ||
+    !!phraseSpan(text, keywords.account_threat, true)
+  );
+}
+
+// Warning words the message reports about the scam rather than uses on the reader.
+const REPORTED = new Set([
+  'urgency',
+  'account_threat',
+  'money_request',
+  'prize_or_job_bait',
+  'relative_claims',
+  'link_action',
+  'bank_impersonation',
+  'delivery_scam',
+  'job_bait',
+  'investment_bait',
+  'government_bait',
+  'advance_fee',
+]);
+
+function hasPersonalDataRequest(text: string): boolean {
+  const safe = [...text.matchAll(SAFE_PERSONAL_DATA)];
+  return [...text.matchAll(PERSONAL_DATA_REQUEST)].some(
+    (match) =>
+      !safe.some(
+        (notice) =>
+          match.index >= notice.index &&
+          match.index + match[0].length <= notice.index + notice[0].length,
+      ),
+  );
+}
+
+/** Where a scam-awareness message names the scam, when nothing in it can be acted on. */
+export function scamAwarenessSpan(text: string): [number, number] | undefined {
+  const cue = AWARENESS_CUE.exec(text);
+  return cue && isScamAwareness(text) ? [cue.index, cue.index + cue[0].length] : undefined;
+}
+
+function isScamAwareness(text: string): boolean {
+  return (
+    AWARENESS_CUE.test(text) &&
+    !NOT_A_SCAM.test(text) &&
+    PROTECTIVE_ADVICE.test(text) &&
+    !givesOwnInstruction(text) &&
+    !new RegExp(PH_MOBILE.source, 'u').test(text) &&
+    !/\b(?:account (?:number|no)|acct)\b/iu.test(text) &&
+    !hasUnverifiedUrl(text) &&
+    !credentialRequest(text) &&
+    !hasPersonalDataRequest(text)
+  );
+}
+
+/** Where the message says payment is due on delivery, in an ordinary delivery notice. */
+function codNoticeSpan(text: string): [number, number] | undefined {
+  const cod = COD_CONTEXT.exec(text);
+  return cod && isOrdinaryDelivery(text) ? [cod.index, cod.index + cod[0].length] : undefined;
+}
+
+// With cash on delivery the reader pays when the parcel arrives. Asking to pay first, or to a
+// personal number or account, is the unusual instruction delivery scammers use.
+const COD_MONEY_VERB =
+  /\b(?:pay|i-?pay|mag-?pay|magbayad|bayaran|send|i-?send|mag-?send|ipadala|magpadala|transfer|i-?transfer|deposit|mag-?deposit|magdeposito)\b/giu;
+const COD_UNUSUAL =
+  /\b(?:to|sa|via|thru|through|into)\s+(?:(?:the|my|our|his|her|aming|aking)\s+)?(?:(?:gcash|maya|e-?wallet|number|account)\s*(?:number|no\.?|#)?\s*:?\s*)?(?:\+?63|0)9\d{2}[\s.-]?\d{3}[\s.-]?\d{4}\b|\b(?:first|muna|before (?:delivery|(?:the |your )?(?:rider|parcel|package|order) (?:arrives|comes|is delivered))|bago (?:i-?deliver|ma-?deliver|dumating|ihatid)|in advance|advance|(?:this|my|our|personal) (?:number|gcash|maya|account|e-?wallet)|numerong ito|number na ito|(?:gcash|maya|account|number) ko)\b/iu;
+
+function codUnusualPayment(text: string): [number, number] | undefined {
+  if (!COD_CONTEXT.test(text)) return undefined;
+  for (const sentence of text.matchAll(SENTENCE)) {
+    if (!COD_UNUSUAL.test(sentence[0])) continue;
+    for (const verb of sentence[0].matchAll(COD_MONEY_VERB)) {
+      const at = sentence.index + verb.index;
+      if (!isNegated(text, at)) return [at, at + verb[0].length];
+    }
+  }
 }
 
 function phraseSpan(
@@ -174,26 +447,13 @@ function pushSignal(
 }
 
 export function runRules(text: string): Signal[] {
-  text = maskDisclaimedPayments(maskNoPayment(text));
+  text = maskOwnTransaction(maskDisclaimedPayments(maskNoPayment(text)));
+  const codSpan = codNoticeSpan(text);
+  const paymentSpan = officialPaymentSpan(text);
+  text = maskOfficialPayment(maskDeliveryNotice(text));
   const signals = urlSignals(text);
-  const hasCredential = /\b(?:otp|pin|mpin|code|password|one-time password)\b/iu.test(text);
-  const safe = [
-    ...text.matchAll(SAFE_CREDENTIAL),
-    ...(hasCredential ? [...text.matchAll(SAFE_PRONOUN)] : []),
-  ];
-  const request = [
-    ...text.matchAll(CREDENTIAL_REQUEST),
-    ...text.matchAll(READ_BACK_CODE),
-    ...(hasCredential ? [...text.matchAll(FOLLOWUP_CODE_REQUEST)] : []),
-  ].find(
-    (match) =>
-      !isNegated(text, match.index) &&
-      !safe.some(
-        (notice) =>
-          match.index >= notice.index &&
-          match.index + match[0].length <= notice.index + notice[0].length,
-      ),
-  );
+  const safe = safeNotices(text);
+  const request = credentialRequest(text);
   if (request) {
     signals.push({
       id: 'otp_pin_request',
@@ -273,8 +533,15 @@ export function runRules(text: string): Signal[] {
   ] as const;
   for (const [id, label, weight] of groups) {
     const span = phraseSpan(text, keywords[id], true);
-    if (span) signals.push({ id, label, weight, span });
+    if (span && (id !== 'urgency' || demandsAction(text)))
+      signals.push({ id, label, weight, span });
   }
+  const prize = PRIZE_WIN.exec(text);
+  if (prize && !isNegated(text, prize.index))
+    pushSignal(signals, 'prize_or_job_bait', 'Promises a prize or easy income', 15, [
+      prize.index,
+      prize.index + prize[0].length,
+    ]);
   const earn = EARN_PROMISE.exec(text);
   if (earn && !isNegated(text, earn.index))
     pushSignal(signals, 'prize_or_job_bait', 'Promises a prize or easy income', 15, [
@@ -366,5 +633,38 @@ export function runRules(text: string): Signal[] {
       contextualSpan(text, RELATIVE_CONTEXT, MONEY_TRANSFER),
     );
   }
+  pushSignal(
+    signals,
+    'cod_unusual_payment',
+    'Asks you to pay in advance or to a personal account for a cash-on-delivery parcel',
+    30,
+    codUnusualPayment(text),
+  );
+  const awareness = scamAwarenessSpan(text);
+  if (awareness) {
+    const kept = signals.filter(({ id }) => !REPORTED.has(id));
+    signals.splice(0, signals.length, ...kept);
+    if (kept.every(({ weight }) => weight === 0))
+      signals.push({
+        id: 'scam_awareness',
+        label: 'Warns about a scam and advises not to act on it',
+        weight: 0,
+        span: awareness,
+      });
+  }
+  if (paymentSpan && signals.every(({ weight }) => weight === 0))
+    signals.push({
+      id: 'official_payment_notice',
+      label: 'Says to pay only through official apps or accredited partners',
+      weight: 0,
+      span: paymentSpan,
+    });
+  if (codSpan && signals.every(({ weight }) => weight === 0))
+    signals.push({
+      id: 'cod_notice',
+      label: 'Payment is only due when the parcel is delivered',
+      weight: 0,
+      span: codSpan,
+    });
   return signals;
 }

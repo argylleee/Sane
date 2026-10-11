@@ -52,3 +52,46 @@ describe('validateLlmOutput', () => {
     expect(validateLlmOutput('Open https://evil.example now')).toBeNull();
   });
 });
+
+describe('evidence grounding', () => {
+  const cod = { signalIds: ['cod_notice'], hasLink: false };
+  const fine = { level: 'probably_fine' as const, lang: 'en' as const, evidence: cod };
+
+  it('tells the model not to invent red flags when none were found', () => {
+    const [system] = buildMessages({ ...facts, level: 'probably_fine', signals: [] });
+    expect(system.content).toContain('The app found no red flags');
+    expect(system.content).not.toContain('naming the most important red flag');
+  });
+
+  it.each([
+    'This message asks you to pay a suspicious delivery fee. Verify with the courier.',
+    'It wants you to open a link to pay. Use the courier app instead.',
+    'The message asks for your OTP. Keep it private.',
+    'It threatens that your account will be blocked. Use the official app.',
+  ])('rejects a claim the evidence does not support: %s', (output) => {
+    expect(validateLlmOutput(output, fine)).toBeNull();
+  });
+
+  it('accepts denials and safety advice that mention the same words', () => {
+    expect(
+      validateLlmOutput(
+        'No clear warning signs were found, and there is no link or fee. Never share a code with anyone.',
+        fine,
+      ),
+    ).not.toBeNull();
+  });
+
+  it('accepts a fee or link claim backed by a matching red flag', () => {
+    const evidence = { signalIds: ['delivery_scam', 'suspicious_link'], hasLink: true };
+    expect(
+      validateLlmOutput(
+        'This asks you to pay a redelivery fee through a link. Use the courier app.',
+        {
+          level: 'likely_scam',
+          lang: 'en',
+          evidence,
+        },
+      ),
+    ).not.toBeNull();
+  });
+});

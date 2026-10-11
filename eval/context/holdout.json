@@ -1,0 +1,317 @@
+[
+  {
+    "id": "ch-en-legit-01",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Your Shopee verification code is 304918. Do not share it with anyone. Shopee will never ask for this code."
+  },
+  {
+    "id": "ch-en-legit-02",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Security Bank: Your card ending 4421 was used for PHP 1,250.00 at SM SUPERMARKET on Oct 11. If you don't recognize this, call the number on the back of your card."
+  },
+  {
+    "id": "ch-en-legit-03",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "PLDT: Your account is due for payment on Oct 19. Amount due: PHP 1,899. Pay via the PLDT Home app or accredited partners."
+  },
+  {
+    "id": "ch-en-legit-04",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Reminder: Scammers are posing as courier riders asking for payment through personal GCash numbers. Only pay COD amounts directly to the rider upon delivery."
+  },
+  {
+    "id": "ch-en-legit-05",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Your Grab ride is arriving in 3 minutes. Driver: Ramon, Toyota Vios ABC 1234."
+  },
+  {
+    "id": "ch-en-legit-06",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Hi Ana, the church meeting is moved to Saturday 4PM. Please bring the attendance sheet."
+  },
+  {
+    "id": "ch-en-legit-07",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Flash Express: Your parcel 6011239845 will be delivered today. COD amount PHP 1,045. Please prepare exact change."
+  },
+  {
+    "id": "ch-en-scam-01",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Unionbank: We detected an unauthorized login. Secure your account now at unionbank-secure-login.com or it will be frozen."
+  },
+  {
+    "id": "ch-en-scam-02",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Hello, this is from Globe. You won a brand new iPhone! Send your full name, address and a PHP 500 shipping fee to claim."
+  },
+  {
+    "id": "ch-en-scam-03",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Your parcel is held at customs. Pay the PHP 1,200 clearance fee through GCash 09171230000 within 12 hours or it will be returned."
+  },
+  {
+    "id": "ch-en-scam-04",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Hi, I'm a recruiter from Amazon. Earn PHP 3,000 a day liking videos. Pay a PHP 800 training fee to start."
+  },
+  {
+    "id": "ch-en-scam-05",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Dad, it's me, I'm using a friend's phone. I got into trouble and need PHP 10,000 right now. Please don't tell Mom, just send it to 09987654321."
+  },
+  {
+    "id": "ch-en-scam-06",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "BDO: Your account will be locked. Reply with your username and password to keep it active."
+  },
+  {
+    "id": "ch-en-ambiguous-01",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "ambiguous",
+    "text": "Hello, this is Grace from the HR office. Can you send me your updated resume and ID by tomorrow?"
+  },
+  {
+    "id": "ch-en-ambiguous-02",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "ambiguous",
+    "text": "Your account statement is ready. View it at statements-online.net/view"
+  },
+  {
+    "id": "ch-fil-legit-01",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Ang verification code mo ay 610293. Huwag itong ibahagi kahit kanino. Hindi namin ito hihingin sa tawag o text."
+  },
+  {
+    "id": "ch-fil-legit-02",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Paalala mula sa PLDT: Ang inyong bill na PHP 1,699 ay dapat bayaran bago ang Okt 19. Magbayad sa opisyal na app o sa mga partner."
+  },
+  {
+    "id": "ch-fil-legit-03",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Ginamit ang inyong card na nagtatapos sa 7781 para sa PHP 980 sa Mercury Drug. Kung hindi ikaw ito, tumawag sa numero sa likod ng iyong card."
+  },
+  {
+    "id": "ch-fil-legit-04",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Babala: May mga nagpapanggap na rider na humihingi ng bayad sa personal na GCash. Magbayad lang ng COD sa rider pagdating ng parcel."
+  },
+  {
+    "id": "ch-fil-legit-05",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Darating ang inyong order mula sa Shopee bukas. Bayad na ito, wala na kayong babayaran."
+  },
+  {
+    "id": "ch-fil-legit-06",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Magandang gabi! Ang pulong ng mga magulang ay sa Biyernes, 5PM, sa silid-aralan ng Grade 3."
+  },
+  {
+    "id": "ch-fil-legit-07",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Natanggap na namin ang inyong bayad na PHP 2,450. Salamat po sa inyong pagbabayad."
+  },
+  {
+    "id": "ch-fil-scam-01",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Metrobank: May hindi awtorisadong pag-login sa inyong account. I-secure ito ngayon sa metrobank-ph-login.com o mafi-freeze ito."
+  },
+  {
+    "id": "ch-fil-scam-02",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Binabati kita! Nanalo ka ng bagong cellphone. Ipadala ang iyong buong pangalan, address at PHP 500 na shipping fee para makuha ito."
+  },
+  {
+    "id": "ch-fil-scam-03",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Naka-hold ang inyong parcel sa customs. Magbayad ng PHP 1,200 sa GCash 09171239999 sa loob ng 12 oras o ibabalik ito."
+  },
+  {
+    "id": "ch-fil-scam-04",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Trabaho sa bahay! Kumita ng PHP 2,000 araw-araw sa pag-like ng videos. Magbayad ng PHP 700 training fee para makapagsimula."
+  },
+  {
+    "id": "ch-fil-scam-05",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Pa, ako ito, hiniram ko lang ang phone ng kaibigan ko. May problema ako, kailangan ko ng PHP 8,000 ngayon din. Ipadala sa 09987654000."
+  },
+  {
+    "id": "ch-fil-scam-06",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Ibigay ang inyong username at password para manatiling aktibo ang inyong account sa bangko."
+  },
+  {
+    "id": "ch-fil-ambiguous-01",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "ambiguous",
+    "text": "Magandang araw, si Grace ito mula sa HR. Pakipadala ang updated na resume at ID mo bukas."
+  },
+  {
+    "id": "ch-fil-ambiguous-02",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "ambiguous",
+    "text": "Handa na ang inyong statement. Tingnan ito sa statements-online.net/tingnan"
+  },
+  {
+    "id": "ch-taglish-legit-01",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Your Lazada code is 448120. Wag i-share kahit kanino, kahit sa Lazada staff."
+  },
+  {
+    "id": "ch-taglish-legit-02",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Hi! Your Converge payment of PHP 1,699 has been received. Salamat sa pag-settle on time!"
+  },
+  {
+    "id": "ch-taglish-legit-03",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Card alert: Nagamit ang card mo ending 3390 for PHP 2,100 sa Lazada. Kung hindi ikaw, call the number sa likod ng card mo."
+  },
+  {
+    "id": "ch-taglish-legit-04",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Heads up: May mga fake rider na nanghihingi ng bayad sa personal GCash nila. COD should only be paid sa rider pag dumating na ang parcel."
+  },
+  {
+    "id": "ch-taglish-legit-05",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Grab: Your driver Jun is arriving in 2 mins. Gray Toyota Innova, plate NBC 4567."
+  },
+  {
+    "id": "ch-taglish-legit-06",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "Guys, practice tayo later 6PM sa court. Bring water ha!"
+  },
+  {
+    "id": "ch-taglish-legit-07",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "legit",
+    "text": "J&T: Your parcel will arrive today. Paki-prepare ang PHP 780 for COD. Salamat po!"
+  },
+  {
+    "id": "ch-taglish-scam-01",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Security Bank: May unauthorized login sa account mo. I-secure mo now sa secbank-verify.com or ma-freeze ang account mo."
+  },
+  {
+    "id": "ch-taglish-scam-02",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Congrats! Nanalo ka ng new iPhone sa promo namin. Send mo lang ang full name, address at PHP 500 shipping fee para ma-claim."
+  },
+  {
+    "id": "ch-taglish-scam-03",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Your parcel is naka-hold sa customs. Pay the PHP 1,500 clearance fee via GCash 09171238888 within 12 hours or ibabalik ito."
+  },
+  {
+    "id": "ch-taglish-scam-04",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Hiring! Earn PHP 2,500 daily, mag-like lang ng videos. Pay lang ng PHP 600 training fee para mag-start."
+  },
+  {
+    "id": "ch-taglish-scam-05",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "Kuya, ako to, phone ng friend ko gamit ko. May emergency ako, need ko ng PHP 9,000 asap. Wag mo sabihin kay Mama, send mo lang sa 09987650000."
+  },
+  {
+    "id": "ch-taglish-scam-06",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "scam",
+    "text": "BPI: Reply with your username and password para hindi ma-lock ang account mo."
+  },
+  {
+    "id": "ch-taglish-ambiguous-01",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "ambiguous",
+    "text": "Hi, si Grace from HR. Pa-send naman ng updated resume at ID mo by tomorrow."
+  },
+  {
+    "id": "ch-taglish-ambiguous-02",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "ambiguous",
+    "text": "Your statement is ready. Check mo dito: statements-online.net/check"
+  }
+]

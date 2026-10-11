@@ -46,12 +46,24 @@ describe('local rule verdicts', () => {
     expect(verdict.signals.map(({ id }) => id)).not.toContain('lookalike_domain');
   });
 
-  it('abstains on an ordinary payment reminder', async () => {
+  it('recognizes a payment reminder that points only to the official app', async () => {
     const verdict = await analyze(
       { text: 'Reminder: your water bill is due next week. Pay at the official app.' },
       opts,
     );
-    expect(verdict.level).toBe('not_sure');
+    expect(verdict.level).toBe('probably_fine');
+    expect(verdict.signals.map(({ id }) => id)).toEqual(['official_payment_notice']);
+  });
+
+  it('does not reassure a payment reminder that sends money to a mobile number', async () => {
+    const verdict = await analyze(
+      {
+        text: 'Reminder: your water bill is due next week. Pay at the official app or GCash 09171234567.',
+      },
+      opts,
+    );
+    expect(verdict.level).not.toBe('probably_fine');
+    expect(verdict.signals.map(({ id }) => id)).not.toContain('official_payment_notice');
   });
 
   it('does not call a no-share notice reassuring when it also contains a link', async () => {
@@ -100,7 +112,7 @@ describe('local rule verdicts', () => {
       opts,
     );
     expect(verdict.signals.map(({ id }) => id)).not.toContain('personal_data_request');
-    expect(verdict.level).toBe('not_sure');
+    expect(verdict.level).toBe('probably_fine');
   });
 
   it('treats advice against clicking a link and paying a fee as a safety reminder', async () => {
