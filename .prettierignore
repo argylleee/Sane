@@ -4,6 +4,7 @@ package-lock.json
 .agents/skills/grilling/
 .agents/skills/impeccable/
 .agents/skills/speckit-*/
+.agents/skills/remotion-*/
 .specify/scripts/
 .specify/templates/
 .specify/presets/

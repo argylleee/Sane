@@ -101,6 +101,62 @@
       "license": ".agents/third-party/spec-kit-LICENSE.txt",
       "preset": "core",
       "sha256": "bfd729b14ac92875b666bfbfa7678307fe38f6c6f0c3b0e44287fc1473d3b611"
+    },
+    "remotion-best-practices": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "4f72b4f2ffe75c1848594b13cd53ebb79416e53124a86e37ac8a1428401eb337"
+    },
+    "remotion-create": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "0abd6fc01975d212bf521497b0bd7803f74630dadc28746b3b671d5e4cc43133"
+    },
+    "remotion-docs": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "c56b0582d5ddf5f2ff4c53fa7d56c505f81bc995a59c09f2de82dfe443591166"
+    },
+    "remotion-markup": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "4a13d76c5d5c137274f1d7d0bff3ee85c798efc505e581c25124d2a72d8c98ac"
+    },
+    "remotion-multimedia": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "7509b8f8e4bbcc78f561f72d10bb9775b6198527815624d13d1d6ed24801d5f4"
+    },
+    "remotion-render": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "228330c33ba88daaae01707821b0bdb30d963e7c214a43a8d112e7c425ddf4b8"
+    },
+    "remotion-studio": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "cfc072e61a7d82adece3e260d8978287d6ce8bff49e56e37069ee47ae2229939"
+    },
+    "remotion-upgrade": {
+      "source": "https://github.com/remotion-dev/skills",
+      "installer": "skills@1.7.2",
+      "skillMetadataVersion": "4.0.534",
+      "license": ".agents/third-party/remotion-LICENSE.txt",
+      "sha256": "b20b0ddc2f524182648caee0f14343cfc55a7ac7a6601ccf843727f482966659"
     }
   },
   "assets": {

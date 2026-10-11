@@ -14,7 +14,23 @@ export const specKitNames = [
   'speckit-tasks',
   'speckit-taskstoissues',
 ];
-export const vendorNames = ['grill-me', 'grilling', 'impeccable', ...specKitNames];
+const remotionNames = [
+  'remotion-best-practices',
+  'remotion-create',
+  'remotion-docs',
+  'remotion-markup',
+  'remotion-multimedia',
+  'remotion-render',
+  'remotion-studio',
+  'remotion-upgrade',
+];
+export const vendorNames = [
+  'grill-me',
+  'grilling',
+  'impeccable',
+  ...specKitNames,
+  ...remotionNames,
+];
 export function isVendoredFile(file) {
   return (
     vendorNames.some((name) => file.startsWith(`.agents/skills/${name}/`)) ||
