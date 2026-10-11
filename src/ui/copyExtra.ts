@@ -45,7 +45,7 @@ type ExtraCopy = {
   helpPaid: string;
   helpCall: string;
   helpEmail: string;
-  helpSite: string;
+  helpSite: (name: string) => string;
   helpChecked: (date: string) => string;
   helpNever: string;
 
@@ -171,7 +171,7 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     helpPaid: 'If you already paid or shared a code',
     helpCall: 'Call',
     helpEmail: 'Email',
-    helpSite: 'Website',
+    helpSite: (name) => `Open ${name} website`,
     helpChecked: (date) =>
       `Contact details checked ${date}. They can change, so confirm on the official site.`,
     helpNever: 'Never use a phone number or link from the suspicious message.',
@@ -307,9 +307,9 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     helpTitle: 'Sino ang kokontakin',
     helpReport: 'I-report ito',
     helpPaid: 'Kung nagbayad ka na o nagbigay ng code',
-    helpCall: 'Tumawag',
+    helpCall: 'Tumawag sa',
     helpEmail: 'Email',
-    helpSite: 'Website',
+    helpSite: (name) => `Buksan ang ${name} website`,
     helpChecked: (date) =>
       `Sinuri ang contact details noong ${date}. Maaari itong magbago, kaya kumpirmahin sa opisyal na site.`,
     helpNever: 'Huwag gumamit ng numero o link na galing sa kahina-hinalang mensahe.',
@@ -443,9 +443,9 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     helpTitle: 'Sino ang kokontakin',
     helpReport: 'I-report ito',
     helpPaid: 'Kung nag-pay ka na o nag-share ng code',
-    helpCall: 'Tumawag',
+    helpCall: 'Tumawag sa',
     helpEmail: 'Email',
-    helpSite: 'Website',
+    helpSite: (name) => `Buksan ang ${name} website`,
     helpChecked: (date) =>
       `Na-check ang contact details noong ${date}. Pwedeng magbago, kaya i-confirm sa official site.`,
     helpNever: 'Huwag gumamit ng number o link na galing sa suspicious na message.',

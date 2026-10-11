@@ -1,6 +1,6 @@
 // OWNER: frontend. Result-page cards that explain and back up the verdict. They only read the
 // verdict; none of them changes the level.
-import { CircleAlert, Globe, Mail, Phone, ShieldCheck } from 'lucide-react';
+import { CircleAlert, ExternalLink, Mail, Phone, ShieldCheck } from 'lucide-react';
 import archetypeData from '../data/archetypes.json';
 import { CONTACTS_CHECKED, rankContacts } from '../data/contacts';
 import { SCAM_TYPES } from '../data/scamTypes';
@@ -194,23 +194,27 @@ export function HelpCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
                 >
                   <p className="display-text text-text">{contact.name}</p>
                   <p className="leading-relaxed text-text/80">{contact.when[lang]}</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid gap-2">
                     {contact.tel && (
                       <a
                         href={`tel:${contact.tel}`}
-                        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-primary px-4 font-bold text-on-primary"
+                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-3 font-bold text-on-primary transition-colors hover:bg-primary/90"
                       >
-                        <Phone size={16} aria-hidden="true" />
-                        {text.helpCall} {contact.telText}
+                        <Phone size={18} className="shrink-0" aria-hidden="true" />
+                        <span>
+                          {text.helpCall} {contact.telText}
+                        </span>
                       </a>
                     )}
                     {contact.email && (
                       <a
                         href={`mailto:${contact.email}`}
-                        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-4 font-semibold text-text"
+                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-primary bg-surface px-4 py-3 font-bold text-primary transition-colors hover:bg-primary/10"
                       >
-                        <Mail size={16} aria-hidden="true" />
-                        {contact.email}
+                        <Mail size={18} className="shrink-0" aria-hidden="true" />
+                        <span className="break-all">
+                          {text.helpEmail}: {contact.email}
+                        </span>
                       </a>
                     )}
                     {contact.site && (
@@ -218,13 +222,24 @@ export function HelpCard({ verdict, lang }: { verdict: Verdict; lang: Lang }) {
                         href={`https://${contact.site}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border px-4 font-semibold text-text"
+                        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-primary bg-surface px-4 py-3 font-bold text-primary transition-colors hover:bg-primary/10"
                       >
-                        <Globe size={16} aria-hidden="true" />
-                        {contact.site}
+                        <span>
+                          {text.helpSite(
+                            contact.id === 'pnp_acg'
+                              ? 'PNP'
+                              : contact.id === 'nbi_ccd'
+                                ? 'NBI'
+                                : contact.name,
+                          )}
+                        </span>
+                        <ExternalLink size={18} className="shrink-0" aria-hidden="true" />
                       </a>
                     )}
                   </div>
+                  {contact.site && (
+                    <p className="break-all text-xs text-secondary">{contact.site}</p>
+                  )}
                   {contact.note && <p className="text-xs text-secondary">{contact.note[lang]}</p>}
                 </li>
               ))}
