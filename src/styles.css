@@ -152,16 +152,10 @@
   .home-actions {
     display: grid;
     justify-items: center;
-    gap: 1rem;
   }
   .home-start {
     font-family: var(--font-display);
     min-height: 3.5rem;
-  }
-  .home-note {
-    max-width: 35ch;
-    font-size: 0.875rem;
-    line-height: 1.6;
   }
   .home-mascot-wrap {
     position: relative;

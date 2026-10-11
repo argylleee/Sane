@@ -789,7 +789,6 @@ export function App() {
                   >
                     {copy.start}
                   </Button>
-                  <p className="home-note text-secondary">{copy.privacyFootnote}</p>
                 </div>
               </div>
 
