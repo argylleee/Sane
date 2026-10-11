@@ -70,6 +70,8 @@ type Copy = {
   installApp: string;
   installOffline: string;
   installManual: string;
+  installDesktop: string;
+  installAlready: string;
   installPending: string;
   updateTitle: string;
   updateNote: string;
@@ -200,6 +202,10 @@ export const COPY: Record<Lang, Copy> = {
     installOffline: 'You are offline. Sane still works; connect to the internet to install it.',
     installManual:
       'No install prompt? Open your browser menu and choose Install app or Add to Home screen.',
+    installDesktop:
+      'No install prompt? If Sane is already installed, open it from your apps. Otherwise, in Chrome or Edge, click the install icon at the right of the address bar or find Install in the browser menu. After the prompt is closed, the browser may wait a while before offering it again.',
+    installAlready:
+      'Sane is already installed on this device. Open it from your apps, or use the Open in app button in the address bar.',
     installPending:
       "On Android: if Sane isn't in your apps a minute after installing, open the Play Store once, then reload this page and tap Install again.",
     updateTitle: 'A new version of Sane is ready',
@@ -391,6 +397,10 @@ export const COPY: Record<Lang, Copy> = {
       'Offline ka. Gumagana pa rin ang Sane; kumonekta sa internet para ma-install ito.',
     installManual:
       'Walang lumabas na prompt? Buksan ang menu ng browser at piliin ang Install app o Add to Home screen.',
+    installDesktop:
+      'Walang lumabas na prompt? Kung naka-install na ang Sane, buksan ito mula sa iyong apps. Kung hindi pa, sa Chrome o Edge, i-click ang install icon sa kanan ng address bar o hanapin ang Install sa menu ng browser. Kapag naisara ang prompt, maaaring maghintay muna ang browser bago ito ipakita ulit.',
+    installAlready:
+      'Naka-install na ang Sane sa device na ito. Buksan ito mula sa iyong apps, o gamitin ang Open in app sa address bar.',
     installPending:
       'Sa Android: kung wala pa ang Sane sa iyong apps isang minuto matapos i-install, buksan muna ang Play Store, i-reload ang page na ito, saka i-tap ulit ang I-install.',
     updateTitle: 'May bagong bersyon ng Sane',
@@ -584,6 +594,10 @@ export const COPY: Record<Lang, Copy> = {
       'Offline ka. Gumagana pa rin ang Sane; mag-connect sa internet para ma-install.',
     installManual:
       'Walang lumabas na prompt? Buksan ang browser menu at piliin ang Install app o Add to Home screen.',
+    installDesktop:
+      'Walang lumabas na prompt? Kung naka-install na ang Sane, i-open ito sa apps mo. Kung hindi pa, sa Chrome o Edge, i-click ang install icon sa kanan ng address bar o hanapin ang Install sa browser menu. Kapag na-close ang prompt, baka maghintay muna ang browser bago ito ipakita ulit.',
+    installAlready:
+      'Naka-install na ang Sane sa device mo. I-open ito sa apps mo, o gamitin ang Open in app button sa address bar.',
     installPending:
       'Sa Android: kung wala pa ang Sane sa apps mo one minute after mag-install, buksan muna ang Play Store, i-reload ang page, tapos i-tap ulit ang I-install.',
     updateTitle: 'May bagong version ng Sane',

@@ -23,7 +23,7 @@ export function archetypeCacheKey(items: Archetype[] = archetypes): string {
   for (const phrase of [...items.flatMap((item) => item.phrases), ...benignPhrases]) {
     for (let i = 0; i < phrase.length; i++) hash = ((hash << 5) + hash + phrase.charCodeAt(i)) | 0;
   }
-  return `v${archetypeData.version}:${EMBEDDING_MODEL_ID}:${items.length}:${hash >>> 0}`;
+  return `v${archetypeData.version}:${EMBEDDING_MODEL_ID}:${items.length}:${hash >>> 0}:single`;
 }
 
 function openDb(): Promise<IDBDatabase> {
@@ -65,7 +65,7 @@ async function writeCache(key: string, entries: IndexEntry[]): Promise<void> {
 
 let memo: { key: string; entries: IndexEntry[] } | undefined;
 
-/** Requires the embedding model to be ready. Embeds ~54 short phrases on a cache miss. */
+/** Requires the embedding model to be ready. Embeds the reference phrases once on a cache miss. */
 export async function getArchetypeIndex(): Promise<IndexEntry[]> {
   const key = archetypeCacheKey();
   if (memo?.key === key) return memo.entries;
@@ -78,11 +78,10 @@ export async function getArchetypeIndex(): Promise<IndexEntry[]> {
     ...archetypes.flatMap((item) => item.phrases.map((phrase) => ({ id: item.id, phrase }))),
     ...benignPhrases.map((phrase) => ({ id: BENIGN_ID, phrase })),
   ];
-  const vectors = await embedTexts(
-    flat.map((entry) => entry.phrase),
-    'passage',
-    60000,
-  );
+  // One phrase per call, like the message itself: a shared batch pads every phrase to the longest
+  // one, so adding a phrase would shift every other vector and move results near the floor.
+  const vectors: Float32Array[] = [];
+  for (const entry of flat) vectors.push((await embedTexts([entry.phrase], 'passage'))[0]);
   const entries = flat.map((entry, i) => ({ archetypeId: entry.id, vector: vectors[i] }));
   memo = { key, entries };
   await writeCache(key, entries);

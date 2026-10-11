@@ -27,6 +27,7 @@ import type { Level, Signal, Verdict } from '../types';
 import { copyFor } from './copy';
 import { extraCopyFor } from './copyExtra';
 import { HistoryScreen } from './HistoryScreen';
+import { installedOnThisDevice, installHelpFor } from './installHelp';
 import { ResultActions, WrongVerdictCard } from './ResultActions';
 import {
   DetailsCard,
@@ -343,6 +344,8 @@ export function App() {
       (navigator as Navigator & { standalone?: boolean }).standalone === true,
   );
   const [showInstallHelp, setShowInstallHelp] = useState(false);
+  // Sane is installed on this device but open in a browser tab, where the browser offers no prompt.
+  const [installedElsewhere, setInstalledElsewhere] = useState(false);
   const installPrompt = useRef<InstallPromptEvent | null>(null);
   const ocrRequestId = useRef(0);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -385,6 +388,7 @@ export function App() {
     llmStatus.state === 'idle' &&
     embeddingStatus.state !== 'loading';
   const isAppleMobile = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
   const showIosInstallHint = isAppleMobile && !isInstalled;
 
   useEffect(() => {
@@ -453,8 +457,16 @@ export function App() {
     const onInstallPrompt = (event: Event) => {
       event.preventDefault();
       installPrompt.current = event as InstallPromptEvent;
+      // The browser only offers the prompt when Sane is not installed.
+      setInstalledElsewhere(false);
       setShowInstallHelp(false);
     };
+    let active = true;
+    if (!isInstalled && !earlyInstallPrompt) {
+      void installedOnThisDevice().then((installed) => {
+        if (active) setInstalledElsewhere(installed);
+      });
+    }
     // Android can report "installed" while the Play Store still holds the install, so the button and
     // its hint stay in the browser; only the installed app itself hides them.
     const onInstalled = () => {
@@ -466,12 +478,13 @@ export function App() {
     window.addEventListener('online', onConnectionChange);
     window.addEventListener('offline', onConnectionChange);
     return () => {
+      active = false;
       window.removeEventListener('beforeinstallprompt', onInstallPrompt);
       window.removeEventListener('appinstalled', onInstalled);
       window.removeEventListener('online', onConnectionChange);
       window.removeEventListener('offline', onConnectionChange);
     };
-  }, []);
+  }, [isInstalled]);
 
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return;
@@ -645,7 +658,9 @@ export function App() {
   async function promptInstall() {
     const prompt = installPrompt.current ?? earlyInstallPrompt;
     if (!prompt) {
-      // No browser prompt (iOS, already dismissed, or not offered yet): explain the manual route.
+      // No browser prompt (iOS, already installed, recently dismissed, or not offered yet): say why
+      // and explain the manual route. Check again, since Sane may have been installed or removed.
+      setInstalledElsewhere(await installedOnThisDevice());
       setShowInstallHelp(true);
       return;
     }
@@ -1363,13 +1378,24 @@ export function App() {
                     </Button>
                   )}
                 </div>
-                {!isInstalled && (!isOnline || showInstallHelp) && (
+                {!isInstalled && (!isOnline || showInstallHelp || installedElsewhere) && (
                   <p className="text-xs text-secondary text-center max-w-[45ch]" role="status">
-                    {!isOnline
-                      ? copy.installOffline
-                      : isAppleMobile
-                        ? copy.iosInstallHint
-                        : copy.installManual}
+                    {
+                      {
+                        already: copy.installAlready,
+                        offline: copy.installOffline,
+                        ios: copy.iosInstallHint,
+                        manual: copy.installManual,
+                        desktop: copy.installDesktop,
+                      }[
+                        installHelpFor({
+                          installed: installedElsewhere,
+                          online: isOnline,
+                          appleMobile: isAppleMobile,
+                          android: isAndroid,
+                        })
+                      ]
+                    }
                   </p>
                 )}
                 {!isInstalled && (
