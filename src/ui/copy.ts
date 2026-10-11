@@ -36,7 +36,6 @@ type Copy = {
   localLabel: string;
   localTitle: string;
   localDescription: string;
-  privacyFootnote: string;
   start: string;
   backToScan: string;
   useText: string;
@@ -150,7 +149,8 @@ export const COPY: Record<Lang, Copy> = {
     themeLight: 'Light',
     themeDark: 'Dark',
     welcomeTitle: 'May duda? I-check muna.',
-    welcomeDescription: 'Sane spots scam signs in suspicious messages, right in your browser.',
+    welcomeDescription:
+      'Check suspicious messages privately, right on your device. No internet needed.',
     languageLabel: 'Language',
     manualLabel: 'Manual',
     manualTitle: 'Paste to scan',
@@ -158,7 +158,6 @@ export const COPY: Record<Lang, Copy> = {
     localLabel: 'On device',
     localTitle: 'Local phone analysis',
     localDescription: 'The baseline may miss or incorrectly flag messages.',
-    privacyFootnote: 'No account needed. Messages are checked on your device.',
     start: 'Check a message',
     backToScan: 'Back to scan',
     useText: 'Use text instead',
@@ -337,7 +336,7 @@ export const COPY: Record<Lang, Copy> = {
     themeDark: 'Madilim',
     welcomeTitle: 'May duda? I-check muna.',
     welcomeDescription:
-      'Kakaibang mensahe? I-paste dito para makita ang posibleng senyales ng scam.',
+      'Check suspicious messages privately, right on your device. No internet needed.',
     languageLabel: 'Wika',
     manualLabel: 'Manu-mano',
     manualTitle: 'I-paste para suriin',
@@ -346,7 +345,6 @@ export const COPY: Record<Lang, Copy> = {
     localLabel: 'Sa device',
     localTitle: 'Pagsusuri sa telepono',
     localDescription: 'Maaaring may hindi makita o maling ma-flag ang baseline.',
-    privacyFootnote: 'Walang account na kailangan. Sa iyong device lang sinusuri ang mensahe.',
     start: 'Suriin ang Mensahe',
     backToScan: 'Bumalik sa pagsusuri',
     useText: 'Gamitin ang text',
@@ -531,7 +529,7 @@ export const COPY: Record<Lang, Copy> = {
     themeDark: 'Dark',
     welcomeTitle: 'May duda? I-check muna.',
     welcomeDescription:
-      'Kakaibang message? I-paste dito para makita ang posibleng senyales ng scam.',
+      'Check suspicious messages privately, right on your device. No internet needed.',
     languageLabel: 'Language',
     manualLabel: 'Manual check',
     manualTitle: 'Ikaw ang pipili ng ipa-paste',
@@ -539,7 +537,6 @@ export const COPY: Record<Lang, Copy> = {
     localLabel: 'Sa device',
     localTitle: 'Local na message check',
     localDescription: 'Puwedeng magkamali ang result.',
-    privacyFootnote: 'Walang account na kailangan. Sa device mo lang sinusuri ang message.',
     start: 'I-check ang Message',
     backToScan: 'Bumalik sa pag-check',
     useText: 'Gamitin ang text',

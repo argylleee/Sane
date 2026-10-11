@@ -743,11 +743,14 @@ export function App() {
             >
               <div className="home-copy">
                 <div className="space-y-4">
-                  <h1
+                  <motion.h1
                     id="welcome-title"
                     tabIndex={-1}
                     className="home-headline text-text mx-auto lg:mx-0"
                     lang="fil"
+                    initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                   >
                     {copy.welcomeTitle.split('? ').map((line, index) => (
                       <span className="block whitespace-nowrap" key={line}>
@@ -755,26 +758,46 @@ export function App() {
                         {index === 0 ? '? ' : ''}
                       </span>
                     ))}
-                  </h1>
-                  <p className="home-description text-secondary">{copy.welcomeDescription}</p>
+                  </motion.h1>
+                  <motion.p
+                    className="home-description text-secondary"
+                    initial={reducedMotion ? false : { opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.38,
+                      delay: reducedMotion ? 0 : 0.08,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                  >
+                    {copy.welcomeDescription}
+                  </motion.p>
                 </div>
 
                 <div className="home-actions">
-                  <Button
-                    size="lg"
-                    variant="primary"
-                    className="home-start px-8 py-4 bg-primary text-on-primary rounded-full font-semibold text-lg hover:opacity-95 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20 cursor-pointer"
-                    onPress={() => setScreen('scan')}
-                    onPointerEnter={(event) => {
-                      if (event.pointerType !== 'touch') setMascotAttention(true);
+                  <motion.div
+                    initial={reducedMotion ? false : { opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.38,
+                      delay: reducedMotion ? 0 : 0.16,
+                      ease: [0.16, 1, 0.3, 1],
                     }}
-                    onPointerLeave={() => setMascotAttention(false)}
-                    onFocus={() => setMascotAttention(true)}
-                    onBlur={() => setMascotAttention(false)}
                   >
-                    {copy.start}
-                  </Button>
-                  <p className="home-note text-secondary">{copy.privacyFootnote}</p>
+                    <Button
+                      size="lg"
+                      variant="primary"
+                      className="home-start px-8 py-4 bg-primary text-on-primary rounded-full font-semibold text-lg hover:opacity-95 active:scale-95 transition-all duration-150 shadow-lg shadow-primary/20 cursor-pointer"
+                      onPress={() => setScreen('scan')}
+                      onPointerEnter={(event) => {
+                        if (event.pointerType !== 'touch') setMascotAttention(true);
+                      }}
+                      onPointerLeave={() => setMascotAttention(false)}
+                      onFocus={() => setMascotAttention(true)}
+                      onBlur={() => setMascotAttention(false)}
+                    >
+                      {copy.start}
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
 
