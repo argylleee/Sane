@@ -546,9 +546,10 @@ button.brand-action {
 .home-shell > header {
   flex-shrink: 0;
 }
+/* On phones the footer simply follows the content; it is pinned to the screen bottom from 640px up. */
 .home-shell .home-main {
   padding-top: 1.5rem;
-  padding-bottom: calc(13rem + env(safe-area-inset-bottom));
+  padding-bottom: 2.5rem;
 }
 .home-shell .home-hero {
   padding-block: 0;
@@ -558,15 +559,18 @@ button.brand-action {
   gap: 1.25rem;
 }
 .home-shell .home-mascot-wrap {
-  width: clamp(10rem, 26dvh, 16rem);
-}
-.home-shell .site-footer {
-  position: absolute;
-  inset: auto 0 0;
+  width: min(16rem, 70vw);
 }
 @media (min-width: 640px) {
   .home-shell .home-main {
     padding-bottom: calc(8rem + env(safe-area-inset-bottom));
+  }
+  .home-shell .home-mascot-wrap {
+    width: clamp(10rem, 26dvh, 16rem);
+  }
+  .home-shell .site-footer {
+    position: absolute;
+    inset: auto 0 0;
   }
 }
 @media (min-width: 1024px) {
