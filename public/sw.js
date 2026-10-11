@@ -153,6 +153,9 @@ self.addEventListener('fetch', (event) => {
   // The hosted model (and its parts) are stored by the model cache itself, one verified part at a time.
   if (requestUrl.pathname.includes('/models/')) return;
 
+  // Vercel's analytics scripts are served by the host and must always be fetched fresh.
+  if (requestUrl.pathname.startsWith('/_vercel/')) return;
+
   const isNavigation = event.request.mode === 'navigate';
   const isSameOrigin = requestUrl.origin === self.location.origin;
   const isStaticAsset =

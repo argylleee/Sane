@@ -23,7 +23,7 @@ because breaking it costs points or breaks the demo.
 
 - **11.** **Code decides facts, models help with meaning.** Links, lookalike domains and OTP requests are detected by code. The LLM never decides the risk level.
 - **12.** **Every layer has a fallback.** No WebGPU: smaller model or skip the LLM. LLM fails: template explanation. OCR fails: ask for pasted text. The app always returns a verdict.
-- **13.** **Zero network during a check.** After first load, scanning a message makes no requests. Prove it with the Network tab.
+- **13.** **Zero network during a check.** After first load, scanning a message makes no requests. Prove it with the Network tab. The only exception is Vercel Web Analytics and Speed Insights on the production site: anonymous page-view and load-speed beacons to our own origin (`/_vercel/...`), which never contain message text, images or scan results. A speed-insights beacon can fire when the page is hidden or closed, so filter the Network tab by `_vercel` when proving this.
 - **14.** **User text is untrusted data.** Never render it as HTML, never fetch its links, never let it instruct the LLM.
 - **15.** **Say "Not sure" when unsure.** A confident wrong verdict on stage is the worst outcome.
 

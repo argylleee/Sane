@@ -208,7 +208,7 @@ The Node runner reads the model from `node_modules/@huggingface/transformers/mod
 
 - No backend, analytics or accounts. Messages are never saved; only archetype vectors and model
   files are cached on the device.
-- After the first load, a check makes zero network requests (verifiable in the browser Network tab).
+- After the first load, a check makes zero network requests (verifiable in the browser Network tab). The one exception is the production site's anonymous Vercel Analytics and Speed Insights beacons (page views and load timings, no message content), sent to `/_vercel/...` on our own origin.
 - Message text is treated as untrusted data: never rendered as HTML, links are never opened or
   fetched, and the language model prompt marks it as data it must not follow.
 - Sane gives warning signs, not guarantees. It does not verify who sent a message.
