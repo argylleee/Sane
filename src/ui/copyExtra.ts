@@ -16,6 +16,16 @@ type ExtraCopy = {
   whyMeaningNone: string;
   whyWriter: string;
   whyNoWriter: string;
+  whyWriting: string;
+
+  runTitle: string;
+  runParts: Record<'meaning' | 'screenshot' | 'writer', string>;
+  runMeaning: Record<'ran' | 'not_ready' | 'failed' | 'paused' | 'not_run', string>;
+  runScreenshot: string;
+  runWriter: Record<
+    'ran' | 'writing' | 'not_downloaded' | 'not_ready' | 'failed' | 'no_output',
+    string
+  >;
 
   detailsTitle: string;
   detailPhone: string;
@@ -116,6 +126,32 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     whyMeaningNone: 'The meaning check did not run, so this result comes from code alone.',
     whyWriter: 'The on-device writer only wrote the explanation. It did not choose the result.',
     whyNoWriter: 'No language model wrote any of this result.',
+    whyWriting: 'The on-device writer is still writing. It will not change the result.',
+
+    runTitle: 'What ran on this device',
+    runParts: {
+      meaning: 'Meaning check',
+      screenshot: 'Screenshot reading',
+      writer: 'Explanation writer',
+    },
+    runMeaning: {
+      ran: 'Ran on this device. It compared the message with known scam patterns.',
+      not_ready:
+        'Was not ready when this check started, so only the rules checked the message. Check again once it is ready.',
+      failed:
+        'Could not run, so only the rules checked the message. You can try preparing it again.',
+      paused: 'Is paused to save data, so only the rules checked the message.',
+      not_run: 'Did not run for this message, so only the rules checked it.',
+    },
+    runScreenshot: 'The text was read from your image on this device.',
+    runWriter: {
+      ran: 'Ran on this device. Its text is marked "AI explanation" and cannot change the result.',
+      writing: 'Is still writing a short explanation.',
+      not_downloaded: 'Is not downloaded, so the advice above is fixed text.',
+      not_ready: 'Is still preparing, so the advice above is fixed text.',
+      failed: 'Could not load, so the advice above is fixed text.',
+      no_output: 'Did not produce a usable explanation, so the advice above is fixed text.',
+    },
 
     detailsTitle: 'Numbers and accounts in the message',
     detailPhone: 'Mobile number',
@@ -226,6 +262,33 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     whyWriter:
       'Ang writer sa device mo ang sumulat lang ng paliwanag. Hindi siya ang pumili ng resulta.',
     whyNoWriter: 'Walang language model na sumulat ng alinman sa resultang ito.',
+    whyWriting: 'Sumusulat pa ang writer sa device mo. Hindi nito babaguhin ang resulta.',
+
+    runTitle: 'Ano ang tumakbo sa device na ito',
+    runParts: {
+      meaning: 'Pagsusuri ng kahulugan',
+      screenshot: 'Pagbasa ng screenshot',
+      writer: 'Taga-sulat ng paliwanag',
+    },
+    runMeaning: {
+      ran: 'Tumakbo sa device na ito. Inihambing nito ang mensahe sa mga kilalang scam.',
+      not_ready:
+        'Hindi pa handa nang magsimula ang check na ito, kaya mga patakaran (rules) lang ang sumuri sa mensahe. Ulitin kapag handa na.',
+      failed:
+        'Hindi tumakbo, kaya mga patakaran lang ang sumuri sa mensahe. Maaari mong subukang ihanda ulit.',
+      paused: 'Naka-pause para makatipid ng data, kaya mga patakaran lang ang sumuri sa mensahe.',
+      not_run: 'Hindi tumakbo para sa mensaheng ito, kaya mga patakaran lang ang sumuri.',
+    },
+    runScreenshot: 'Binasa sa device na ito ang text mula sa larawan mo.',
+    runWriter: {
+      ran: 'Tumakbo sa device na ito. Naka-label na "AI explanation" ang isinulat nito at hindi nito mababago ang resulta.',
+      writing: 'Sumusulat pa ng maikling paliwanag.',
+      not_downloaded: 'Hindi pa na-download, kaya nakapirming teksto ang payo sa itaas.',
+      not_ready: 'Inihahanda pa, kaya nakapirming teksto ang payo sa itaas.',
+      failed: 'Hindi nag-load, kaya nakapirming teksto ang payo sa itaas.',
+      no_output:
+        'Walang nagawang magagamit na paliwanag, kaya nakapirming teksto ang payo sa itaas.',
+    },
 
     detailsTitle: 'Mga numero at account sa mensahe',
     detailPhone: 'Mobile number',
@@ -337,6 +400,32 @@ const EXTRA: Record<Lang, ExtraCopy> = {
     whyWriter:
       'Ang on-device writer ang sumulat lang ng explanation. Hindi siya ang pumili ng result.',
     whyNoWriter: 'Walang language model na sumulat ng kahit anong part ng result na ito.',
+    whyWriting: 'Sumusulat pa ang writer sa device mo. Hindi nito babaguhin ang result.',
+
+    runTitle: 'Ano ang tumakbo sa device na ito',
+    runParts: {
+      meaning: 'Meaning check',
+      screenshot: 'Pagbasa ng screenshot',
+      writer: 'Explanation writer',
+    },
+    runMeaning: {
+      ran: 'Tumakbo sa device na ito. Inihambing nito ang message sa known scam patterns.',
+      not_ready:
+        'Hindi pa ready nang magsimula ang check na ito, kaya rules lang ang sumuri sa message. Ulitin kapag ready na.',
+      failed:
+        'Hindi tumakbo, kaya rules lang ang sumuri sa message. Pwede mong subukang ihanda ulit.',
+      paused: 'Naka-pause para makatipid ng data, kaya rules lang ang sumuri sa message.',
+      not_run: 'Hindi tumakbo para sa message na ito, kaya rules lang ang sumuri.',
+    },
+    runScreenshot: 'Binasa sa device na ito ang text mula sa image mo.',
+    runWriter: {
+      ran: 'Tumakbo sa device na ito. Naka-label na "AI explanation" ang isinulat nito at hindi nito mababago ang result.',
+      writing: 'Sumusulat pa ng maikling explanation.',
+      not_downloaded: 'Hindi pa na-download, kaya fixed text ang advice sa itaas.',
+      not_ready: 'Inihahanda pa, kaya fixed text ang advice sa itaas.',
+      failed: 'Hindi nag-load, kaya fixed text ang advice sa itaas.',
+      no_output: 'Walang nagawang usable na explanation, kaya fixed text ang advice sa itaas.',
+    },
 
     detailsTitle: 'Numbers at accounts sa message',
     detailPhone: 'Mobile number',

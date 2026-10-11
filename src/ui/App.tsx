@@ -28,7 +28,14 @@ import { copyFor } from './copy';
 import { extraCopyFor } from './copyExtra';
 import { HistoryScreen } from './HistoryScreen';
 import { ResultActions, WrongVerdictCard } from './ResultActions';
-import { DetailsCard, HelpCard, PrivacyProofCard, ScamTypeCard, WhyCard } from './ResultInsights';
+import {
+  DetailsCard,
+  HelpCard,
+  PrivacyProofCard,
+  RunCard,
+  ScamTypeCard,
+  WhyCard,
+} from './ResultInsights';
 import { ScamTypesList } from './ScamTypesList';
 import { SettingsPanel } from './SettingsPanel';
 import { Button } from '@heroui/react';
@@ -331,6 +338,7 @@ export function App() {
   const messageInput = useRef<HTMLTextAreaElement>(null);
   const [embeddingStatus, setEmbeddingStatus] = useState<EmbeddingsStatus>(getEmbeddingsStatus);
   const [modelAtScan, setModelAtScan] = useState<EmbeddingsStatus['state']>('idle');
+  const [writerAtScan, setWriterAtScan] = useState<LlmStatus['state']>('idle');
   const [llmStatus, setLlmStatus] = useState<LlmStatus>(getLlmStatus);
   const [llmWriting, setLlmWriting] = useState(false);
   const [llmTier, setLlmTier] = useState<Tier | null>(null);
@@ -581,6 +589,7 @@ export function App() {
     const sourceImage = image && !message.trim() ? image : null;
     const sourceMessage = message;
     const modelStateAtScan = getEmbeddingsStatus().state;
+    const writerStateAtScan = getLlmStatus().state;
 
     try {
       const result = await analyze(sourceImage ? { image: sourceImage } : { text: sourceMessage }, {
@@ -607,6 +616,7 @@ export function App() {
           .finally(() => setLlmWriting(false));
       }
       setModelAtScan(modelStateAtScan);
+      setWriterAtScan(writerStateAtScan);
       setResultMessage(sourceMessage);
       setResultIsImage(Boolean(image));
       setResultUsedOcr(Boolean(image && sourceMessage.trim() && ocrState === 'ready'));
@@ -1167,13 +1177,21 @@ export function App() {
                         {extra.moreDetails}
                       </summary>
                       <div className="space-y-6 pt-4">
-                        <WhyCard verdict={shown} lang={lang} />
+                        <WhyCard
+                          verdict={shown}
+                          lang={lang}
+                          writing={llmWriting && !verdict.explanation.extra}
+                        />
                         <PrivacyProofCard proof={proof} lang={lang} />
                       </div>
                     </details>
                   ) : (
                     <>
-                      <WhyCard verdict={shown} lang={lang} />
+                      <WhyCard
+                        verdict={shown}
+                        lang={lang}
+                        writing={llmWriting && !verdict.explanation.extra}
+                      />
                       <PrivacyProofCard proof={proof} lang={lang} />
                     </>
                   )}
@@ -1204,38 +1222,18 @@ export function App() {
                     <p className="text-xs text-secondary italic">{copy.originalNote}</p>
                   </div>
 
-                  {/* Tech stack transparency */}
-                  <div className="clay-panel rounded-2xl p-6 space-y-3">
-                    <h3 className="font-bold text-text">{copy.modelTitle}</h3>
-                    <div className="text-sm text-text/80 space-y-2">
-                      <p>
-                        {verdict.usedModels.embeddings ||
-                        verdict.usedModels.ocr ||
-                        verdict.usedModels.llm ||
-                        resultUsedOcr
-                          ? copy.modelRan
-                          : modelAtScan === 'loading'
-                            ? copy.modelNotReadyAtScan
-                            : modelAtScan === 'error'
-                              ? copy.modelFailedAtScan
-                              : modelAtScan === 'idle' && !shouldAutoPreload()
-                                ? copy.modelSkippedAtScan
-                                : copy.noModel}
-                      </p>
-                      <p className="flex items-center gap-2">
-                        <span
-                          className={`h-2 w-2 rounded-full ${verdict.usedModels.llm ? 'bg-good' : 'bg-secondary'}`}
-                        />
-                        {verdict.usedModels.llm ? copy.llmModelRan : copy.llmModelNotRun}
-                      </p>
-                      {resultUsedOcr && (
-                        <p className="flex items-center gap-2">
-                          <span className="h-2 w-2 rounded-full bg-good" />
-                          {copy.ocrUsed}
-                        </p>
-                      )}
-                    </div>
-                  </div>
+                  {/* What ran on this device, part by part */}
+                  <RunCard
+                    lang={lang}
+                    input={{
+                      usedModels: verdict.usedModels,
+                      screenshotRead: resultUsedOcr,
+                      meaningAtScan: modelAtScan,
+                      autoPreload: shouldAutoPreload(),
+                      writerAtScan,
+                      writerWriting: llmWriting && !verdict.explanation.extra,
+                    }}
+                  />
 
                   <ResultActions verdict={shown} message={resultMessage} lang={lang} />
                   <WrongVerdictCard
