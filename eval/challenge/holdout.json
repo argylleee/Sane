@@ -1,0 +1,317 @@
+[
+  {
+    "id": "ch-en-01",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-management",
+    "text": "Good day! I'm Jessica's personal assistant. She'd love to meet you after her show, and a ₱5,000 meet fee secures your spot, payable through Maya."
+  },
+  {
+    "id": "ch-en-02",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "ᴛʜɪꜱ ɪꜱ ʏᴏᴜʀ ꜰᴀᴠᴏʀɪᴛᴇ ꜱɪɴɢᴇʀ. ɪ ʀᴇꜱᴇʀᴠᴇᴅ ᴀ ꜰʀᴏɴᴛ-ʀᴏᴡ ꜱᴇᴀᴛ ꜰᴏʀ ʏᴏᴜ, ᴊᴜꜱᴛ ꜱᴇɴᴅ ₱3,200 ᴛᴏ ʜᴏʟᴅ ɪᴛ."
+  },
+  {
+    "id": "ch-en-03",
+    "lang": "en",
+    "expected": "suspicious",
+    "category": "prize-rig",
+    "text": "I'm one of the judges of the online raffle. I'll make your ticket the winner if we split the 60k prize. Message me."
+  },
+  {
+    "id": "ch-en-04",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-bank",
+    "text": "Your Landbank account will be frozen tonight. Text back your MPIN to keep it open."
+  },
+  {
+    "id": "ch-en-05",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "prize-fee",
+    "text": "Congratulations! Your number was drawn for a free trip. A refundable ₱2,300 reservation deposit is needed before we can book it."
+  },
+  {
+    "id": "ch-en-06",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-relative",
+    "text": "This is your aunt, using my friend's phone. Please wire 6 thousand pesos to this number, it's urgent."
+  },
+  {
+    "id": "ch-en-07",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Hey, could you lend me 1.2k until Friday?"
+  },
+  {
+    "id": "ch-en-08",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Payment of ₱3,200 received for 2 seats, Section 104. Your e-tickets will be emailed within 24 hours."
+  },
+  {
+    "id": "ch-en-09",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-warning",
+    "text": "Fans, beware: anyone asking you to pay for a 'meet & greet slot' through GCash is not from our team. We never collect fees by DM."
+  },
+  {
+    "id": "ch-en-10",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Can't believe the meet & greet passes sold out in 3 minutes, they were ₱9,000!"
+  },
+  {
+    "id": "ch-en-11",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-prize",
+    "text": "Our office raffle winner is Mark from Accounting, who takes home ₱5,000. Congrats!"
+  },
+  {
+    "id": "ch-en-12",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "ticket-resale",
+    "text": "Selling one Gen Ad ticket, ₱3,500, can meet at the venue or GCash first."
+  },
+  {
+    "id": "ch-en-13",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-organizer",
+    "text": "Hi, I'm from the organizer's team. Your free tickets are ready, just pay ₱499 handling via the link: tix-claim.xyz"
+  },
+  {
+    "id": "ch-en-14",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-ask",
+    "text": "Pls pay me back the ₱600 for the movie tickets when we meet later."
+  },
+  {
+    "id": "ch-en-15",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "ɪᴛ'ꜱ ᴍᴇ, ʏᴏᴜʀ ᴄᴇᴏ. ʙᴜʏ 4 ᴀᴘᴘʟᴇ ɢɪꜰᴛ ᴄᴀʀᴅꜱ ᴀɴᴅ ᴇᴍᴀɪʟ ᴍᴇ ᴛʜᴇ ᴄᴏᴅᴇꜱ ɴᴏᴡ."
+  },
+  {
+    "id": "ch-fil-01",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-management",
+    "text": "Magandang umaga, ito po ang tagapamahala ni Zack Tabudlo. May bakanteng upuan sa unahan para sa iyo kung magpapadala ka ng ₱4,000 ngayong araw."
+  },
+  {
+    "id": "ch-fil-02",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-celebrity",
+    "text": "Ako si KZ. Pakipadalhan mo ako ng tatlong libong piso para may puwesto ka sa harap ng entablado."
+  },
+  {
+    "id": "ch-fil-03",
+    "lang": "fil",
+    "expected": "suspicious",
+    "category": "prize-rig",
+    "text": "Ako ang humahawak ng bunutan. Sisiguraduhin kong ikaw ang mananalo ng ₱30,000, hatian na lang tayo."
+  },
+  {
+    "id": "ch-fil-04",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-relative",
+    "text": "Lola, si Bea po ito, bagong numero. Pakihulog po ng ₱2,000 sa GCash ko, naaksidente ako."
+  },
+  {
+    "id": "ch-fil-05",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "prize-fee",
+    "text": "Ikaw ay napiling makatanggap ng bagong motorsiklo. Magbayad muna ng ₱1,500 para sa papeles bago ito ipadala."
+  },
+  {
+    "id": "ch-fil-06",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-government",
+    "text": "Ito ang SSS. May refund ka na ₱7,200. Ibigay ang buong pangalan at numero ng bank account para mailabas."
+  },
+  {
+    "id": "ch-fil-07",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Pautangin mo naman ako ng 800, babalik ko sa sweldo."
+  },
+  {
+    "id": "ch-fil-08",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Nabayaran mo na ang ₱1,250 para sa reserbasyon. Ipakita lang ang resibo sa pasukan."
+  },
+  {
+    "id": "ch-fil-09",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-warning",
+    "text": "Babala ng Pulis: may mga nagpapakilalang artista online na humihingi ng pera kapalit ng upuan. Huwag maniwala at huwag magpadala."
+  },
+  {
+    "id": "ch-fil-10",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Pupunta raw si Darren sa mall show sa Sabado, libre ang pasok."
+  },
+  {
+    "id": "ch-fil-11",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-ask",
+    "text": "Hati tayo sa pamasahe ng taxi, ₱95 bawat isa, bayaran mo na lang ako pagbaba."
+  },
+  {
+    "id": "ch-fil-12",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Paki-GCash ng 650 para sa share mo sa handaan."
+  },
+  {
+    "id": "ch-fil-13",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "ᴀᴋᴏ ᴘᴏ ᴀɴɢ ᴀᴅᴍɪɴ ɴɢ ꜰᴀɴ ᴘᴀɢᴇ. ᴘᴀᴅᴀʟʜᴀɴ ᴍᴏ ᴀᴋᴏ ɴɢ ₱1,500 ᴘᴀʀᴀ ꜱᴀ ᴍᴇᴇᴛ ᴀɴᴅ ɢʀᴇᴇᴛ ɴɪʟᴀ."
+  },
+  {
+    "id": "ch-fil-14",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Natanggap ko na ang ₱1,000 mo, salamat sa tulong."
+  },
+  {
+    "id": "ch-fil-15",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-employer",
+    "text": "Ito ang iyong superbisor. Bumili ka ng limang load card at ipadala ang mga PIN sa numerong ito."
+  },
+  {
+    "id": "ch-tl-01",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-management",
+    "text": "Hello! From Maymay's official team po 💛 May 3 slots pa for the private dinner with her, ₱7,500 lang, i-send sa GCash namin para ma-secure."
+  },
+  {
+    "id": "ch-tl-02",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-celebrity",
+    "text": "Hi, ako 'to si Arthur Nery. Gcash-an mo lang ako ng 3k para sa backstage access mo sa gig ko."
+  },
+  {
+    "id": "ch-tl-03",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "category": "prize-rig",
+    "text": "Pre, ako yung moderator ng giveaway. Ako bahala sa'yo, panalo ka basta 40% sa akin. PM mo ko."
+  },
+  {
+    "id": "ch-tl-04",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-relative",
+    "text": "Kuya, si Jem 'to, nawala phone ko. Pa-cash in naman ng 3.5k sa number na 'to, emergency."
+  },
+  {
+    "id": "ch-tl-05",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "prize-fee",
+    "text": "Congrats po! Napili kayo sa promo, free cellphone. Bayaran lang ang ₱999 delivery fee via Maya before 5PM."
+  },
+  {
+    "id": "ch-tl-06",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-bank",
+    "text": "BDO Alert: may unauthorized login sa account mo. I-reply ang OTP para ma-block ang transaction."
+  },
+  {
+    "id": "ch-tl-07",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Hiram muna ako 2k, balik ko sa 15th."
+  },
+  {
+    "id": "ch-tl-08",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Paid na ako sa venue for our 4 seats, ₱8k total. Pakita mo na lang QR sa entrance."
+  },
+  {
+    "id": "ch-tl-09",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-warning",
+    "text": "PSA: may poser account ni Maymay na nanghihingi ng bayad for 'private dinner'. Fake yan, wag mag-send."
+  },
+  {
+    "id": "ch-tl-10",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Grabe si Arthur Nery kagabi! Sulit yung 2.5k na ticket."
+  },
+  {
+    "id": "ch-tl-11",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-prize",
+    "text": "Nanalo ka sa raffle ng barangay! Kunin mo yung bigas sa covered court bukas, dalhin lang ang ID."
+  },
+  {
+    "id": "ch-tl-12",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "May nagbebenta ng fan meet ticket sa FB, 6k daw, pa-reserve via GCash. Legit kaya?"
+  },
+  {
+    "id": "ch-tl-13",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "𝙃𝙞 𝙥𝙤, 𝙩𝙝𝙞𝙨 𝙞𝙨 𝘽𝙚𝙧𝙣𝙖𝙙𝙚𝙩𝙩𝙚! Pa-send ng 4,5OO sa Maya ko para sa VIP seat mo."
+  },
+  {
+    "id": "ch-tl-14",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Na-GCash mo na ba yung share mo sa gift ni Ma'am? Kung hindi pa, okay lang, bukas na lang."
+  },
+  {
+    "id": "ch-tl-15",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-employer",
+    "text": "Boss here, nasa meeting ako. Paki-bili ng 3 Steam wallet codes tig-1k, tapos picture-an mo yung code at i-send sakin."
+  }
+]

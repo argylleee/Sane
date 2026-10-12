@@ -1,6 +1,17 @@
 // OWNER: backend. All matching is local and never opens a message link.
 import keywords from '../data/keywords.json';
 import type { Signal } from '../types';
+import {
+  CARD_BUY,
+  CODE_HANDOVER,
+  FAN_PERK,
+  GIFT_CARD,
+  OFFICIAL_TICKETING,
+  PAYMENT_REQUEST,
+  PRIZE_CUT,
+  SENDER_CLAIM,
+  WIN_FOR_READER,
+} from './money';
 import { hasUnverifiedUrl, hasUrl, urlSignals } from './urls';
 
 const WORD = /[\p{L}\p{N}]/u;
@@ -84,6 +95,19 @@ const EMERGENCY_CONTEXT =
 const MONEY_TRANSFER =
   /\b(?:send (?:money|funds)|transfer (?:money|funds)|ipadala (?:ang )?pera|magpadala|magbayad|pay|cover (?:the |my )?(?:\w+ )?(?:bill|fee))\b/iu;
 
+// Someone writing as a public figure or their team (SENDER_CLAIM) who offers fan access (FAN_PERK)
+// and asks the reader to pay for it. Real performers and their teams do not sell fan access by
+// message; tickets are sold through official sellers. No names are listed: the shape decides.
+const FAN_PERK_CONTEXT = new RegExp(FAN_PERK, 'giu');
+const FAN_PAYMENT = new RegExp(PAYMENT_REQUEST, 'giu');
+// An offer to rig a raffle or giveaway for the reader in exchange for part of the prize.
+const RIGGED_WIN = new RegExp(WIN_FOR_READER, 'giu');
+const PRIZE_SHARE = new RegExp(PRIZE_CUT, 'giu');
+// Gift card codes are a payment that cannot be traced or reversed; no employer or agency asks for them.
+const GIFT_CARD_CONTEXT = new RegExp(String.raw`\b${GIFT_CARD}`, 'giu');
+const GIFT_CARD_HANDOVER = new RegExp(CODE_HANDOVER, 'giu');
+const GIFT_CARD_BUY = new RegExp(CARD_BUY, 'iu');
+
 // Mask only payment disclaimers and keep offsets for highlighting the original text.
 const NO_PAYMENT =
   /\b(?:no\s+(?:payment|fee|deposit)(?:\s+is)?\s+(?:required|needed|due)|(?:do not|don't)\s+need\s+to\s+pay(?:\s+(?:a|the|handling|processing|delivery|fee)){0,4}|no need\s+(?:to\s+)?(?:pay|magbayad)(?:\s+(?:a|the|ng|ang|handling|processing|delivery|fee)){0,4}|wala(?:ng|\s+(?:kang|kayong|po\s+kayong|pong))\s+(?:kailangang\s+)?(?:bayaran|bayad|paunang bayad)|hindi\s+(?:kailangan|required)\s+(?:ang\s+)?(?:bayad|payment|magbayad)|(?:hindi|di)\s+(?:(?:mo|ka|po|na)\s+){0,3}kailangang?\s+(?:ng\s+)?(?:magbayad|mag-bayad|bayaran|bayad|payment)|(?:there\s+is\s+)?nothing\s+to\s+pay|(?:do not|don't)\s+have\s+to\s+pay(?:\s+(?:anything|a\s+thing))?|without\s+(?:any\s+)?(?:fees?|charges?|payments?))\b/giu;
@@ -98,9 +122,17 @@ const PAYMENT_WORDS =
 const DEMAND_MARKER =
   /\b(?:kung hindi|kapag hindi|pag hindi|if you|unless|otherwise|or else|bago|before|muna|first|link|click|tap|pindutin|i-click|otp|pin|mpin|code|password|send|ipadala|i-send|magpadala|deposit|magdeposito|verify|i-verify|confirm|i-confirm)\b/iu;
 
+// A promise to pay the reader back ("bayaran kita bukas", "I'll pay you back") is not a demand.
+// "Babayaran kita ng 800 per task" promises earnings and keeps its payment words.
+const REPAY_PROMISE =
+  /\b(?:ba)?bayaran\s+(?:na\s+lang\s+)?kita\b(?!\s+(?:ng|nang|per)\b|\s+sa\s+bawat\b)|\b(?:i'?ll|i\s+will|will)\s+pay\s+(?:you\s+)?back\b/giu;
+
 /** Blanks "no payment needed" notices so their payment words do not read as a demand. */
 export function maskNoPayment(text: string): string {
-  return text.replace(NO_PAYMENT, (notice) => ' '.repeat(notice.length));
+  return blank(
+    text.replace(NO_PAYMENT, (notice) => ' '.repeat(notice.length)),
+    REPAY_PROMISE,
+  );
 }
 
 function maskDisclaimedPayments(text: string): string {
@@ -336,6 +368,9 @@ const REPORTED = new Set([
   'investment_bait',
   'government_bait',
   'advance_fee',
+  'performer_claim',
+  'prize_fix',
+  'gift_card_request',
 ]);
 
 function hasPersonalDataRequest(text: string): boolean {
@@ -623,6 +658,29 @@ export function runRules(text: string): Signal[] {
     30,
     contextualSpan(text, MARKETPLACE_CONTEXT, BEFORE_INSPECTION),
   );
+  if (SENDER_CLAIM.test(text) && !OFFICIAL_TICKETING.test(text))
+    pushSignal(
+      signals,
+      'performer_claim',
+      'Claims to be a celebrity or their team and asks you to pay for fan access',
+      30,
+      contextualSpan(text, FAN_PERK_CONTEXT, FAN_PAYMENT),
+    );
+  pushSignal(
+    signals,
+    'prize_fix',
+    'Offers to rig a raffle or giveaway for you in exchange for part of the prize',
+    30,
+    contextualSpan(text, RIGGED_WIN, PRIZE_SHARE),
+  );
+  if (GIFT_CARD_BUY.test(text))
+    pushSignal(
+      signals,
+      'gift_card_request',
+      'Asks you to buy gift cards and send their codes',
+      35,
+      contextualSpan(text, GIFT_CARD_CONTEXT, GIFT_CARD_HANDOVER),
+    );
   const emergency = contextualSpan(text, RELATIVE_CONTEXT, EMERGENCY_CONTEXT);
   if (emergency) {
     pushSignal(
