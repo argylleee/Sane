@@ -40,7 +40,7 @@ describe('guardian interaction timing', () => {
   it('finishes the short shield gesture when the pointer leaves early', () => {
     expect(nextGuardianStep('notice', false, 40, true)).toEqual({ phase: 'raise', delay: 110 });
     expect(nextGuardianStep('raise', false, 100, true)).toEqual({ phase: 'hold', delay: 240 });
-    expect(nextGuardianStep('hold', false, 100, true)).toEqual({ phase: 'release', delay: 310 });
+    expect(nextGuardianStep('hold', false, 100, true)).toEqual({ phase: 'release', delay: 450 });
   });
 
   it('holds while engaged and releases promptly after a long hover', () => {
