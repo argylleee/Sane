@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import {
   motion,
@@ -15,8 +15,13 @@ const collapsedShell = { opacity: 0, scale: 0.28, scaleX: 1, scaleY: 1 };
 const shellPoses = {
   idle: collapsedShell,
   notice: collapsedShell,
-  raise: { opacity: 1, scale: 1.04, scaleX: 1, scaleY: 1 },
-  hold: { opacity: 1, scale: 1, scaleX: [1.025, 0.988, 1], scaleY: [0.985, 1.025, 1] },
+  raise: { opacity: 1, scale: 1.055, scaleX: 1, scaleY: 1 },
+  hold: {
+    opacity: 1,
+    scale: 1,
+    scaleX: [1.045, 0.974, 1.008, 1],
+    scaleY: [0.964, 1.038, 0.994, 1],
+  },
   release: { opacity: 0, scale: 0.88, scaleX: 1, scaleY: 1 },
 };
 
@@ -31,7 +36,7 @@ export function nextGuardianStep(
   if (phase === 'idle') return engaged ? { phase: 'notice', delay: 0 } : undefined;
   if (phase === 'hold' && engaged) return undefined;
   const next = { notice: 'raise', raise: 'hold', hold: 'release', release: 'idle' } as const;
-  const duration = { notice: 150, raise: 340, hold: 410, release: 280 };
+  const duration = { notice: 150, raise: 340, hold: 550, release: 280 };
   return { phase: next[phase], delay: Math.max(0, duration[phase] - elapsed) };
 }
 
@@ -68,6 +73,11 @@ export function HomeMascot({ attention }: { attention: boolean }) {
   const guardianActive = visible && (reducedMotion ? reacting : phase !== 'idle');
   const barrierVisible =
     visible && (reducedMotion ? reacting : phase === 'raise' || phase === 'hold');
+  const blinkOnce = useCallback(() => {
+    clearTimeout(reopenTimer.current);
+    setBlinking(true);
+    reopenTimer.current = setTimeout(() => setBlinking(false), 140);
+  }, []);
 
   useEffect(() => {
     const step = nextGuardianStep(
@@ -104,28 +114,32 @@ export function HomeMascot({ attention }: { attention: boolean }) {
   }, []);
 
   useEffect(() => {
-    if (!visible || reducedMotion) return;
+    const reset = setTimeout(() => setBlinking(false), 0);
+    if (!playing) return () => clearTimeout(reset);
 
     let cancelled = false;
     const scheduleBlink = (delay: number) => {
       blinkTimer.current = setTimeout(() => {
         if (cancelled) return;
-        setBlinking(true);
-        reopenTimer.current = setTimeout(() => {
-          if (cancelled) return;
-          setBlinking(false);
-          scheduleBlink(Math.random() < 0.18 ? 240 : 3_000 + Math.random() * 3_800);
-        }, 140);
+        blinkOnce();
+        scheduleBlink(Math.random() < 0.18 ? 380 : 3_140 + Math.random() * 3_800);
       }, delay);
     };
 
     scheduleBlink(1_300 + Math.random() * 1_900);
     return () => {
       cancelled = true;
+      clearTimeout(reset);
       clearTimeout(blinkTimer.current);
       clearTimeout(reopenTimer.current);
     };
-  }, [visible, reducedMotion]);
+  }, [playing, blinkOnce]);
+
+  useEffect(() => {
+    if (phase !== 'hold' || !playing) return;
+    const timer = setTimeout(blinkOnce, 180);
+    return () => clearTimeout(timer);
+  }, [phase, playing, blinkOnce]);
 
   const followPointer = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'touch') return;
@@ -221,7 +235,7 @@ export function HomeMascot({ attention }: { attention: boolean }) {
             : phase === 'raise'
               ? 0.34
               : phase === 'hold'
-                ? 0.41
+                ? 0.55
                 : 0.28,
           ease: [0.16, 1, 0.3, 1],
         }}
@@ -229,8 +243,6 @@ export function HomeMascot({ attention }: { attention: boolean }) {
         <span className="mascot-barrier-surface" />
         <motion.span className="mascot-barrier-light" style={{ backgroundImage: bubbleLight }} />
         <motion.span className="mascot-barrier-rim" style={{ rotate: rimTurn }} />
-        <span className="mascot-barrier-wave" />
-        <span className="mascot-barrier-sweep" />
       </motion.span>
       <div className="mascot-idle">
         <motion.div className="mascot-gaze" style={{ x: lookX, y: lookY, rotate: headTurn }}>
@@ -279,7 +291,6 @@ export function HomeMascot({ attention }: { attention: boolean }) {
               onError={() => setPosesReady((ready) => ({ ...ready, guard: false }))}
             />
             <span className="mascot-eyelids">
-              <span className="mascot-shield-glow" />
               <span
                 className="mascot-shield-gleam"
                 style={{ maskImage: 'url("' + guardianRoot + 'guard.webp")' }}
