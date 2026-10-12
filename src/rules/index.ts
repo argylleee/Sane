@@ -84,6 +84,29 @@ const EMERGENCY_CONTEXT =
 const MONEY_TRANSFER =
   /\b(?:send (?:money|funds)|transfer (?:money|funds)|ipadala (?:ang )?pera|magpadala|magbayad|pay|cover (?:the |my )?(?:\w+ )?(?:bill|fee))\b/iu;
 
+// Someone writing as a celebrity or performer ("si Bruno Mars to", "It's me, Bruno Mars") about their
+// own event ("concert ko", "my Manila show") and asking the reader to pay. Real performers do not
+// message fans for money; tickets are sold through official sellers.
+const FIL_IDENTITY =
+  /\b(?:si|ako si|ito si)\s+(?:[\p{L}.'-]+\s+){0,2}[\p{L}.'-]+\s+(?:po\s+)?(?:to|ito|'to)\b|\b(?:ako|ito)\s+(?:po\s+)?si\s+\p{L}/iu;
+const EN_IDENTITY =
+  /\b(?:[Ii]t'?s\s+me|[Tt]his\s+is|I\s+am|I'm)[\s,!-]+\p{Lu}[\p{L}.'-]*(?:\s+\p{Lu}[\p{L}.'-]*){0,2}/u;
+const OWN_EVENT =
+  /\b(?:concert|show|tour|gig|fan ?meet(?:ing)?|meet[- ](?:and|&|n)[- ]greet|fan ?sign(?:ing)?)\s+ko\b|\bmy\s+(?:[\p{L}-]+\s+){0,2}(?:concert|show|tour|gig|fan ?meet(?:ing)?|meet[- ](?:and|&|n)[- ]greet|fan ?sign(?:ing)?)\b/giu;
+const FAN_PAYMENT =
+  /(?<!\p{L}-)\b(?:send|sendan|i-?send|pa-?send|pa-?sendan|paki-?send|padalhan|ipadala|magpadala|pay|magbayad|bayaran|mag-?gcash|i-?gcash|transfer|deposit|mag-?deposit)\b[^.!?\n]{0,30}(?:₱|php|p\s?\d|\$\s?\d|\d[\d,.]*\s?k\b|\d{1,3},\d{3}|pesos?|piso|libo\w*|thousand|gcash|maya|fee|bayad)/giu;
+// An offer to rig a raffle or giveaway for the reader in exchange for part of the prize.
+const RIGGED_WIN =
+  /\b(?:ipanalo|ipapanalo|i-?panalo|papanalunin|panalunin|mapanalo)\s+(?:kita|ka|kayo|ikaw)\b|\b(?:i|we)(?:\s+(?:can|will|could)|'ll)\s+(?:make\s+sure\s+|help\s+)?(?:make\s+)?(?:you|u)\s+win\b/giu;
+const PRIZE_CUT =
+  /\b(?:hati(?:an)?\s+(?:tayo|kami)|partihan|parte\s+ko|kalahati|split|share\s+(?:it|the)|give\s+me|for\s+me|sa(?:ken|akin|kin)|50\s?\/\s?50|cut)\b|\b\d{1,2}\s?%/giu;
+// Gift card codes are a payment that cannot be traced or reversed; no employer or agency asks for them.
+export const GIFT_CARD = String.raw`(?:gift ?cards?|(?:google ?play|itunes|apple|steam(?: wallet)?|amazon|razer ?gold)(?: gift)?(?: cards?|\s+codes?)?)\b`;
+const GIFT_CARD_CONTEXT = new RegExp(String.raw`\b${GIFT_CARD}`, 'giu');
+const GIFT_CARD_HANDOVER =
+  /\b(?:send|i-?send|ipadala|ibigay|give|share|reply|text|i-?text|forward|picture|litrato)\b[^.!?\n]{0,40}\b(?:codes?|pins?|serial(?: numbers?)?)\b/giu;
+const GIFT_CARD_BUY = /\b(?:buy|bumili|bili|bilhan|purchase)\b/iu;
+
 // Mask only payment disclaimers and keep offsets for highlighting the original text.
 const NO_PAYMENT =
   /\b(?:no\s+(?:payment|fee|deposit)(?:\s+is)?\s+(?:required|needed|due)|(?:do not|don't)\s+need\s+to\s+pay(?:\s+(?:a|the|handling|processing|delivery|fee)){0,4}|no need\s+(?:to\s+)?(?:pay|magbayad)(?:\s+(?:a|the|ng|ang|handling|processing|delivery|fee)){0,4}|wala(?:ng|\s+(?:kang|kayong|po\s+kayong|pong))\s+(?:kailangang\s+)?(?:bayaran|bayad|paunang bayad)|hindi\s+(?:kailangan|required)\s+(?:ang\s+)?(?:bayad|payment|magbayad)|(?:hindi|di)\s+(?:(?:mo|ka|po|na)\s+){0,3}kailangang?\s+(?:ng\s+)?(?:magbayad|mag-bayad|bayaran|bayad|payment)|(?:there\s+is\s+)?nothing\s+to\s+pay|(?:do not|don't)\s+have\s+to\s+pay(?:\s+(?:anything|a\s+thing))?|without\s+(?:any\s+)?(?:fees?|charges?|payments?))\b/giu;
@@ -98,9 +121,17 @@ const PAYMENT_WORDS =
 const DEMAND_MARKER =
   /\b(?:kung hindi|kapag hindi|pag hindi|if you|unless|otherwise|or else|bago|before|muna|first|link|click|tap|pindutin|i-click|otp|pin|mpin|code|password|send|ipadala|i-send|magpadala|deposit|magdeposito|verify|i-verify|confirm|i-confirm)\b/iu;
 
+// A promise to pay the reader back ("bayaran kita bukas", "I'll pay you back") is not a demand.
+// "Babayaran kita ng 800 per task" promises earnings and keeps its payment words.
+const REPAY_PROMISE =
+  /\b(?:ba)?bayaran\s+(?:na\s+lang\s+)?kita\b(?!\s+(?:ng|nang|per)\b|\s+sa\s+bawat\b)|\b(?:i'?ll|i\s+will|will)\s+pay\s+(?:you\s+)?back\b/giu;
+
 /** Blanks "no payment needed" notices so their payment words do not read as a demand. */
 export function maskNoPayment(text: string): string {
-  return text.replace(NO_PAYMENT, (notice) => ' '.repeat(notice.length));
+  return blank(
+    text.replace(NO_PAYMENT, (notice) => ' '.repeat(notice.length)),
+    REPAY_PROMISE,
+  );
 }
 
 function maskDisclaimedPayments(text: string): string {
@@ -336,6 +367,9 @@ const REPORTED = new Set([
   'investment_bait',
   'government_bait',
   'advance_fee',
+  'performer_claim',
+  'prize_fix',
+  'gift_card_request',
 ]);
 
 function hasPersonalDataRequest(text: string): boolean {
@@ -623,6 +657,29 @@ export function runRules(text: string): Signal[] {
     30,
     contextualSpan(text, MARKETPLACE_CONTEXT, BEFORE_INSPECTION),
   );
+  if (FIL_IDENTITY.test(text) || EN_IDENTITY.test(text))
+    pushSignal(
+      signals,
+      'performer_claim',
+      'Claims to be a celebrity or performer and asks you to pay for a spot at their event',
+      30,
+      contextualSpan(text, OWN_EVENT, FAN_PAYMENT),
+    );
+  pushSignal(
+    signals,
+    'prize_fix',
+    'Offers to rig a raffle or giveaway for you in exchange for part of the prize',
+    30,
+    contextualSpan(text, RIGGED_WIN, PRIZE_CUT),
+  );
+  if (GIFT_CARD_BUY.test(text))
+    pushSignal(
+      signals,
+      'gift_card_request',
+      'Asks you to buy gift cards and send their codes',
+      35,
+      contextualSpan(text, GIFT_CARD_CONTEXT, GIFT_CARD_HANDOVER),
+    );
   const emergency = contextualSpan(text, RELATIVE_CONTEXT, EMERGENCY_CONTEXT);
   if (emergency) {
     pushSignal(

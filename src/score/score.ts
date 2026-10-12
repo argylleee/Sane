@@ -10,6 +10,7 @@ const STRONG_ASK = new Set([
   'card_data_request',
   'personal_data_request',
   'lookalike_domain',
+  'gift_card_request',
 ]);
 // Bait that becomes a classic scam once money is requested ("you won, pay the fee").
 const MONEY_HOOK = new Set(['prize_or_job_bait', 'relative_claims', 'coercion', 'account_threat']);

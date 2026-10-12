@@ -178,6 +178,8 @@ const FEE_IDS = [
   'gambling_bait',
   'romance_bait',
   'relative_emergency',
+  'performer_claim',
+  'gift_card_request',
 ];
 const CODE_IDS = ['otp_pin_request', 'card_data_request'];
 const THREAT_IDS = ['account_threat', 'coercion', 'urgency'];

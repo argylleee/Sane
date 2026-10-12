@@ -36,7 +36,32 @@ const SETS: Record<string, string> = {
   dev2: 'eval/dev2.json',
   heldout: 'eval/heldout/heldout.json',
   demo: 'eval/demo-cases.json',
+  obfuscationDev: 'eval/obfuscation/dev.json',
+  obfuscationHoldout: 'eval/obfuscation/holdout.json',
 };
+
+it('keeps the obfuscation holdout frozen and separate from reference phrases', () => {
+  const bytes = readFileSync(SETS.obfuscationHoldout);
+  const hash = readFileSync('eval/obfuscation/README.md', 'utf8').match(
+    /SHA-256: `([a-f0-9]{64})`/,
+  )?.[1];
+  expect(createHash('sha256').update(bytes).digest('hex')).toBe(hash);
+  const key = (text: string) => text.normalize('NFKC').toLowerCase().replace(/\s+/g, ' ').trim();
+  const reference = JSON.parse(readFileSync('src/data/archetypes.json', 'utf8'));
+  const phrases = new Set(
+    [
+      ...reference.archetypes.flatMap((a: { phrases: string[] }) => a.phrases),
+      ...reference.benign,
+    ].map(key),
+  );
+  const dev = JSON.parse(readFileSync(SETS.obfuscationDev, 'utf8')) as Case[];
+  const holdout = JSON.parse(bytes.toString('utf8')) as Case[];
+  const devTexts = new Set(dev.map(({ text }) => key(text)));
+  for (const c of holdout) {
+    expect(phrases.has(key(c.text)), c.id).toBe(false);
+    expect(devTexts.has(key(c.text)), c.id).toBe(false);
+  }
+});
 
 export function readHoldout(): Case[] {
   const bytes = readFileSync(SETS.contextHoldout);
@@ -160,7 +185,7 @@ it.skipIf(process.env.EVAL_CONTEXT !== '1')(
     const line = (name: string, value: unknown) => {
       const { overall } = value as { overall: ReturnType<typeof summarize> };
       const pct = (x: number | null) => (x === null ? '-' : `${Math.round(x * 100)}%`);
-      return `${name.padEnd(15)} scams ${overall.caught}/${overall.scams} recall ${pct(overall.recall)} | false alarms ${overall.falseAlarms}/${overall.legit} FPR ${pct(overall.falsePositiveRate)} | precision ${pct(overall.precision)} | abstain ${overall.abstained}/${overall.total} ${name === 'contextHoldout' ? '' : ` | missed ${overall.missedScams.join(',') || '-'} | FA ${overall.falseAlarmIds.join(',') || '-'}`}`;
+      return `${name.padEnd(15)} scams ${overall.caught}/${overall.scams} recall ${pct(overall.recall)} | false alarms ${overall.falseAlarms}/${overall.legit} FPR ${pct(overall.falsePositiveRate)} | precision ${pct(overall.precision)} | abstain ${overall.abstained}/${overall.total} ${name.endsWith('Holdout') ? '' : ` | missed ${overall.missedScams.join(',') || '-'} | FA ${overall.falseAlarmIds.join(',') || '-'}`}`;
     };
     const summary = [
       'RULES ONLY',

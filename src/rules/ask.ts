@@ -2,6 +2,7 @@
 // it asks for something: open a link, call or text a number, send money, give a code or personal
 // details, or log in, sign up, claim or install. Code decides this, never a model.
 import {
+  GIFT_CARD,
   maskDeliveryNotice,
   maskNoPayment,
   maskOfficialPayment,
@@ -19,7 +20,9 @@ export type AskKind =
 const IN_PERSON =
   /\b(?:in person|face[- ]to[- ]face|when we meet|pagkita natin|pagkikita natin|nang personal|personal na pumunta|visit (?:the|our|your) (?:[\p{L}-]+ ){0,2}(?:office|branch|registrar|counter|store))\b/iu;
 
-const MONEY_WORD = String.raw`(?:money|pera|cash|pesos?|piso|php|₱|p\s?\d|\d[\d,.]*\s?k\b|\d{1,3},\d{3}|gcash|maya|fee|bayad|payment|load|amount|halaga|deposit|balance)`;
+const MONEY_WORD = String.raw`(?:money|pera|cash|pesos?|piso|php|₱|p\s?\d|\$\s?\d|\d[\d,.]*\s?k\b|\d{1,3},\d{3}|libo\w*|thousand|gcash|maya|fee|bayad|payment|load|amount|halaga|deposit|balance)`;
+// "na-send", "nag-send", "na-sendan": the transfer already happened, so it is not a request.
+const NOT_DONE = String.raw`(?<!\p{L}-)`;
 
 // Verbs that hand something over. Negated uses ("huwag i-share", "never send") are removed first.
 const REQUEST = String.raw`(?:send|share|give|provide|enter|i-?enter|submit|reply|forward|confirm|update|type|tell|ibigay|ipadala|i-?send|pa-?send|paki-?send|pakisabi|sabihin|ilagay|i-?share|ibahagi|ipasa|i-?forward|i-?type|i-?confirm|i-?update|copy of)`;
@@ -35,12 +38,12 @@ const NEGATED_REQUEST = new RegExp(
 const ASKS: [AskKind, RegExp][] = [
   [
     'contact',
-    /(?:\+?63|\b0)9\d{2}[\s-]?\d{3}[\s-]?\d{4}\b|\b(?:call|text|tawagan|i-?text|contact|pa-?call|pakitawagan)(?:\s+(?:po|ninyo|niyo|nyo|mo|naman|lang|na))*\s+(?:us|me|this number|ang numerong ito|sa numerong ito|kami|ako|back)\b|\b(?:pa-?call back|call ?back|callback|pakitawagan)\b|\b(?:sa numerong ito|this number|numero na ito|number na ito)\b|\b(?:telegram|whatsapp|viber)\b|\b(?:message|dm|chat|pm)\s+(?:me|mo ako|niyo ako|us)\b/iu,
+    /(?:\+?63|\b0)9\d{2}[\s-]?\d{3}[\s-]?\d{4}\b|\b(?:call|text|tawagan|i-?text|contact|pa-?call|pakitawagan)(?:\s+(?:po|ninyo|niyo|nyo|mo|naman|lang|na))*\s+(?:us|me|this number|ang numerong ito|sa numerong ito|kami|ako|back)\b|\b(?:pa-?call back|call ?back|callback|pakitawagan)\b|\b(?:sa numerong ito|this number|numero na ito|number na ito)\b|\b(?:telegram|whatsapp|viber)\b|\b(?:message|i-?message|msg|dm|i-?dm|chat|pm|i-?pm|add|i-?add)\s+(?:(?:mo|niyo|nyo|ninyo|lang|na|po|naman)\s+){0,3}(?:me|ako|us|kami)\b/iu,
   ],
   [
     'money',
     new RegExp(
-      String.raw`\b(?:pay|paying|magbayad|mag-?pay|bayaran|babayaran|i-?pay|settle|deposit|mag-?deposit|magdeposito|pahiram|hiram|pautang|pakibalik|ibalik|i-?refund|top[ -]?up|mag-?top[ -]?up|mag-?load|pa-?load|pa-?gcash|padalhan|pambayad|pang-?bayad|abono|i-?abono)\b|\b(?:send|i-?send|mag-?send|pakisend|paki-?send|pa-?send|ipadala|pakipadala|magpadala|transfer|i-?transfer)\b[^.!?\n]{0,30}${MONEY_WORD}|\b(?:need|kailangan|kulang)\b[^.!?\n]{0,25}${MONEY_WORD}|\b(?:hospital|ospital|clinic|klinika|medical|tuition|matrikula)\s+(?:bill|fee|bayarin)s?\b|\b(?:help|tulungan|tulong)\b[^.!?\n]{0,25}\b(?:pay|bill|bayad|bayarin|gastos|pera|money)\b|\b(?:fee|charge|bayad|singil)\b[^.!?\n]{0,25}\b(?:be paid|paid first|paid before|settled)\b|\bcover (?:the |my |our )?(?:[\p{L}-]+ )?(?:bill|fee|gastos)\b`,
+      String.raw`${NOT_DONE}\b(?:pay|paying|magbayad|mag-?pay|bayaran|babayaran|i-?pay|settle|deposit|mag-?deposit|magdeposito|pahiram|hiram|pautang|pakibalik|ibalik|i-?refund|top[ -]?up|mag-?top[ -]?up|mag-?load|pa-?load|pa-?gcash|padalhan|pambayad|pang-?bayad|abono|i-?abono)\b|${NOT_DONE}\b(?:send|sendan|i-?send|mag-?send|pakisend|paki-?send|pa-?send|pa-?sendan|ipadala|pakipadala|magpadala|transfer|i-?transfer|mag-?gcash|i-?gcash|gcash-?an|mag-?maya|i-?maya)\b[^.!?\n]{0,30}${MONEY_WORD}|\b(?:buy|bumili|bili|bilhan|purchase)\b[^.!?\n]{0,40}${GIFT_CARD}|\b(?:need|kailangan|kulang)\b[^.!?\n]{0,25}${MONEY_WORD}|\b(?:hospital|ospital|clinic|klinika|medical|tuition|matrikula)\s+(?:bill|fee|bayarin)s?\b|\b(?:help|tulungan|tulong)\b[^.!?\n]{0,25}\b(?:pay|bill|bayad|bayarin|gastos|pera|money)\b|\b(?:fee|charge|bayad|singil)\b[^.!?\n]{0,25}\b(?:be paid|paid first|paid before|settled)\b|\bcover (?:the |my |our )?(?:[\p{L}-]+ )?(?:bill|fee|gastos)\b`,
       'iu',
     ),
   ],

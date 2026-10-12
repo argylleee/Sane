@@ -1,0 +1,226 @@
+[
+  {
+    "id": "ob-dev-orig-1",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "category": "reported",
+    "text": "ᴏᴋ ʟᴀɴɢ ʙᴀ ᴍᴀᴋɪᴘᴀɢ ᴅᴇᴀʟ ᴀᴋᴏ ꜱᴀʏᴏ ɪᴘᴀɴᴀʟᴏ ᴋɪᴛᴀ ɴɢ 20ᴋ ʙᴀꜱᴛᴀ ʜᴀᴛɪ ᴛᴀʏᴏ 5ᴋ ꜱᴀᴋᴇɴ 15ᴋ ꜱᴀʏᴏ ʀᴇᴘʟʏ ʏᴇꜱ ᴋᴜɴɢ ᴅᴇᴀʟ ᴋᴀ ᴀᴅᴅ ᴍᴇ ᴏ ᴍᴇꜱꜱᴀɢᴇ ᴍᴇ : 𝕄𝕖𝕤𝕤𝕒𝕘𝕖 𝕞𝕖 ℕ𝕆𝕎 𝔽𝔹 > Ari Arciaga ( yung naka sando po na black and may necklace tapos na ka smile po."
+  },
+  {
+    "id": "ob-dev-orig-2",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "reported",
+    "text": "hi si bruno mars to, sendan mo ako ng 10,000 pesos para makapunta ka sa concert ko sa May 2027"
+  },
+  {
+    "id": "ob-dev-orig-3",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "reported",
+    "text": "Hi! It's me, Bruno Mars. Send ka ng ₱10,000 para ma-reserve ko yung special seat mo sa concert ko sa May 2027."
+  },
+  {
+    "id": "ob-dev-u-smallcaps-otp",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "ꜱᴇɴᴅ ᴍᴏ ᴀɴɢ ᴏᴛᴘ ᴍᴏ ɴɢᴀʏᴏɴ ɴᴀ"
+  },
+  {
+    "id": "ob-dev-u-fullwidth-otp",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Ｓｅｎｄ ｍｏ ａｎｇ ＯＴＰ ｍｏ ｎｇａｙｏｎ ｎａ"
+  },
+  {
+    "id": "ob-dev-u-wordjoiner-otp",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Send mo ang O\u2060T\u2060P mo ngayon na"
+  },
+  {
+    "id": "ob-dev-u-softhyphen-otp",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Send mo ang O\u00adTP mo ngayon na"
+  },
+  {
+    "id": "ob-dev-u-greek-otp",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Send mo ang ΟTP mo ngayon na"
+  },
+  {
+    "id": "ob-dev-u-entity-money",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Hi si Bruno Mars to, send ka ng &#8369;10,000 para sa concert ko"
+  },
+  {
+    "id": "ob-dev-u-linebreak-money",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Hi it's me Bruno Mars.\nSend ka\nng ₱10,000\npara sa seat mo sa concert ko"
+  },
+  {
+    "id": "ob-dev-u-spaced-otp",
+    "lang": "fil",
+    "expected": "suspicious",
+    "category": "obfuscation",
+    "text": "S E N D mo ang O T P mo"
+  },
+  {
+    "id": "ob-dev-m-sendan",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "sendan mo ako ng 5k"
+  },
+  {
+    "id": "ob-dev-m-padalhan",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "Padalhan mo ako ng 2,000 ngayon"
+  },
+  {
+    "id": "ob-dev-m-pasend",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "Pa-send naman ng P1,500"
+  },
+  {
+    "id": "ob-dev-m-maggcash",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "Mag-GCash ka na lang ng 3k sa akin"
+  },
+  {
+    "id": "ob-dev-m-igcash",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "I-GCash mo na lang yung 1,000"
+  },
+  {
+    "id": "ob-dev-m-words-fil",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "Send ka ng sampung libong piso"
+  },
+  {
+    "id": "ob-dev-m-words-en",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "Send me ten thousand pesos"
+  },
+  {
+    "id": "ob-dev-m-php",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "money-form",
+    "text": "Send PHP10k now"
+  },
+  {
+    "id": "ob-dev-celeb-meet",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Hello this is Taylor Swift. Pay $500 for a meet and greet pass at my show."
+  },
+  {
+    "id": "ob-dev-celeb-giveaway",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Hi it's me Vice Ganda! Nanalo ka sa giveaway ko, magbayad ng 1,500 processing fee para makuha ang premyo."
+  },
+  {
+    "id": "ob-dev-employer-gift",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Hi this is your manager. I need you to buy 5 Google Play cards worth 2,000 each and send me the codes."
+  },
+  {
+    "id": "ob-dev-prize-split-taglish",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "category": "prize-split",
+    "text": "Ipapanalo kita sa raffle ng 50k, hati tayo 50/50, message mo lang ako sa FB"
+  },
+  {
+    "id": "ob-dev-prize-split-en",
+    "lang": "en",
+    "expected": "suspicious",
+    "category": "prize-split",
+    "text": "I can make you win the 30k giveaway, we split it 10k for me 20k for you. DM me now."
+  },
+  {
+    "id": "ob-dev-fp-ticket-legit",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Your reservation for the Bruno Mars concert on May 2027 is confirmed. Pay the balance of ₱10,000 at any SM Tickets outlet."
+  },
+  {
+    "id": "ob-dev-fp-friend-ticket",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Uy sendan mo na ako ng 3,500 para sa ticket natin sa Bruno Mars concert ha"
+  },
+  {
+    "id": "ob-dev-fp-warning",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Ingat! May nagpapanggap na si Bruno Mars, sinasabing sendan mo siya ng 10,000 para sa concert. Huwag magpadala."
+  },
+  {
+    "id": "ob-dev-fp-completed",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Na-sendan na kita ng 10,000 kahapon para sa concert ticket ni Bruno Mars."
+  },
+  {
+    "id": "ob-dev-fp-mention",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Grabe si Bruno Mars, 10,000 pesos daw ang ticket sa concert niya sa May 2027."
+  },
+  {
+    "id": "ob-dev-fp-split-bill",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Hati tayo sa bill ng dinner, 500 each. Send mo na lang sa GCash ko."
+  },
+  {
+    "id": "ob-dev-fp-won-share",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Nanalo ako ng 5k sa raffle! Libre kita, hati tayo sa pizza mamaya."
+  },
+  {
+    "id": "ob-dev-fp-mom",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Anak, pa-send naman ng 500 pambili ng gamot ni lola. Salamat."
+  }
+]

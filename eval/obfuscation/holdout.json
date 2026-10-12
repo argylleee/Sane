@@ -1,0 +1,254 @@
+[
+  {
+    "id": "ob-ho-en-01",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Hey, it's me, Ed Sheeran 🙂 I'm picking a few fans for backstage at my Manila show. Send $300 via GCash to lock in your pass."
+  },
+  {
+    "id": "ob-ho-en-02",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "𝐓𝐡𝐢𝐬 𝐢𝐬 𝐲𝐨𝐮𝐫 𝐁𝐃𝐎 𝐟𝐫𝐚𝐮𝐝 𝐭𝐞𝐚𝐦. 𝐑𝐞𝐩𝐥𝐲 𝐰𝐢𝐭𝐡 𝐭𝐡𝐞 𝐎𝐓𝐏 𝐰𝐞 𝐣𝐮𝐬𝐭 𝐬𝐞𝐧𝐭 𝐭𝐨 𝐬𝐭𝐨𝐩 𝐭𝐡𝐞 𝐭𝐫𝐚𝐧𝐬𝐟𝐞𝐫."
+  },
+  {
+    "id": "ob-ho-en-03",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "ʏᴏᴜʀ ᴀᴄᴄᴏᴜɴᴛ ᴡɪʟʟ ʙᴇ ʙʟᴏᴄᴋᴇᴅ ᴛᴏᴅᴀʏ. ꜱᴇɴᴅ ʏᴏᴜʀ ᴘɪɴ ᴛᴏ ᴋᴇᴇᴘ ɪᴛ ᴀᴄᴛɪᴠᴇ."
+  },
+  {
+    "id": "ob-ho-en-04",
+    "lang": "en",
+    "expected": "suspicious",
+    "category": "prize-split",
+    "text": "I'm the admin of the page giveaway. I can make sure you win the 25k prize if you give me 10k of it. Interested? PM me."
+  },
+  {
+    "id": "ob-ho-en-05",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Hi, this is your boss. I'm in a meeting, buy 3 Google Play gift cards worth ₱2,000 each and send me the c\u200bodes ASAP."
+  },
+  {
+    "id": "ob-ho-en-06",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Reminder: your 2 tickets for the Saturday concert are reserved. Please settle the ₱4,000 balance at the box office before the show."
+  },
+  {
+    "id": "ob-ho-en-07",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Got your ₱10,000 for the concert seats, thanks! I'll forward the e-tickets tonight."
+  },
+  {
+    "id": "ob-ho-en-08",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "PSA: scammers are posing as celebrities on Facebook asking fans to send money for 'VIP seats'. Never send money to anyone claiming to be a star."
+  },
+  {
+    "id": "ob-ho-en-09",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Bruno Mars just announced a second Manila date. Tickets start at ₱10,000 on the official site."
+  },
+  {
+    "id": "ob-ho-en-10",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Hey can you send me 2k? I'll pay you back on Friday."
+  },
+  {
+    "id": "ob-ho-en-11",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Congratulations!\nYou won ₱50,000 in our raffle.\nTo claim, pay the\nprocessing fee of ₱1,500\nwithin 24 hours."
+  },
+  {
+    "id": "ob-ho-en-12",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Your GCash payment of PHP 2,500.00 to MERALCO was successful. Ref No. 1234 5678 9012."
+  },
+  {
+    "id": "ob-ho-fil-01",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Magandang araw, ako si Sarah Geronimo. Padalhan mo ako ng ₱5,000 para may upuan ka sa harap sa concert ko sa Disyembre."
+  },
+  {
+    "id": "ob-ho-fil-02",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "ᴀɴᴀᴋ, ʙᴀɢᴏɴɢ ɴᴜᴍᴇʀᴏ ᴋᴏ ɪᴛᴏ. ᴘᴀᴅᴀʟʜᴀɴ ᴍᴏ ᴀᴋᴏ ɴɢ 3,000 ɴɢᴀʏᴏɴ ᴅɪɴ."
+  },
+  {
+    "id": "ob-ho-fil-03",
+    "lang": "fil",
+    "expected": "suspicious",
+    "category": "prize-split",
+    "text": "Kaya kong ipanalo ka sa raffle ng 40,000. Hatian tayo pagkatapos. I-message mo ako."
+  },
+  {
+    "id": "ob-ho-fil-04",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "DSWD: May nakalaang ayuda na ₱8,000 para sa iyo. Mag-GCash muna ng ₱350 bilang processing fee para mailabas."
+  },
+  {
+    "id": "ob-ho-fil-05",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Ito po ang inyong amo. Bumili po kayo ng 5 Google Play card na tig-₱1,000 at ipadala sa akin ang mga code."
+  },
+  {
+    "id": "ob-ho-fil-06",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Nabayaran ko na ang ₱10,000 para sa ticket natin sa concert. Kita tayo sa Mayo!"
+  },
+  {
+    "id": "ob-ho-fil-07",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Babala: may mga nagpapanggap na artista sa Facebook na humihingi ng pera para sa VIP na upuan. Huwag kayong magpadala."
+  },
+  {
+    "id": "ob-ho-fil-08",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Napanood mo ba? Pupunta raw si Bruno Mars sa Maynila sa Mayo 2027."
+  },
+  {
+    "id": "ob-ho-fil-09",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Natanggap mo na ang ₱3,000 mula kay Liza. Ref. Blg. 4421 0098 1123."
+  },
+  {
+    "id": "ob-ho-fil-10",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Pwede mo ba akong padalhan ng 1,000? Babayaran kita sa sweldo."
+  },
+  {
+    "id": "ob-ho-fil-11",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Hati tayo sa regalo para kay Nanay, tig-₱750 tayo. Ibigay mo na lang sa akin bukas pagkita natin."
+  },
+  {
+    "id": "ob-ho-fil-12",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Ako si Coco Martin.\nSendan mo ako\nng ₱2,000\npara makasama ka sa\nmeet and greet ko."
+  },
+  {
+    "id": "ob-ho-tl-01",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Hello po! It's me, Daniel Padilla 😊 Pa-send naman ng ₱3,500 para ma-secure ko yung VIP seat mo sa fan meet ko next month."
+  },
+  {
+    "id": "ob-ho-tl-02",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "𝙂𝘾𝙖𝙨𝙝 𝙎𝙚𝙘𝙪𝙧𝙞𝙩𝙮: na-lock ang account mo. I-send ang MPIN mo para ma-unlock agad."
+  },
+  {
+    "id": "ob-ho-tl-03",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "category": "prize-split",
+    "text": "ᴘᴀɴᴀʟᴏ ᴋᴀ ɴᴀ ꜱᴀ ɢɪᴠᴇᴀᴡᴀʏ ᴋᴏ ᴘᴀɢ ᴘᴀʀᴛᴇ ᴋᴏ 30%? ɪᴘᴀᴘᴀɴᴀʟᴏ ᴋɪᴛᴀ ɴɢ 50ᴋ, ᴅᴍ ᴍᴏ ʟᴀɴɢ ᴀᴋᴏ"
+  },
+  {
+    "id": "ob-ho-tl-04",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation",
+    "text": "Boss here. Need ko ng 4 na Steam gift cards, tig-₱1,000. Bili ka sa 7-Eleven tapos i-send mo sakin yung codes, urgent."
+  },
+  {
+    "id": "ob-ho-tl-05",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "obfuscation",
+    "text": "Hi! Your package is on hold sa warehouse. Mag-GCash ng ₱150 re\u200bdelivery fee para ma-release today."
+  },
+  {
+    "id": "ob-ho-tl-06",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Na-GCash ko na yung ₱10,000 para sa concert tickets natin, check mo na lang."
+  },
+  {
+    "id": "ob-ho-tl-07",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Ingat guys, may fake account ni Bruno Mars na nag-me-message na mag-send daw ng 10k para sa VIP seat. Wag kayong mag-send."
+  },
+  {
+    "id": "ob-ho-tl-08",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Your reservation sa Bruno Mars concert is confirmed. Bayaran mo lang yung ₱10,000 balance sa official app ng SM Tickets."
+  },
+  {
+    "id": "ob-ho-tl-09",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "control",
+    "text": "Sobrang mahal ng ticket ni Bruno Mars, 10k para sa lower box. Di ako makakapunta."
+  },
+  {
+    "id": "ob-ho-tl-10",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Pa-send naman ng 2k, bayaran kita next week promise."
+  },
+  {
+    "id": "ob-ho-tl-11",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Selling 2 Bruno Mars tickets, Gen Ad, ₱6,500 each. Pa-reserve via GCash, first come first served."
+  },
+  {
+    "id": "ob-ho-tl-12",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "control",
+    "text": "Hati tayo sa Grab pauwi, ₱180 each. I-GCash mo na lang sakin pag nakauwi ka na."
+  }
+]
