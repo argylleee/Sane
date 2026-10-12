@@ -33,6 +33,9 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     marketplace_deposit: 'Asks for a deposit before you can inspect an item',
     relative_emergency: 'Uses a family emergency to request money',
     gambling_bait: 'Promotes online gambling with free spins or bonus money',
+    performer_claim: 'Claims to be a celebrity or their team and asks you to pay for fan access',
+    prize_fix: 'Offers to rig a raffle or giveaway for you in exchange for part of the prize',
+    gift_card_request: 'Asks you to buy gift cards and send their codes',
   },
   fil: {
     lookalike_domain: 'Link na kamukha ng kilalang brand pero iba ang domain',
@@ -63,6 +66,10 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     marketplace_deposit: 'Humihingi ng deposito bago mo makita ang gamit',
     relative_emergency: 'Gumagamit ng emergency ng kamag-anak para humingi ng pera',
     gambling_bait: 'Nag-aalok ng online sugal gamit ang libreng spin o bonus na pera',
+    performer_claim:
+      'Nagpapakilalang artista o tauhan niya at pinagbabayad ka para makalapit o makapanood',
+    prize_fix: 'Nag-aalok na ipanalo ka sa raffle o giveaway kapalit ng parte ng premyo',
+    gift_card_request: 'Pinabibili ka ng gift card at pinapaipadala ang mga code nito',
   },
   taglish: {
     lookalike_domain: 'Mukhang brand link pero iba ang domain',
@@ -92,6 +99,9 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     marketplace_deposit: 'Humihingi ng deposit bago mo ma-inspect ang item',
     relative_emergency: 'Ginagamit ang family emergency para humingi ng money',
     gambling_bait: 'Nag-o-offer ng online gambling gamit ang free spin o bonus money',
+    performer_claim: 'Nagpapakilalang celebrity o team niya at pinapa-pay ka para sa fan access',
+    prize_fix: 'Nag-o-offer na ipanalo ka sa raffle o giveaway kapalit ng share sa prize',
+    gift_card_request: 'Pinapabili ka ng gift cards at pinapa-send ang codes',
   },
 };
 
@@ -230,6 +240,33 @@ const ADVICE: [string[], Advice][] = [
       fil: 'Pain ng ilegal na online casino ang libreng spin at bonus. Huwag mag-login, mag-register o magdeposito.',
       taglish:
         'Pain ng illegal na online casino ang free spin at bonus. Huwag mag-login, mag-register o mag-deposit.',
+    },
+  ],
+  [
+    ['gift_card_request'],
+    {
+      en: 'No real boss, bank or agency asks to be paid in gift card codes. Call the person on a number you already have.',
+      fil: 'Walang totoong amo, bangko o ahensya na nagpapabayad gamit ang code ng gift card. Tawagan ang tao sa numerong alam mo na.',
+      taglish:
+        'Walang legit na boss, bank o agency na nagpapabayad gamit ang gift card codes. Tawagan ang tao sa number na alam mo na.',
+    },
+  ],
+  [
+    ['performer_claim'],
+    {
+      en: 'Celebrities do not message fans to ask for money for seats or meet-and-greets. Buy tickets only from the official seller.',
+      fil: 'Hindi nagme-message ang mga artista sa fans para humingi ng pera para sa upuan o meet-and-greet. Bumili lang ng ticket sa opisyal na nagbebenta.',
+      taglish:
+        'Hindi nagme-message ang celebrities sa fans para humingi ng pera para sa seat o meet-and-greet. Sa official seller ka lang bumili ng ticket.',
+    },
+  ],
+  [
+    ['prize_fix'],
+    {
+      en: 'No one can rig a raffle or giveaway for you. Do not reply, and never pay to claim a prize.',
+      fil: 'Walang makapagpapanalo sa iyo sa raffle o giveaway. Huwag sumagot, at huwag magbayad para makuha ang premyo.',
+      taglish:
+        'Walang makakapag-rig ng raffle o giveaway para sa iyo. Huwag mag-reply, at never mag-pay para ma-claim ang prize.',
     },
   ],
   [

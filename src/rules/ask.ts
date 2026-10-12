@@ -8,6 +8,7 @@ import {
   maskOwnTransaction,
   scamAwarenessSpan,
 } from './index';
+import { CARD_BUY, GAP, GIFT_CARD, MONEY_WORD, NOT_DONE, PAYMENT_REQUEST } from './money';
 import { hasUrl, stripUrls } from './urls';
 
 /** 'secret' is a request for a password or PIN, which no legitimate service asks for by message. */
@@ -18,8 +19,6 @@ export type AskKind =
 // Not a bare "personal": "transfer to the personal wallet of the dispatcher" is a scam.
 const IN_PERSON =
   /\b(?:in person|face[- ]to[- ]face|when we meet|pagkita natin|pagkikita natin|nang personal|personal na pumunta|visit (?:the|our|your) (?:[\p{L}-]+ ){0,2}(?:office|branch|registrar|counter|store))\b/iu;
-
-const MONEY_WORD = String.raw`(?:money|pera|cash|pesos?|piso|php|₱|p\s?\d|\d[\d,.]*\s?k\b|\d{1,3},\d{3}|gcash|maya|fee|bayad|payment|load|amount|halaga|deposit|balance)`;
 
 // Verbs that hand something over. Negated uses ("huwag i-share", "never send") are removed first.
 const REQUEST = String.raw`(?:send|share|give|provide|enter|i-?enter|submit|reply|forward|confirm|update|type|tell|ibigay|ipadala|i-?send|pa-?send|paki-?send|pakisabi|sabihin|ilagay|i-?share|ibahagi|ipasa|i-?forward|i-?type|i-?confirm|i-?update|copy of)`;
@@ -35,12 +34,12 @@ const NEGATED_REQUEST = new RegExp(
 const ASKS: [AskKind, RegExp][] = [
   [
     'contact',
-    /(?:\+?63|\b0)9\d{2}[\s-]?\d{3}[\s-]?\d{4}\b|\b(?:call|text|tawagan|i-?text|contact|pa-?call|pakitawagan)(?:\s+(?:po|ninyo|niyo|nyo|mo|naman|lang|na))*\s+(?:us|me|this number|ang numerong ito|sa numerong ito|kami|ako|back)\b|\b(?:pa-?call back|call ?back|callback|pakitawagan)\b|\b(?:sa numerong ito|this number|numero na ito|number na ito)\b|\b(?:telegram|whatsapp|viber)\b|\b(?:message|dm|chat|pm)\s+(?:me|mo ako|niyo ako|us)\b/iu,
+    /(?:\+?63|\b0)9\d{2}[\s-]?\d{3}[\s-]?\d{4}\b|\b(?:call|text|tawagan|i-?text|contact|pa-?call|pakitawagan)(?:\s+(?:po|ninyo|niyo|nyo|mo|naman|lang|na))*\s+(?:us|me|this number|ang numerong ito|sa numerong ito|kami|ako|back)\b|\b(?:pa-?call back|call ?back|callback|pakitawagan)\b|\b(?:sa numerong ito|this number|numero na ito|number na ito)\b|\b(?:telegram|whatsapp|viber)\b|\b(?:message|i-?message|msg|dm|i-?dm|chat|pm|i-?pm|add|i-?add)\s+(?:(?:mo|niyo|nyo|ninyo|lang|na|po|naman)\s+){0,3}(?:me|ako|us|kami)\b|\b(?:message|i-?message|msg|dm|i-?dm|chat|pm|i-?pm)\s+mo\s+(?:(?:lang|na|naman)\s+)?ko\b/iu,
   ],
   [
     'money',
     new RegExp(
-      String.raw`\b(?:pay|paying|magbayad|mag-?pay|bayaran|babayaran|i-?pay|settle|deposit|mag-?deposit|magdeposito|pahiram|hiram|pautang|pakibalik|ibalik|i-?refund|top[ -]?up|mag-?top[ -]?up|mag-?load|pa-?load|pa-?gcash|padalhan|pambayad|pang-?bayad|abono|i-?abono)\b|\b(?:send|i-?send|mag-?send|pakisend|paki-?send|pa-?send|ipadala|pakipadala|magpadala|transfer|i-?transfer)\b[^.!?\n]{0,30}${MONEY_WORD}|\b(?:need|kailangan|kulang)\b[^.!?\n]{0,25}${MONEY_WORD}|\b(?:hospital|ospital|clinic|klinika|medical|tuition|matrikula)\s+(?:bill|fee|bayarin)s?\b|\b(?:help|tulungan|tulong)\b[^.!?\n]{0,25}\b(?:pay|bill|bayad|bayarin|gastos|pera|money)\b|\b(?:fee|charge|bayad|singil)\b[^.!?\n]{0,25}\b(?:be paid|paid first|paid before|settled)\b|\bcover (?:the |my |our )?(?:[\p{L}-]+ )?(?:bill|fee|gastos)\b`,
+      String.raw`${NOT_DONE}\b(?:pay|paying|magbayad|mag-?pay|bayaran|babayaran|i-?pay|settle|deposit|mag-?deposit|magdeposito|pahiram|hiram|pautang|pakibalik|ibalik|i-?refund|top[ -]?up|mag-?top[ -]?up|mag-?load|pa-?load|pa-?gcash|padalhan|pambayad|pang-?bayad|abono|i-?abono)\b|${NOT_DONE}\b(?:send|sendan|i-?send|mag-?send|pakisend|paki-?send|pa-?send|pa-?sendan|ipadala|pakipadala|magpadala|transfer|i-?transfer|mag-?gcash|i-?gcash|gcash-?an|mag-?maya|i-?maya)\b${GAP}{0,30}${MONEY_WORD}|${PAYMENT_REQUEST}|${CARD_BUY}${GAP}{0,40}${GIFT_CARD}|\b(?:need|kailangan|kulang)\b${GAP}{0,25}${MONEY_WORD}|\b(?:hospital|ospital|clinic|klinika|medical|tuition|matrikula)\s+(?:bill|fee|bayarin)s?\b|\b(?:help|tulungan|tulong)\b[^.!?\n]{0,25}\b(?:pay|bill|bayad|bayarin|gastos|pera|money)\b|\b(?:fee|charge|bayad|singil)\b[^.!?\n]{0,25}\b(?:be paid|paid first|paid before|settled)\b|\bcover (?:the |my |our )?(?:[\p{L}-]+ )?(?:bill|fee|gastos)\b`,
       'iu',
     ),
   ],
@@ -81,7 +80,7 @@ export function findAsks(text: string): AskKind[] {
   const asked = stripUrls(
     maskOfficialPayment(maskDeliveryNotice(maskOwnTransaction(maskNoPayment(text)))),
   ).replace(NEGATED_REQUEST, ' ');
-  const sentences = asked.match(/[^.!?\n]+[.!?\n]?/gu) ?? [];
+  const sentences = asked.match(new RegExp(String.raw`${GAP}+[.!?\n]?`, 'gu')) ?? [];
   const kinds = ASKS.filter(([kind, pattern]) =>
     sentences.some(
       (sentence) => pattern.test(sentence) && !(kind === 'money' && goesInPerson(sentence)),
