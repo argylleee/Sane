@@ -126,15 +126,20 @@ export function HomeMascot({ attention }: { attention: boolean }) {
       <span className="mascot-sparkle mascot-sparkle-one" />
       <span className="mascot-sparkle mascot-sparkle-two" />
       <span className="mascot-ground" />
+      <span className="mascot-barrier">
+        <span className="mascot-barrier-rim" />
+        <span className="mascot-barrier-wave" />
+        <span className="mascot-barrier-sweep" />
+      </span>
       <div className="mascot-idle">
         <motion.div className="mascot-gaze" style={{ x: lookX, y: lookY, rotate: headTurn }}>
           <motion.div
             className="mascot-pose"
             animate={{
-              rotate: reducedMotion ? 0 : reacting ? -2 : 0,
+              rotate: reducedMotion ? 0 : reacting ? -3 : 0,
               x: reducedMotion ? 0 : attention ? -3 : 0,
-              y: reducedMotion ? 0 : celebrating ? -7 : reacting ? -3 : 0,
-              scale: reducedMotion ? 1 : celebrating ? [1, 1.035, 1] : 1,
+              y: reducedMotion ? 0 : celebrating ? -7 : reacting ? -5 : 0,
+              scale: reducedMotion ? 1 : celebrating ? [1.02, 1.055, 1.02] : reacting ? 1.02 : 1,
             }}
             transition={{ duration: celebrating ? 0.52 : 0.38, ease: [0.16, 1, 0.3, 1] }}
           >
