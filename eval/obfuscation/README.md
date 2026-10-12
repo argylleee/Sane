@@ -23,15 +23,16 @@ Both sets run in `eval/context/run.context.test.ts` (see `eval/context/README.md
 
 ## Results (Node CPU, multilingual-e5-small rebuilt from `public/models`)
 
-Before: detector at `f38df78`. After: normalization, ask and rule changes of October 12, 2026.
+Before: detector at `f38df78`. After: normalization, ask and rule changes of October 12, 2026,
+including the generalized patterns measured in `eval/challenge`.
 Recall counts `not_sure` scams as misses.
 
 | Set     | Mode       | Scam recall  | False alarms | Abstained     | Exact level |
 | ------- | ---------- | ------------ | ------------ | ------------- | ----------- |
 | holdout | rules only | 5/17 → 17/17 | 2/14 → 2/14  | 8/36 → 4/36   | 42% → 81%   |
 | holdout | embeddings | 7/17 → 17/17 | 2/14 → 2/14  | 6/36 → 3/36   | 42% → 78%   |
-| dev     | rules only | 2/16 → 15/16 | 1/5 → 1/5    | 11/32 → 10/32 | 38% → 91%   |
-| dev     | embeddings | 3/16 → 15/16 | 2/5 → 2/5    | 8/32 → 6/32   | 28% → 75%   |
+| dev     | rules only | 2/16 → 15/16 | 1/5 → 1/5    | 11/32 → 11/32 | 38% → 94%   |
+| dev     | embeddings | 3/16 → 15/16 | 2/5 → 2/5    | 8/32 → 7/32   | 28% → 78%   |
 
 The remaining false alarms were already flagged before the change: ticket reservations paid at a
 box office, outlet or app (`ob-dev-fp-ticket-legit`, `ob-ho-en-06`, `ob-ho-tl-08`), plus

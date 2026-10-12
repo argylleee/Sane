@@ -1,6 +1,17 @@
 // OWNER: backend. All matching is local and never opens a message link.
 import keywords from '../data/keywords.json';
 import type { Signal } from '../types';
+import {
+  CARD_BUY,
+  CODE_HANDOVER,
+  FAN_PERK,
+  GIFT_CARD,
+  OFFICIAL_TICKETING,
+  PAYMENT_REQUEST,
+  PRIZE_CUT,
+  SENDER_CLAIM,
+  WIN_FOR_READER,
+} from './money';
 import { hasUnverifiedUrl, hasUrl, urlSignals } from './urls';
 
 const WORD = /[\p{L}\p{N}]/u;
@@ -84,28 +95,18 @@ const EMERGENCY_CONTEXT =
 const MONEY_TRANSFER =
   /\b(?:send (?:money|funds)|transfer (?:money|funds)|ipadala (?:ang )?pera|magpadala|magbayad|pay|cover (?:the |my )?(?:\w+ )?(?:bill|fee))\b/iu;
 
-// Someone writing as a celebrity or performer ("si Bruno Mars to", "It's me, Bruno Mars") about their
-// own event ("concert ko", "my Manila show") and asking the reader to pay. Real performers do not
-// message fans for money; tickets are sold through official sellers.
-const FIL_IDENTITY =
-  /\b(?:si|ako si|ito si)\s+(?:[\p{L}.'-]+\s+){0,2}[\p{L}.'-]+\s+(?:po\s+)?(?:to|ito|'to)\b|\b(?:ako|ito)\s+(?:po\s+)?si\s+\p{L}/iu;
-const EN_IDENTITY =
-  /\b(?:[Ii]t'?s\s+me|[Tt]his\s+is|I\s+am|I'm)[\s,!-]+\p{Lu}[\p{L}.'-]*(?:\s+\p{Lu}[\p{L}.'-]*){0,2}/u;
-const OWN_EVENT =
-  /\b(?:concert|show|tour|gig|fan ?meet(?:ing)?|meet[- ](?:and|&|n)[- ]greet|fan ?sign(?:ing)?)\s+ko\b|\bmy\s+(?:[\p{L}-]+\s+){0,2}(?:concert|show|tour|gig|fan ?meet(?:ing)?|meet[- ](?:and|&|n)[- ]greet|fan ?sign(?:ing)?)\b/giu;
-const FAN_PAYMENT =
-  /(?<!\p{L}-)\b(?:send|sendan|i-?send|pa-?send|pa-?sendan|paki-?send|padalhan|ipadala|magpadala|pay|magbayad|bayaran|mag-?gcash|i-?gcash|transfer|deposit|mag-?deposit)\b[^.!?\n]{0,30}(?:₱|php|p\s?\d|\$\s?\d|\d[\d,.]*\s?k\b|\d{1,3},\d{3}|pesos?|piso|libo\w*|thousand|gcash|maya|fee|bayad)/giu;
+// Someone writing as a public figure or their team (SENDER_CLAIM) who offers fan access (FAN_PERK)
+// and asks the reader to pay for it. Real performers and their teams do not sell fan access by
+// message; tickets are sold through official sellers. No names are listed: the shape decides.
+const FAN_PERK_CONTEXT = new RegExp(FAN_PERK, 'giu');
+const FAN_PAYMENT = new RegExp(PAYMENT_REQUEST, 'giu');
 // An offer to rig a raffle or giveaway for the reader in exchange for part of the prize.
-const RIGGED_WIN =
-  /\b(?:ipanalo|ipapanalo|i-?panalo|papanalunin|panalunin|mapanalo)\s+(?:kita|ka|kayo|ikaw)\b|\b(?:i|we)(?:\s+(?:can|will|could)|'ll)\s+(?:make\s+sure\s+|help\s+)?(?:make\s+)?(?:you|u)\s+win\b/giu;
-const PRIZE_CUT =
-  /\b(?:hati(?:an)?\s+(?:tayo|kami)|partihan|parte\s+ko|kalahati|split|share\s+(?:it|the)|give\s+me|for\s+me|sa(?:ken|akin|kin)|50\s?\/\s?50|cut)\b|\b\d{1,2}\s?%/giu;
+const RIGGED_WIN = new RegExp(WIN_FOR_READER, 'giu');
+const PRIZE_SHARE = new RegExp(PRIZE_CUT, 'giu');
 // Gift card codes are a payment that cannot be traced or reversed; no employer or agency asks for them.
-export const GIFT_CARD = String.raw`(?:gift ?cards?|(?:google ?play|itunes|apple|steam(?: wallet)?|amazon|razer ?gold)(?: gift)?(?: cards?|\s+codes?)?)\b`;
 const GIFT_CARD_CONTEXT = new RegExp(String.raw`\b${GIFT_CARD}`, 'giu');
-const GIFT_CARD_HANDOVER =
-  /\b(?:send|i-?send|ipadala|ibigay|give|share|reply|text|i-?text|forward|picture|litrato)\b[^.!?\n]{0,40}\b(?:codes?|pins?|serial(?: numbers?)?)\b/giu;
-const GIFT_CARD_BUY = /\b(?:buy|bumili|bili|bilhan|purchase)\b/iu;
+const GIFT_CARD_HANDOVER = new RegExp(CODE_HANDOVER, 'giu');
+const GIFT_CARD_BUY = new RegExp(CARD_BUY, 'iu');
 
 // Mask only payment disclaimers and keep offsets for highlighting the original text.
 const NO_PAYMENT =
@@ -657,20 +658,20 @@ export function runRules(text: string): Signal[] {
     30,
     contextualSpan(text, MARKETPLACE_CONTEXT, BEFORE_INSPECTION),
   );
-  if (FIL_IDENTITY.test(text) || EN_IDENTITY.test(text))
+  if (SENDER_CLAIM.test(text) && !OFFICIAL_TICKETING.test(text))
     pushSignal(
       signals,
       'performer_claim',
-      'Claims to be a celebrity or performer and asks you to pay for a spot at their event',
+      'Claims to be a celebrity or their team and asks you to pay for fan access',
       30,
-      contextualSpan(text, OWN_EVENT, FAN_PAYMENT),
+      contextualSpan(text, FAN_PERK_CONTEXT, FAN_PAYMENT),
     );
   pushSignal(
     signals,
     'prize_fix',
     'Offers to rig a raffle or giveaway for you in exchange for part of the prize',
     30,
-    contextualSpan(text, RIGGED_WIN, PRIZE_CUT),
+    contextualSpan(text, RIGGED_WIN, PRIZE_SHARE),
   );
   if (GIFT_CARD_BUY.test(text))
     pushSignal(

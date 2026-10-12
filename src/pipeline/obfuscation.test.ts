@@ -149,3 +149,58 @@ describe('controls that ask the reader to do nothing risky', () => {
     expect(ids(text)).not.toContain('prize_fix');
   });
 });
+
+// The patterns are built from word parts, not the reported sentences: other affixes on the same
+// payment roots, other senders and other perks. Fresh wording, not taken from eval/challenge.
+describe('generalized patterns', () => {
+  it.each([
+    'Pakisendan mo ako ng 1,200 mamaya.',
+    'Pa-GCash-an mo na lang ako ng 800.',
+    'Ipa-load mo ako ng 300, naubusan ako.',
+    'Bayad ka muna ng ₱450 bago ko i-ship.',
+    'Hulugan mo ng 2.5k yung account ko.',
+    'Send PHP 3,999.00 tonight.',
+  ])('reads a payment request in: %s', (text) => {
+    expect(findAsks(normalize(text))).toContain('money');
+  });
+
+  it.each([
+    'Your GCash code is 284019. Do not share it.',
+    'Nahulugan ko na ang loan ko ng 2.5k kahapon.',
+    'Ang Maya ko ay may 1,000 pa.',
+  ])('reads no payment request in: %s', (text) => {
+    expect(findAsks(normalize(text))).not.toContain('money');
+  });
+
+  it.each([
+    [
+      'en',
+      'Hello, Ben here from the band management. A backstage pass is ₱3,000, send it to our GCash.',
+    ],
+    ['fil', 'Ako po ang admin ng fan club ni Jona. Magpadala ng ₱2,200 para sa meet and greet.'],
+    ['taglish', 'hi ito si nadine, pa-send ng 4k para sa vip pass mo sa show namin'],
+  ] as const)('flags a sender claim plus paid fan access (%s)', async (lang, text) => {
+    expect(ids(text)).toContain('performer_claim');
+    expect(await level(text, lang)).toBe('likely_scam');
+  });
+
+  it.each([
+    'Hi, this is Ticketworld. Your VIP seats are reserved; pay the ₱4,000 balance at the box office.',
+    'Ben here! Backstage pass prices are ₱3,000 on the official site.',
+    'Grabe si Jona, 2.2k pala ang meet and greet. Bibili ako bukas.',
+  ])('does not treat official or reported fan access as a sender claim: %s', (text) => {
+    expect(ids(text)).not.toContain('performer_claim');
+  });
+
+  it('reads the same message the same way in different case, spacing and wrapping', async () => {
+    const text = 'Hi ito si Nadine, pa-send ng 4k para sa VIP pass mo sa show namin';
+    const base = await level(text, 'taglish');
+    for (const variant of [
+      text.toUpperCase(),
+      text.toLowerCase(),
+      text.replace(/ /g, '  '),
+      text.replace(/ (?=pa-send| para)/g, '\n'),
+    ])
+      expect(await level(variant, 'taglish')).toBe(base);
+  });
+});

@@ -64,11 +64,17 @@ const CONFUSABLES: Record<string, string> = {
   ᴡ: 'w',
   ʏ: 'y',
   ᴢ: 'z',
+  // Upper-case forms of the small capitals that have one ("ɪ" becomes "Ɪ").
+  Ɪ: 'I',
+  Ǫ: 'Q',
+  Ʀ: 'R',
 };
 const CONFUSABLE = new RegExp(`[${Object.keys(CONFUSABLES).join('')}]`, 'gu');
-// A line break inside a sentence (no closing punctuation before it, a lowercase word or an amount
-// after it) is wrapping, not a new message part. It becomes one space, so offsets do not move.
-const WRAPPED_LINE = /(?<=[^\s.!?;:])[ \t]*\r?\n(?=[ \t]*[\p{Ll}₱])/gu;
+// A line break inside a sentence (no closing punctuation before it, a word or an amount after it)
+// is wrapping, not a new message part. It becomes a space. A list item ("- ", "• ") stays a line.
+const WRAPPED_LINE = /(?<=[^\s.!?;:])[ \t]*\r?\n(?=[ \t]*[\p{L}\p{N}₱$])/gu;
+// Runs of spaces or tabs read as one space ("send  mo").
+const SPACE_RUN = /[ \t]{2,}/g;
 
 export function normalize(text: string): string {
   return text
@@ -76,6 +82,7 @@ export function normalize(text: string): string {
     .replace(INVISIBLE, '')
     .replace(/[\u2018\u2019\u02BC]/g, "'")
     .replace(CONFUSABLE, (char) => CONFUSABLES[char])
-    .replace(WRAPPED_LINE, (wrap) => wrap.replace(/\r?\n/, (end) => ' '.repeat(end.length)))
+    .replace(WRAPPED_LINE, ' ')
+    .replace(SPACE_RUN, ' ')
     .trim();
 }

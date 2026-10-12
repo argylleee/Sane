@@ -1,0 +1,317 @@
+[
+  {
+    "id": "cd-en-01",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-management",
+    "text": "Hello! This is the management team of a K-pop group touring Manila next month. Fans picked for the backstage meet-up must pay a ₱6,500 slot fee via GCash today."
+  },
+  {
+    "id": "cd-en-02",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-celebrity",
+    "text": "Hey it's Olivia Rodrigo here 💜 only 5 VIP passes left for my Manila show, send PHP 4,999.00 to my assistant's GCash to claim yours."
+  },
+  {
+    "id": "cd-en-03",
+    "lang": "en",
+    "expected": "suspicious",
+    "category": "prize-rig",
+    "text": "Admin here from the fan page. I can make sure your entry wins the signed album raffle, just give me half of the cash prize after."
+  },
+  {
+    "id": "cd-en-04",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-employer",
+    "text": "HR Department: you're shortlisted. To confirm your slot, pay the ₱1,200 training kit fee to the account below before Friday."
+  },
+  {
+    "id": "cd-en-05",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-bank",
+    "text": "Your BPI account is on hold. Reply with your one-time PIN to release it."
+  },
+  {
+    "id": "cd-en-06",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "ʜᴇʏ ɪᴛ'ꜱ ᴍᴇ, ᴀʀɪᴀɴᴀ 💕 ᴘᴀʏ ₱3ᴋ ꜰᴏʀ ᴀ ᴍᴇᴇᴛ & ɢʀᴇᴇᴛ ᴘᴀꜱꜱ ᴀᴛ ᴍʏ ᴛᴏᴜʀ"
+  },
+  {
+    "id": "cd-en-07",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Can you cover my share of the Airbnb? It's 3.5k, I'll settle with you on payday."
+  },
+  {
+    "id": "cd-en-08",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Thanks for the ₱2,750! Your two seats for Sunday's show are confirmed, see you at the gate."
+  },
+  {
+    "id": "cd-en-09",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-warning",
+    "text": "Heads up: fake accounts pretending to be the band are DMing fans for 'backstage fees'. The band never asks fans for money."
+  },
+  {
+    "id": "cd-en-10",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Saw the Eras Tour film last night, the ticket was only 450 pesos!"
+  },
+  {
+    "id": "cd-en-11",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Ticket prices for the fan meet are out: ₱2,000 to ₱8,500. Sales open Friday at the official ticketing site."
+  },
+  {
+    "id": "cd-en-12",
+    "lang": "en",
+    "expected": "not_sure",
+    "category": "ticket-resale",
+    "text": "Selling my 2 floor seats for Saturday, ₱7k each. GCash or bank transfer, meetup at the venue."
+  },
+  {
+    "id": "cd-en-13",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "prize-fee",
+    "text": "Congrats, you're the lucky fan! To receive your free concert tickets, settle the 850-peso delivery fee first."
+  },
+  {
+    "id": "cd-en-14",
+    "lang": "en",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "I just sent you 1,500 for the tickets, check your GCash."
+  },
+  {
+    "id": "cd-en-15",
+    "lang": "en",
+    "expected": "likely_scam",
+    "category": "impersonation-relative",
+    "text": "Mom, this is my new number. Send me 4 thousand for the dorm, I'll explain later."
+  },
+  {
+    "id": "cd-fil-01",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-management",
+    "text": "Magandang gabi po, ako po ang manager ni Moira. Pumili kami ng ilang fans para sa meet and greet; magpadala lang po ng ₱4,500 para makasali."
+  },
+  {
+    "id": "cd-fil-02",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-celebrity",
+    "text": "Ako si Juan Karlos, padalhan mo ako ng limang libo para sa VIP pass sa show ko."
+  },
+  {
+    "id": "cd-fil-03",
+    "lang": "fil",
+    "expected": "suspicious",
+    "category": "prize-rig",
+    "text": "Kaya kitang papanalunin sa pa-raffle ng page namin, basta kalahati ng premyo ay sa akin."
+  },
+  {
+    "id": "cd-fil-04",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-relative",
+    "text": "Tito, ako po si Paolo, bago kong number ito. Pakihulugan naman ng 3,500 ang GCash ko, emergency lang."
+  },
+  {
+    "id": "cd-fil-05",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "prize-fee",
+    "text": "Pinili ka bilang panalo ng ₱25,000 sa programa namin sa TV. Magpadala muna ng ₱800 para sa pagproseso."
+  },
+  {
+    "id": "cd-fil-06",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Pahiram muna ng 1,000, ibabalik ko sa Biyernes."
+  },
+  {
+    "id": "cd-fil-07",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Naipadala ko na ang ₱1,800 para sa ticket mo sa fan meet. Salamat!"
+  },
+  {
+    "id": "cd-fil-08",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-warning",
+    "text": "Mag-ingat sa mga nagpapanggap na manager ng artista na humihingi ng bayad para sa meet and greet. Huwag magpadala ng pera."
+  },
+  {
+    "id": "cd-fil-09",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Ang mahal ng ticket sa konsiyerto ng Ben&Ben, ₱5,600 ang pinakamura."
+  },
+  {
+    "id": "cd-fil-10",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Nanalo si Ate ng ₱3,000 sa raffle sa opisina kahapon."
+  },
+  {
+    "id": "cd-fil-11",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "ᴀᴋᴏ ᴘᴏ ꜱɪ ᴊᴏꜱʜᴜᴀ\nɢᴀʀᴄɪᴀ. ᴘᴀᴋɪᴘᴀᴅᴀʟᴀ ɴɢ\n₱2,500 ᴘᴀʀᴀ ꜱᴀ ʙᴀᴄᴋꜱᴛᴀɢᴇ ᴘᴀꜱꜱ ᴍᴏ."
+  },
+  {
+    "id": "cd-fil-12",
+    "lang": "fil",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Padalhan mo ako ng 500 pambili ng ulam, salamat anak."
+  },
+  {
+    "id": "cd-fil-13",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-government",
+    "text": "Ito ang DSWD. Aprubado ang tulong mo na ₱10,500. Magbayad muna ng ₱300 sa GCash para mailabas."
+  },
+  {
+    "id": "cd-fil-14",
+    "lang": "fil",
+    "expected": "probably_fine",
+    "category": "benign-reservation",
+    "text": "Paalala: ang bayad sa reservation ng upuan ay sa takilya lamang ng venue."
+  },
+  {
+    "id": "cd-fil-15",
+    "lang": "fil",
+    "expected": "likely_scam",
+    "category": "impersonation-employer",
+    "text": "Ako ang amo mo. Bumili ka ng tatlong gift card sa tindahan at i-text mo sa akin ang mga numero sa likod."
+  },
+  {
+    "id": "cd-tl-01",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-management",
+    "text": "Hi po! Team ni Sarah G here 😊 Napili ka for the fan meet. Pa-GCash lang ng ₱3,000 reservation fee para ma-lock slot mo."
+  },
+  {
+    "id": "cd-tl-02",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-celebrity",
+    "text": "Yo, si Skusta Clee 'to. Sendan mo ko ng 2.5k para may backstage pass ka sa gig namin."
+  },
+  {
+    "id": "cd-tl-03",
+    "lang": "taglish",
+    "expected": "suspicious",
+    "category": "prize-rig",
+    "text": "Ako admin ng giveaway, ipapanalo ko yung entry mo basta share tayo sa prize ha, chat mo ko."
+  },
+  {
+    "id": "cd-tl-04",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-relative",
+    "text": "Ma, new number ko 'to. Pa-load naman ng 500 tapos pa-GCash ng 2k, nasira phone ko."
+  },
+  {
+    "id": "cd-tl-05",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "prize-fee",
+    "text": "Congrats! You won a VIP seat sa concert. Bayad ka lang muna ng ₱650 shipping fee para ma-deliver yung ticket."
+  },
+  {
+    "id": "cd-tl-06",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "benign-ask",
+    "text": "Pa-send naman ng 750 pang-grocery, balik ko next week."
+  },
+  {
+    "id": "cd-tl-07",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-completed",
+    "text": "Na-transfer ko na yung 4k sa account mo for the tickets, pa-check na lang."
+  },
+  {
+    "id": "cd-tl-08",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-warning",
+    "text": "Guys ingat, may fake page na nagpapanggap na management ng band, nanghihingi ng 'VIP fee'. Wag kayo magbabayad."
+  },
+  {
+    "id": "cd-tl-09",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-mention",
+    "text": "Grabe yung VIP ticket sa fan meet, 12k daw. Di ko afford huhu."
+  },
+  {
+    "id": "cd-tl-10",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-reservation",
+    "text": "Reserved na yung table natin for Saturday, bayad na lang tayo pagdating sa resto."
+  },
+  {
+    "id": "cd-tl-11",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "combined",
+    "text": "𝗛𝗶 𝗽𝗼, 𝗶𝘁'𝘀 𝗺𝗲 𝗞𝗮𝘁𝗿𝗶𝗻𝗮! I-transfer mo lang ₱1,999 sa Maya ko para sa fansign slot mo."
+  },
+  {
+    "id": "cd-tl-12",
+    "lang": "taglish",
+    "expected": "not_sure",
+    "category": "ticket-resale",
+    "text": "Sino may extra ticket for Sunday? Bibilhin ko ng 3k, GCash agad."
+  },
+  {
+    "id": "cd-tl-13",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "delivery",
+    "text": "Your parcel is on hold. Mag-cash in ka ng ₱120 sa link na ito para ma-redeliver: bit.ly/redel"
+  },
+  {
+    "id": "cd-tl-14",
+    "lang": "taglish",
+    "expected": "probably_fine",
+    "category": "benign-prize",
+    "text": "Nag-raffle kami sa office, ikaw nanalo ng 1k! Kunin mo na lang sa akin bukas."
+  },
+  {
+    "id": "cd-tl-15",
+    "lang": "taglish",
+    "expected": "likely_scam",
+    "category": "impersonation-employer",
+    "text": "Boss mo 'to, need ko ng 5 Razer Gold cards, pakibili tapos send mo pics ng likod."
+  }
+]

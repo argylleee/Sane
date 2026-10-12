@@ -33,8 +33,7 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     marketplace_deposit: 'Asks for a deposit before you can inspect an item',
     relative_emergency: 'Uses a family emergency to request money',
     gambling_bait: 'Promotes online gambling with free spins or bonus money',
-    performer_claim:
-      'Claims to be a celebrity or performer and asks you to pay for a spot at their event',
+    performer_claim: 'Claims to be a celebrity or their team and asks you to pay for fan access',
     prize_fix: 'Offers to rig a raffle or giveaway for you in exchange for part of the prize',
     gift_card_request: 'Asks you to buy gift cards and send their codes',
   },
@@ -68,7 +67,7 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     relative_emergency: 'Gumagamit ng emergency ng kamag-anak para humingi ng pera',
     gambling_bait: 'Nag-aalok ng online sugal gamit ang libreng spin o bonus na pera',
     performer_claim:
-      'Nagpapakilalang artista o performer at pinagbabayad ka para sa puwesto sa event niya',
+      'Nagpapakilalang artista o tauhan niya at pinagbabayad ka para makalapit o makapanood',
     prize_fix: 'Nag-aalok na ipanalo ka sa raffle o giveaway kapalit ng parte ng premyo',
     gift_card_request: 'Pinabibili ka ng gift card at pinapaipadala ang mga code nito',
   },
@@ -100,8 +99,7 @@ const signalLabels: Record<Lang, Record<string, string>> = {
     marketplace_deposit: 'Humihingi ng deposit bago mo ma-inspect ang item',
     relative_emergency: 'Ginagamit ang family emergency para humingi ng money',
     gambling_bait: 'Nag-o-offer ng online gambling gamit ang free spin o bonus money',
-    performer_claim:
-      'Nagpapakilalang celebrity o performer at pinapa-pay ka para sa slot sa event niya',
+    performer_claim: 'Nagpapakilalang celebrity o team niya at pinapa-pay ka para sa fan access',
     prize_fix: 'Nag-o-offer na ipanalo ka sa raffle o giveaway kapalit ng share sa prize',
     gift_card_request: 'Pinapabili ka ng gift cards at pinapa-send ang codes',
   },
