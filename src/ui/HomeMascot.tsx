@@ -1,6 +1,39 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'motion/react';
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from 'motion/react';
+
+type GuardianPhase = 'idle' | 'notice' | 'raise' | 'hold' | 'release';
+
+const collapsedShell = { opacity: 0, scale: 0.28, scaleX: 1, scaleY: 1 };
+const shellPoses = {
+  idle: collapsedShell,
+  notice: collapsedShell,
+  raise: { opacity: 1, scale: 1.04, scaleX: 1, scaleY: 1 },
+  hold: { opacity: 1, scale: 1, scaleX: [1.025, 0.988, 1], scaleY: [0.985, 1.025, 1] },
+  release: { opacity: 0, scale: 0.88, scaleX: 1, scaleY: 1 },
+};
+
+/** Keep a brief hover complete, but release immediately after a long hover. */
+export function nextGuardianStep(
+  phase: GuardianPhase,
+  engaged: boolean,
+  elapsed: number,
+  playing: boolean,
+): { phase: GuardianPhase; delay: number } | undefined {
+  if (!playing) return phase === 'idle' ? undefined : { phase: 'idle', delay: 0 };
+  if (phase === 'idle') return engaged ? { phase: 'notice', delay: 0 } : undefined;
+  if (phase === 'hold' && engaged) return undefined;
+  const next = { notice: 'raise', raise: 'hold', hold: 'release', release: 'idle' } as const;
+  const duration = { notice: 150, raise: 340, hold: 410, release: 280 };
+  return { phase: next[phase], delay: Math.max(0, duration[phase] - elapsed) };
+}
 
 /** Decorative companion. Keyboard feedback comes from the real primary action. */
 export function HomeMascot({ attention }: { attention: boolean }) {
@@ -10,11 +43,12 @@ export function HomeMascot({ attention }: { attention: boolean }) {
   const [visible, setVisible] = useState(true);
   const [curious, setCurious] = useState(false);
   const [blinking, setBlinking] = useState(false);
-  const [celebrating, setCelebrating] = useState(false);
+  const [phase, setPhase] = useState<GuardianPhase>('idle');
+  const [posesReady, setPosesReady] = useState({ anticipate: false, guard: false });
+  const phaseStarted = useRef(0);
   const touchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const blinkTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const reopenTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const celebrationTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const pointerX = useMotionValue(0);
   const pointerY = useMotionValue(0);
   const easedX = useSpring(pointerX, { stiffness: 130, damping: 20, mass: 0.75 });
@@ -22,6 +56,33 @@ export function HomeMascot({ attention }: { attention: boolean }) {
   const lookX = useTransform(easedX, [-1, 1], reducedMotion ? [0, 0] : [-1.5, 1.5]);
   const lookY = useTransform(easedY, [-1, 1], reducedMotion ? [0, 0] : [1, -1]);
   const headTurn = useTransform(easedX, [-1, 1], reducedMotion ? [0, 0] : [-3.25, 3.25]);
+  const bubbleTiltX = useTransform(easedY, [-1, 1], reducedMotion ? [0, 0] : [4, -4]);
+  const bubbleTiltY = useTransform(easedX, [-1, 1], reducedMotion ? [0, 0] : [-5, 5]);
+  const rimTurn = useTransform(easedX, [-1, 1], reducedMotion ? [0, 0] : [-22, 22]);
+  const lightX = useTransform(easedX, [-1, 1], reducedMotion ? [40, 40] : [22, 66]);
+  const lightY = useTransform(easedY, [-1, 1], reducedMotion ? [25, 25] : [12, 52]);
+  const bubbleLight = useMotionTemplate`radial-gradient(ellipse at ${lightX}% ${lightY}%, rgba(248, 239, 221, 0.28), transparent 48%)`;
+  const guardianRoot = import.meta.env.BASE_URL + 'icons/mascot-guardian/';
+  const reacting = attention || curious;
+  const playing = visible && !reducedMotion;
+  const guardianActive = visible && (reducedMotion ? reacting : phase !== 'idle');
+  const barrierVisible =
+    visible && (reducedMotion ? reacting : phase === 'raise' || phase === 'hold');
+
+  useEffect(() => {
+    const step = nextGuardianStep(
+      phase,
+      reacting,
+      performance.now() - phaseStarted.current,
+      playing,
+    );
+    if (!step) return;
+    const timer = setTimeout(() => {
+      phaseStarted.current = performance.now();
+      setPhase(step.phase);
+    }, step.delay);
+    return () => clearTimeout(timer);
+  }, [phase, reacting, playing]);
 
   useEffect(() => {
     const element = container.current;
@@ -39,7 +100,6 @@ export function HomeMascot({ attention }: { attention: boolean }) {
       clearTimeout(touchTimer.current);
       clearTimeout(blinkTimer.current);
       clearTimeout(reopenTimer.current);
-      clearTimeout(celebrationTimer.current);
     };
   }, []);
 
@@ -67,27 +127,37 @@ export function HomeMascot({ attention }: { attention: boolean }) {
     };
   }, [visible, reducedMotion]);
 
-  const reacting = attention || curious;
   const followPointer = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'touch') return;
     const rect = event.currentTarget.getBoundingClientRect();
     pointerX.set(Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2)));
     pointerY.set(Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2)));
   };
-  const celebrate = () => {
-    clearTimeout(celebrationTimer.current);
-    setCelebrating(true);
-    celebrationTimer.current = setTimeout(() => setCelebrating(false), 620);
-  };
+  const pose =
+    reducedMotion || !visible
+      ? { x: 0, y: 0, rotate: 0, scaleX: 1, scaleY: 1 }
+      : phase === 'notice'
+        ? { x: 0, y: 3, rotate: -2, scaleX: 1.045, scaleY: 0.955 }
+        : phase === 'raise'
+          ? { x: -2, y: -11, rotate: -4, scaleX: 0.985, scaleY: 1.035 }
+          : phase === 'hold'
+            ? { x: attention ? -3 : -1, y: -5, rotate: -1.5, scaleX: 1.015, scaleY: 1 }
+            : { x: 0, y: 0, rotate: 0, scaleX: 1, scaleY: 1 };
+  const shell =
+    reducedMotion || !visible
+      ? { opacity: barrierVisible ? 1 : 0, scale: 1, scaleX: 1, scaleY: 1 }
+      : shellPoses[phase];
 
   return (
     <motion.div
       ref={container}
       className="home-mascot-wrap"
       aria-hidden="true"
-      data-playing={visible && !reducedMotion}
+      data-playing={playing}
       data-reacting={reacting}
-      data-celebrating={celebrating}
+      data-guardian-active={guardianActive}
+      data-guardian-phase={phase}
+      data-poses-ready={posesReady.anticipate && posesReady.guard}
       data-blinking={blinking && visible && !reducedMotion}
       initial={reducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -108,7 +178,6 @@ export function HomeMascot({ attention }: { attention: boolean }) {
       }}
       onPointerCancel={() => {
         setCurious(false);
-        setCelebrating(false);
         pointerX.set(0);
         pointerY.set(0);
       }}
@@ -116,43 +185,105 @@ export function HomeMascot({ attention }: { attention: boolean }) {
         if (event.pointerType !== 'touch') return;
         clearTimeout(touchTimer.current);
         setCurious(true);
-        touchTimer.current = setTimeout(() => setCurious(false), 900);
+        touchTimer.current = setTimeout(() => setCurious(false), 1_600);
       }}
-      onClick={celebrate}
     >
       <span className="mascot-bubble mascot-bubble-one" />
       <span className="mascot-bubble mascot-bubble-two" />
       <span className="mascot-bubble mascot-bubble-three" />
       <span className="mascot-sparkle mascot-sparkle-one" />
       <span className="mascot-sparkle mascot-sparkle-two" />
-      <span className="mascot-ground" />
-      <span className="mascot-barrier">
-        <span className="mascot-barrier-rim" />
+      <motion.span
+        className="mascot-ground"
+        animate={{
+          scale: reducedMotion ? 1 : guardianActive ? 1.18 : 1,
+          opacity: guardianActive ? 0.5 : 0.7,
+        }}
+        transition={{ duration: reducedMotion ? 0.12 : 0.4 }}
+      />
+      <motion.span
+        className="mascot-barrier-ground"
+        initial={false}
+        animate={{
+          opacity: barrierVisible ? 0.7 : 0,
+          scale: reducedMotion ? 1 : barrierVisible ? 1 : 0.4,
+        }}
+        transition={{ duration: reducedMotion ? 0.12 : 0.4 }}
+      />
+      <motion.span
+        className="mascot-barrier"
+        initial={false}
+        style={{ rotateX: bubbleTiltX, rotateY: bubbleTiltY }}
+        animate={shell}
+        transition={{
+          duration: reducedMotion
+            ? 0.12
+            : phase === 'raise'
+              ? 0.34
+              : phase === 'hold'
+                ? 0.41
+                : 0.28,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+      >
+        <span className="mascot-barrier-surface" />
+        <motion.span className="mascot-barrier-light" style={{ backgroundImage: bubbleLight }} />
+        <motion.span className="mascot-barrier-rim" style={{ rotate: rimTurn }} />
         <span className="mascot-barrier-wave" />
         <span className="mascot-barrier-sweep" />
-      </span>
+      </motion.span>
       <div className="mascot-idle">
         <motion.div className="mascot-gaze" style={{ x: lookX, y: lookY, rotate: headTurn }}>
           <motion.div
             className="mascot-pose"
-            animate={{
-              rotate: reducedMotion ? 0 : reacting ? -3 : 0,
-              x: reducedMotion ? 0 : attention ? -3 : 0,
-              y: reducedMotion ? 0 : celebrating ? -7 : reacting ? -5 : 0,
-              scale: reducedMotion ? 1 : celebrating ? [1.02, 1.055, 1.02] : reacting ? 1.02 : 1,
+            animate={pose}
+            transition={{
+              duration: reducedMotion
+                ? 0
+                : phase === 'notice'
+                  ? 0.15
+                  : phase === 'raise'
+                    ? 0.34
+                    : 0.28,
+              ease: [0.16, 1, 0.3, 1],
             }}
-            transition={{ duration: celebrating ? 0.52 : 0.38, ease: [0.16, 1, 0.3, 1] }}
           >
             <img
               src={`${import.meta.env.BASE_URL}icons/sane-mascot.png`}
               alt=""
               width="1431"
               height="1100"
-              className="home-mascot"
+              className="home-mascot mascot-frame-idle"
               draggable={false}
+            />
+            <img
+              src={guardianRoot + 'anticipate.webp'}
+              alt=""
+              width="1426"
+              height="1103"
+              className="home-mascot mascot-frame mascot-frame-anticipate"
+              draggable={false}
+              decoding="async"
+              onLoad={() => setPosesReady((ready) => ({ ...ready, anticipate: true }))}
+              onError={() => setPosesReady((ready) => ({ ...ready, anticipate: false }))}
+            />
+            <img
+              src={guardianRoot + 'guard.webp'}
+              alt=""
+              width="1426"
+              height="1103"
+              className="home-mascot mascot-frame mascot-frame-guard"
+              draggable={false}
+              decoding="async"
+              onLoad={() => setPosesReady((ready) => ({ ...ready, guard: true }))}
+              onError={() => setPosesReady((ready) => ({ ...ready, guard: false }))}
             />
             <span className="mascot-eyelids">
               <span className="mascot-shield-glow" />
+              <span
+                className="mascot-shield-gleam"
+                style={{ maskImage: 'url("' + guardianRoot + 'guard.webp")' }}
+              />
               <span className="mascot-lid mascot-lid-left" />
               <span className="mascot-lid mascot-lid-right" />
             </span>

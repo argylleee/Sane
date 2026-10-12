@@ -1,0 +1,18 @@
+{
+  "tool": "Built-in ImageGen",
+  "generatedOn": "2026-10-12",
+  "reference": "../sane-mascot.png",
+  "assets": [
+    {
+      "file": "anticipate.webp",
+      "purpose": "Anticipation pose",
+      "prompt": "Use case: precise-object-edit. Asset type: one transparent anticipation pose for a web mascot animation. Image 1 is the edit target and idle pose; Image 2 is the completed shield-forward pose to match. Create ONE intermediate 'noticed you, ready to protect' pose. Preserve Image 1's exact mint-green clay speech-bubble character, face identity, cream eye rims, smile, peach cheeks, body silhouette and tail, droplets, left waving hand, studio lighting, camera, canvas proportions and alignment. Keep the eye rims, face, body, left hand and droplets fixed in their original positions for a smooth aligned animation. Change only the pupils and right shield/forearm: pupils glance slightly toward its shield on the right; the existing checkmark shield lifts a little and is tilted gently toward the viewer, halfway between the idle pose and Image 2's large forward shield. The shield must remain smaller than Image 2, with the identical green rim, cream face and dark teal checkmark, and the eyes and smile remain unobstructed. Friendly anticipation, no fear. Preserve the original's texture and soft clay finish exactly, not a different mascot. Same full-character landscape framing as 1431 by 1100. Genuine transparent alpha background, clean cutout. No background, cast ground shadow, glow, bubble, particles, new props, text or additional characters."
+    },
+    {
+      "file": "guard.webp",
+      "purpose": "Shield-forward pose",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent mascot pose for a web animation. Image 1 is the edit target: Sane's existing mint-green clay mascot. Create ONE shield-forward guardian pose, not a sheet. Preserve the exact character identity, mint clay texture, cream eye rims, dark teal pupils and smile, peach cheeks, rounded speech-bubble body and lower-right tail, three upper-left droplets, soft upper-left studio lighting, and the reference canvas proportions. Keep the face, body, pupils, left waving hand, droplets, and their positions as close to the original pixels as possible for an aligned crossfade. Change ONLY the right forearm and existing green-and-cream checkmark shield: extend the shield toward the viewer, about 18 percent larger, a little higher, with convincing soft clay thickness and the same dark green checkmark. Keep both eyes and smile fully visible. The gesture should feel friendly and protective. Full character fits in the same reference framing; no cropping, no ground shadow, no background, no glow, no barrier, no particles, no extra props, no text. Genuine transparent alpha background, clean edges, same landscape aspect ratio as the 1431 by 1100 reference."
+    }
+  ],
+  "processing": "WebP encoding at quality 90 and alpha quality 100; original canvas and transparent alpha preserved."
+}
